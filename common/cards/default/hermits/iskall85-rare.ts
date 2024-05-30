@@ -1,54 +1,44 @@
-import {HERMIT_CARDS} from '../..'
-import {CardPosModel} from '../../../models/card-pos-model'
-import {GameModel} from '../../../models/game-model'
-import HermitCard from '../../base/hermit-card'
+import { HERMIT_CARDS } from '../..'
+import { CardPosModel } from '../../../models/card-pos-model'
+import { GameModel } from '../../../models/game-model'
+import { CardRarityT, HermitAttackInfo, HermitTypeT } from '../../../types/cards'
+import { HermitCard } from '../../base/hermit-card'
 
-class Iskall85RareHermitCard extends HermitCard {
-	constructor() {
-		super({
-			id: 'iskall85_rare',
-			numericId: 48,
-			name: 'Iskall',
-			rarity: 'rare',
-			hermitType: 'farm',
-			health: 290,
-			primary: {
-				name: 'Of Doom',
-				cost: ['farm'],
-				damage: 50,
-				power: null,
-			},
-			secondary: {
-				name: 'Bird Poop',
-				cost: ['farm', 'farm'],
-				damage: 80,
-				power: 'Attack damage doubles versus Builder types.',
-			},
-		})
+class Iskall85RareHermitCard implements HermitCard {
+	id = 'iskall85_rare'
+	numericId = 48
+	name = 'Iskall'
+	rarity: CardRarityT = 'rare'
+	hermitType: HermitTypeT = 'farm'
+	health = 290
+	primary: HermitAttackInfo = {
+		name: 'Of Doom',
+		cost: ['farm'],
+		damage: 50,
+		power: null,
+	}
+	secondary: HermitAttackInfo = {
+		name: 'Bird Poop',
+		cost: ['farm', 'farm'],
+		damage: 80,
+		power: 'Attack damage doubles versus Builder types.',
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
-		const {player} = pos
+	onAttach(game: GameModel, pos: CardPosModel) {
+		const { player } = pos
 
-		player.hooks.beforeAttack.add(instance, (attack) => {
-			const attackId = this.getInstanceKey(instance)
+		player.hooks.beforeAttack.add(this, (attack) => {
 			const target = attack.getTarget()
-			if (attack.id !== attackId || attack.type !== 'secondary' || !target) return
+			if (attack.creator !== this || attack.type !== 'secondary' || !target) return
+			if (target.row.hermitCard.hermitType !== 'builder') return
 
-			const isBuilder =
-				target.row.hermitCard &&
-				HERMIT_CARDS[target.row.hermitCard.cardId]?.hermitType === 'builder'
-					? 2
-					: 1
-
-			attack.multiplyDamage(this.id, isBuilder)
+			attack.multiplyDamage(this.id, 2)
 		})
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
-		const {player} = pos
-		// Remove hooks
-		player.hooks.beforeAttack.remove(instance)
+	onDetach(game: GameModel, pos: CardPosModel) {
+		const { player } = pos
+		player.hooks.beforeAttack.remove()
 	}
 }
 

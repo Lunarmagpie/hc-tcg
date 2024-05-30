@@ -1,24 +1,20 @@
-import {CanAttachResult} from '../cards/base/card'
-import {AttackModel} from '../models/attack-model'
-import {BattleLogModel} from '../models/battle-log-model'
-import {CardPosModel} from '../models/card-pos-model'
-import {FormattedTextNode} from '../utils/formatting'
-import {HermitAttackType} from './attack'
-import {EnergyT, Slot, SlotPos} from './cards'
-import {GameHook, WaterfallHook} from './hooks'
-import {ModalRequest, PickRequest, PickInfo} from './server-requests'
+import { IsCard, CanAttachResult } from '../cards/base/card'
+import { HermitCard } from '../cards/base/hermit-card'
+import { AttackModel } from '../models/attack-model'
+import { BattleLogModel } from '../models/battle-log-model'
+import { CardPosModel } from '../models/card-pos-model'
+import { FormattedTextNode } from '../utils/formatting'
+import { HermitAttackType } from './attack'
+import { EnergyT, SlotPos } from './cards'
+import { GameHook, WaterfallHook } from './hooks'
+import { ModalRequest, PickRequest } from './server-requests'
 
 export type PlayerId = string
 
-export type CardT = {
-	cardId: string
-	cardInstance: string
-}
-
 export type RowStateWithHermit = {
-	hermitCard: CardT
-	effectCard: CardT | null
-	itemCards: Array<CardT | null>
+	hermitCard: HermitCard
+	effectCard: IsCard | null
+	itemCards: Array<IsCard | null>
 	health: number
 }
 
@@ -64,17 +60,16 @@ export type PlayerState = {
 	id: PlayerId
 	playerName: string
 	minecraftName: string
-	playerDeck: Array<CardT>
+	playerDeck: Array<IsCard>
 	censoredPlayerName: string
 	coinFlips: Array<CurrentCoinFlipT>
-	custom: Record<string, any>
-	hand: Array<CardT>
+	hand: Array<IsCard>
 	lives: number
-	pile: Array<CardT>
-	discarded: Array<CardT>
+	pile: Array<IsCard>
+	discarded: Array<IsCard>
 	board: {
 		activeRow: number | null
-		singleUseCard: CardT | null
+		singleUseCard: IsCard | null
 		singleUseCardUsed: boolean
 		rows: Array<RowState>
 	}
@@ -139,10 +134,10 @@ export type PlayerState = {
 		 */
 		onTurnStart: GameHook<() => void>
 		/** Hook called at the end of the turn */
-		onTurnEnd: GameHook<(drawCards: Array<CardT | null>) => void>
+		onTurnEnd: GameHook<(drawCards: Array<IsCard | null>) => void>
 
 		/** Hook called when the player flips a coin */
-		onCoinFlip: GameHook<(card: CardT, coinFlips: Array<CoinFlipT>) => Array<CoinFlipT>>
+		onCoinFlip: GameHook<(card: IsCard, coinFlips: Array<CoinFlipT>) => Array<CoinFlipT>>
 
 		// @TODO eventually to simplify a lot more code this could potentially be called whenever anything changes the row, using a helper.
 		/** Hook called before the active row is changed. Returns whether or not the change can be completed. */
@@ -272,7 +267,7 @@ export type LocalPlayerState = {
 	lives: number
 	board: {
 		activeRow: number | null
-		singleUseCard: CardT | null
+		singleUseCard: IsCard | null
 		singleUseCardUsed: boolean
 		rows: Array<RowState>
 	}
@@ -284,9 +279,9 @@ export type LocalGameState = {
 	statusEffects: Array<StatusEffectT>
 
 	// personal data
-	hand: Array<CardT>
+	hand: Array<IsCard>
 	pileCount: number
-	discarded: Array<CardT>
+	discarded: Array<IsCard>
 
 	// ids
 	playerId: PlayerId
@@ -320,7 +315,7 @@ export type LocalGameRoot = {
 	localGameState: LocalGameState | null
 	time: number
 
-	selectedCard: CardT | null
+	selectedCard: IsCard | null
 	openedModal: {
 		id: string
 		info: null
