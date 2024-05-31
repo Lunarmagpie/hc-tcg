@@ -1,10 +1,10 @@
-import { defaultCardInfo } from "../../base/card"
-import { HermitCard } from "../../base/hermit-card"
+import {defaultCardInfo} from '../../base/card'
+import {HermitCard} from '../../base/hermit-card'
 
 const Iskall85CommonHermitCard = (): HermitCard => {
 	return {
 		...defaultCardInfo,
-		type: 'hermit',
+		category: 'hermit',
 		id: 'iskall85_common',
 		numericId: 47,
 		name: 'Iskall',
@@ -25,6 +25,5 @@ const Iskall85CommonHermitCard = (): HermitCard => {
 		},
 	}
 }
-
 
 export default Iskall85CommonHermitCard

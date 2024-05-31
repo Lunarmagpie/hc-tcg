@@ -1,11 +1,17 @@
-import {PlayCardLog, CardRarityT, CardTypeT, HermitTypeT, HermitAttackInfo} from '../../types/cards'
+import {
+	PlayCardLog,
+	CardRarityT,
+	CardCategoryT,
+	HermitTypeT,
+	HermitAttackInfo,
+} from '../../types/cards'
 import {GameModel} from '../../models/game-model'
 import {CardPosModel} from '../../models/card-pos-model'
 import {TurnActions} from '../../types/game-state'
 import {EmptyNode, FormattedTextNode} from '../../utils/formatting'
 
 export interface IsCard {
-	type: CardTypeT
+	category: CardCategoryT
 	id: string
 	numericId: number
 	name: string

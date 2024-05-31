@@ -6,7 +6,7 @@ import {CustomAttachHermitCard} from '../../base/hermit-card'
 const Iskall85RareHermitCard = (): CustomAttachHermitCard => {
 	return {
 		...defaultCardInfo,
-		type: 'hermit',
+		category: 'hermit',
 		id: 'iskall85_rare',
 		numericId: 48,
 		name: 'Iskall',

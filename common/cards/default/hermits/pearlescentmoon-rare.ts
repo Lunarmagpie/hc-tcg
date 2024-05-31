@@ -7,7 +7,7 @@ import {CustomAttachHermitCard} from '../../base/hermit-card'
 const PearlescentMoonRareHermitCard = (): CustomAttachHermitCard => {
 	return {
 		...defaultCardInfo,
-		type: 'hermit',
+		category: 'hermit',
 		id: 'pearlescentmoon_rare',
 		numericId: 85,
 		name: 'Pearl',
@@ -34,9 +34,8 @@ const PearlescentMoonRareHermitCard = (): CustomAttachHermitCard => {
 			},
 		],
 		onAttach: (instance: CustomAttachHermitCard, game: GameModel, pos: CardPosModel) => {
-			let status: 'none' | 'missed' | 'heads' | 'tails' = 'none'
-
 			const {player, opponentPlayer} = pos
+			let status: 'none' | 'missed' | 'heads' | 'tails' = 'none'
 			status = 'none'
 
 			player.hooks.onAttack.add(instance, (attack) => {
@@ -61,7 +60,7 @@ const PearlescentMoonRareHermitCard = (): CustomAttachHermitCard => {
 					}
 
 					if (status === 'heads') {
-						attack.multiplyDamage(this.id, 0).lockDamage(this.id)
+						attack.multiplyDamage(instance.id, 0).lockDamage(instance.id)
 					}
 				})
 

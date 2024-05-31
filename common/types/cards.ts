@@ -1,6 +1,4 @@
-import Card from '../cards/base/card'
 import {PlayerState, RowState, RowStateWithHermit} from './game-state'
-import {PickInfo} from './server-requests'
 
 export type CardRarityT = 'common' | 'rare' | 'ultra_rare'
 
@@ -23,7 +21,7 @@ export type HermitTypeT =
 
 export type EnergyT = HermitTypeT | 'any'
 
-export type CardTypeT = 'item' | 'single_use' | 'effect' | 'hermit' | 'health'
+export type CardCategoryT = 'item' | 'single_use' | 'effect' | 'hermit' | 'health'
 export type BoardSlotTypeT = 'item' | 'effect' | 'hermit' | 'health'
 export type SlotTypeT = BoardSlotTypeT | 'single_use'
 

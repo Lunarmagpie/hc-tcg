@@ -1,5 +1,5 @@
 import {CARDS, EFFECT_CARDS} from '../cards'
-import {CardTypeT, RankT} from '../types/cards'
+import {CardCategoryT, RankT} from '../types/cards'
 import {CardT} from '../types/game-state'
 import Card from '../cards/base/card'
 
@@ -15,7 +15,7 @@ export function equalCard(card1: CardT | null, card2: CardT | null) {
 /**
  * Check if card is the type of card
  */
-export function isCardType(card: CardT | null, type: CardTypeT): boolean {
+export function isCardType(card: CardT | null, type: CardCategoryT): boolean {
 	if (!card) return false
 	const cardInfo = CARDS[card.cardId]
 	return cardInfo.type === type
