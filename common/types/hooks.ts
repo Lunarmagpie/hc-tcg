@@ -57,10 +57,12 @@ export class WaterfallHook<T extends (...args: any) => Parameters<T>[0]> extends
 	(...args: any) => any
 > {
 	public override call(...params: Parameters<T>): Parameters<T>[0] {
-		let newParams = params
-		for (const [_, listener] of this.listeners) {
-			newParams[0] = listener(...(newParams as Array<any>))
-		}
-		return newParams[0]
+		return this.listeners.reduce(
+			(params, [_, listener]) => {
+				params[0] = listener(...(params as Array<any>))
+				return params
+			},
+			params,
+		)[0]
 	}
 }
