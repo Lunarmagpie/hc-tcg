@@ -88,9 +88,7 @@ export type PlayerState = {
 		 *
 		 * This is the place to add pick/modal requests if they need to be resolved before the attack loop.
 		 */
-		getAttackRequests: GameHook<
-			(activeInstance: string, hermitAttackType: HermitAttackType) => void
-		>
+		getAttackRequests: GameHook<(activeCard: Card, hermitAttackType: HermitAttackType) => void>
 
 		/** Hook that returns attacks to execute */
 		getAttack: GameHook<() => AttackModel | null>

@@ -18,10 +18,7 @@ const SlownessStatusEffect = (target: Card): StatusEffect => {
 			game.state.statusEffects.push(this)
 			const {player} = pos
 
-			game.battleLog.addCustomEntry(
-				player.id,
-				`$p${this.target.name}$ was inflicted with $eSlowness$`
-			)
+			game.battleLog.addEntry(player.id, `$p${this.target.name}$ was inflicted with $eSlowness$`)
 
 			player.hooks.onTurnStart.add(this, () => {
 				const targetPos = getBasicCardPos(game, this.target)

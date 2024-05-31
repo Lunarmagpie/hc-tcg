@@ -43,7 +43,7 @@ const MuseumCollectionStatusEffect = (target: Card): StatusEffect => {
 				const activeRow = player.board.activeRow
 				if (activeRow === null) return
 				const targetHermit = player.board.rows[activeRow].hermitCard
-				if (!targetHermit?.cardId) return
+				if (!targetHermit?.id) return
 				if (attack.getCreator() !== this || attack.type !== 'secondary') return
 				if (this.duration === undefined) return
 

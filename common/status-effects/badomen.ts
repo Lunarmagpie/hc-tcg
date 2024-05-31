@@ -20,10 +20,7 @@ const BadOmenStatusEffect = (target: Card): StatusEffect => {
 			const {player, opponentPlayer} = pos
 
 			if (pos.card) {
-				game.battleLog.addCustomEntry(
-					player.id,
-					`$p${this.target.name}$ was inflicted with $bBad Omen$`
-				)
+				game.battleLog.addEntry(player.id, `$p${this.target.name}$ was inflicted with $bBad Omen$`)
 			}
 
 			opponentPlayer.hooks.onTurnStart.add(this, () => {
