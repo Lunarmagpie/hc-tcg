@@ -1,3 +1,4 @@
+import {IsCard} from '../cards/base/card'
 import {RowPos} from './cards'
 
 export type HermitAttackType = 'primary' | 'secondary' | 'single-use'
@@ -32,7 +33,7 @@ export type AttackLog = {
 }
 
 export type AttackDefs = {
-	id?: string
+	creator: IsCard
 	attacker?: RowPos | null
 	target?: RowPos | null
 	type: AttackType

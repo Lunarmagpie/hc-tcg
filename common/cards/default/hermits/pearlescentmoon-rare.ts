@@ -41,8 +41,7 @@ const PearlescentMoonRareHermitCard = (): CustomAttachHermitCard => {
 
 			player.hooks.onAttack.add(instance, (attack) => {
 				const attacker = attack.getAttacker()
-				if (attack.id !== this.getInstanceKey(instance) || attack.type !== 'secondary' || !attacker)
-					return
+				if (attack.getCreator() !== instance || attack.type !== 'secondary' || !attacker) return
 
 				if (status === 'missed') {
 					status = 'none'
@@ -67,9 +66,7 @@ const PearlescentMoonRareHermitCard = (): CustomAttachHermitCard => {
 				})
 
 				opponentPlayer.hooks.onTurnEnd.add(instance, () => {
-					if (status === 'heads') {
-						status = 'missed'
-					}
+					if (status === 'heads') status = 'missed'
 
 					opponentPlayer.hooks.beforeAttack.remove(instance)
 					opponentPlayer.hooks.onTurnEnd.remove(instance)

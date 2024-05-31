@@ -1,3 +1,4 @@
+import {IsCard} from '../cards/base/card'
 import {
 	AttackHistory,
 	AttackHistoryType,
@@ -20,6 +21,8 @@ export class AttackModel {
 	private damageLocked: boolean = false
 	/** The list of all changes made to this attack */
 	private history: Array<AttackHistory> = []
+	/** The creator of this attack */
+	private creator: IsCard
 
 	/** The attacker */
 	private attacker: RowPos | null
@@ -31,8 +34,6 @@ export class AttackModel {
 
 	// Public fields
 
-	/** Unique id for this attack */
-	public id: string | null = null
 	/** The attack type */
 	public type: AttackType
 	/** Attacks to perform after this attack */
@@ -45,7 +46,7 @@ export class AttackModel {
 	public createWeakness: WeaknessType
 
 	constructor(defs: AttackDefs) {
-		this.id = defs.id || null
+		this.creator = defs.creator
 		this.type = defs.type
 		this.isBacklash = defs.isBacklash || false
 
@@ -168,5 +169,10 @@ export class AttackModel {
 	public addNewAttack(newAttack: AttackModel) {
 		this.nextAttacks.push(newAttack)
 		return this
+	}
+
+	/** Get the creator for this attack */
+	public getCreator() {
+		return this.creator
 	}
 }

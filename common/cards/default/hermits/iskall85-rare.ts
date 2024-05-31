@@ -30,7 +30,7 @@ const Iskall85RareHermitCard = (): CustomAttachHermitCard => {
 
 			player.hooks.beforeAttack.add(instance, (attack) => {
 				const target = attack.getTarget()
-				if (attack.creator !== this || attack.type !== 'secondary' || !target) return
+				if (attack.getCreator() !== instance || attack.type !== 'secondary' || !target) return
 				if (target.row.hermitCard.hermitType !== 'builder') return
 
 				attack.multiplyDamage(instance.id, 2)
