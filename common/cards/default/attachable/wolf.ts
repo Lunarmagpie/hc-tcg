@@ -26,7 +26,7 @@ class WolfEffectCard extends EffectCard {
 		return result
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer} = pos
 		const activated = this.getInstanceKey(instance, 'activated')
 
@@ -68,7 +68,7 @@ class WolfEffectCard extends EffectCard {
 		})
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer} = pos
 
 		// Delete hooks and custom

@@ -27,7 +27,7 @@ class SlimeballEffectCard extends EffectCard {
 		return result
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 
 		player.hooks.onSlotChange.add(instance, (slot) => {
@@ -40,7 +40,7 @@ class SlimeballEffectCard extends EffectCard {
 		})
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		pos.player.hooks.onSlotChange.remove(instance)
 		pos.player.hooks.onDetach.remove(instance)
 	}

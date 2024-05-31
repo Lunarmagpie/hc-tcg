@@ -28,7 +28,7 @@ class FiveAMPearlRareHermitCard extends HermitCard {
 		})
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 
 		player.hooks.beforeAttack.add(instance, (attack) => {
@@ -45,7 +45,7 @@ class FiveAMPearlRareHermitCard extends HermitCard {
 		})
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 
 		player.hooks.beforeAttack.remove(instance)

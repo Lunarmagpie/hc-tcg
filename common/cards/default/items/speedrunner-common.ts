@@ -1,20 +1,13 @@
-import ItemCard from '../../base/item-card'
-import {CardPosModel} from '../../../models/card-pos-model'
-import {GameModel} from '../../../models/game-model'
+import {ItemCard, itemCardDefaults} from '../../base/item-card'
 
-class SpeedrunnerCommonItemCard extends ItemCard {
-	constructor() {
-		super({
-			id: 'item_speedrunner_common',
-			numericId: 65,
-			name: 'Speedrunner',
-			rarity: 'common',
-			hermitType: 'speedrunner',
-		})
-	}
-
-	getEnergy(game: GameModel, instance: string, pos: CardPosModel) {
-		return [this.hermitType]
+const SpeedrunnerCommonItemCard = (): ItemCard => {
+	return {
+		...itemCardDefaults,
+		id: 'item_speedrunner_Common',
+		numericId: 50,
+		name: 'Speedrunner',
+		rarity: 'common',
+		hermitType: 'speedrunner',
 	}
 }
 

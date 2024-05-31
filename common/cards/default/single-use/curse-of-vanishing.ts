@@ -16,7 +16,7 @@ class CurseOfVanishingSingleUseCard extends SingleUseCard {
 		})
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {opponentPlayer, player} = pos
 
 		player.hooks.onApply.add(instance, () => {
@@ -49,7 +49,7 @@ class CurseOfVanishingSingleUseCard extends SingleUseCard {
 		return result
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 		player.hooks.onApply.remove(instance)
 	}

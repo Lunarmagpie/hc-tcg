@@ -15,7 +15,7 @@ class NetheriteArmorEffectCard extends EffectCard {
 		})
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer} = pos
 		const instanceKey = this.getInstanceKey(instance)
 
@@ -46,7 +46,7 @@ class NetheriteArmorEffectCard extends EffectCard {
 		opponentPlayer.hooks.onTurnStart.add(instance, resetCounter)
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer} = pos
 		player.hooks.onDefence.remove(instance)
 		player.hooks.onTurnStart.remove(instance)

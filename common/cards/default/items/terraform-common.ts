@@ -1,21 +1,14 @@
-import ItemCard from '../../base/item-card'
-import {CardPosModel} from '../../../models/card-pos-model'
-import {GameModel} from '../../../models/game-model'
+import {ItemCard, itemCardDefaults} from '../../base/item-card'
 
-class TerraformCommonItemCard extends ItemCard {
-	constructor() {
-		super({
-			id: 'item_terraform_common',
-			numericId: 67,
-			name: 'Terraform',
-			rarity: 'common',
-			hermitType: 'terraform',
-		})
-	}
-
-	getEnergy(game: GameModel, instance: string, pos: CardPosModel) {
-		return [this.hermitType]
+const TerraformRareItemCard = (): ItemCard => {
+	return {
+		...itemCardDefaults,
+		id: 'item_terraform_rare',
+		numericId: 50,
+		name: 'Terraform',
+		rarity: 'rare',
+		hermitType: 'terraform',
 	}
 }
 
-export default TerraformCommonItemCard
+export default TerraformRareItemCard

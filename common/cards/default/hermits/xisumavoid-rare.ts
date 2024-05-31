@@ -1,12 +1,14 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
-import HermitCard from '../../base/hermit-card'
+import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
+import {OverridesAttach, OverridesDetach} from '../../base/card'
 import {applyStatusEffect, getActiveRow} from '../../../utils/board'
 
-class XisumavoidRareHermitCard extends HermitCard {
+class XisumavoidRareHermitCard  = (): HermitCard & OverridesAttach & OverridesDetach =>  {
 	constructor() {
-		super({
+		super({		...hermitCardDefaults,
+
 			id: 'xisumavoid_rare',
 			numericId: 112,
 			name: 'Xisuma',
@@ -28,7 +30,7 @@ class XisumavoidRareHermitCard extends HermitCard {
 		})
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer} = pos
 
 		player.hooks.onAttack.add(instance, (attack) => {
@@ -48,7 +50,7 @@ class XisumavoidRareHermitCard extends HermitCard {
 		})
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 		// Remove hooks
 		player.hooks.onAttack.remove(instance)

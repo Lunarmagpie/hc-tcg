@@ -1,12 +1,14 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
-import HermitCard from '../../base/hermit-card'
+import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
+import {OverridesAttach, OverridesDetach} from '../../base/card'
 import {removeStatusEffect} from '../../../utils/board'
 
-class VintageBeefRareHermitCard extends HermitCard {
+class VintageBeefRareHermitCard  = (): HermitCard & OverridesAttach & OverridesDetach =>  {
 	constructor() {
-		super({
+		super({		...hermitCardDefaults,
+
 			id: 'vintagebeef_rare',
 			numericId: 103,
 			name: 'Beef',
@@ -29,7 +31,7 @@ class VintageBeefRareHermitCard extends HermitCard {
 		})
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 
 		player.hooks.onAttack.add(instance, (attack) => {
@@ -54,7 +56,7 @@ class VintageBeefRareHermitCard extends HermitCard {
 		})
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 		// Remove hooks
 		player.hooks.onAttack.remove(instance)

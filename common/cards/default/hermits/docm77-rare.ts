@@ -1,54 +1,49 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
-import HermitCard from '../../base/hermit-card'
+import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
+import {OverridesAttach, OverridesDetach} from '../../base/card'
+const Docm77RareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
+	return {
+		...hermitCardDefaults,
+		id: 'docm77_rare',
+		numericId: 16,
+		name: 'Docm77',
+		rarity: 'rare',
+		hermitType: 'farm',
+		health: 280,
+		primary: {
+			name: 'Shadow Tech',
+			cost: ['any'],
+			damage: 40,
+			power: null,
+		},
+		secondary: {
+			name: 'World Eater',
+			cost: ['farm', 'farm'],
+			damage: 80,
+			power: 'Flip a Coin.\nIf heads, attack damage doubles.\nIf tails, attack damage is halved.',
+		},
+		onAttach(game: GameModel, pos: CardPosModel) {
+			const {player} = pos
 
-class Docm77RareHermitCard extends HermitCard {
-	constructor() {
-		super({
-			id: 'docm77_rare',
-			numericId: 16,
-			name: 'Docm77',
-			rarity: 'rare',
-			hermitType: 'farm',
-			health: 280,
-			primary: {
-				name: 'Shadow Tech',
-				cost: ['any'],
-				damage: 40,
-				power: null,
-			},
-			secondary: {
-				name: 'World Eater',
-				cost: ['farm', 'farm'],
-				damage: 80,
-				power: 'Flip a Coin.\nIf heads, attack damage doubles.\nIf tails, attack damage is halved.',
-			},
-		})
-	}
+			player.hooks.onAttack.add(this, (attack) => {
+				const attacker = attack.getAttacker()
+				if (attack.getCreator() !== this || attack.type !== 'secondary' || !attacker) return
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
-		const {player} = pos
+				const coinFlip = flipCoin(player, attacker.row.hermitCard)
 
-		player.hooks.onAttack.add(instance, (attack) => {
-			const attackId = this.getInstanceKey(instance)
-			const attacker = attack.getAttacker()
-			if (attack.id !== attackId || attack.type !== 'secondary' || !attacker) return
+				if (coinFlip[0] === 'heads') {
+					attack.addDamage(this.id, this.secondary.damage)
+				} else {
+					attack.reduceDamage(this.id, this.secondary.damage / 2)
+				}
+			})
+		},
 
-			const coinFlip = flipCoin(player, attacker.row.hermitCard)
-
-			if (coinFlip[0] === 'heads') {
-				attack.addDamage(this.id, this.secondary.damage)
-			} else {
-				attack.reduceDamage(this.id, this.secondary.damage / 2)
-			}
-		})
-	}
-
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
-		const {player} = pos
-		// Remove hooks
-		player.hooks.onAttack.remove(instance)
+		onDetach(game: GameModel, pos: CardPosModel) {
+			pos.player.hooks.onAttack.remove(this)
+		},
 	}
 }
 

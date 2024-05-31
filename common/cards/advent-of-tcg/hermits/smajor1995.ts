@@ -32,7 +32,7 @@ class Smajor1995RareHermitCard extends HermitCard {
 		})
 	}
 
-	public override onAttach(game: GameModel, instance: string, pos: CardPosModel): void {
+	public override onAttach(game: GameModel, pos: CardPosModel): void {
 		const {player} = pos
 		const instanceKey = this.getInstanceKey(instance)
 
@@ -62,7 +62,7 @@ class Smajor1995RareHermitCard extends HermitCard {
 		})
 	}
 
-	public override onDetach(game: GameModel, instance: string, pos: CardPosModel): void {
+	public override onDetach(game: GameModel, pos: CardPosModel): void {
 		const {player} = pos
 		const instanceKey = this.getInstanceKey(instance)
 

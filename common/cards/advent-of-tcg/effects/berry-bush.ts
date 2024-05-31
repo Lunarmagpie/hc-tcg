@@ -20,7 +20,7 @@ class BerryBushEffectCard extends EffectCard {
 		})
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer, row} = pos
 		if (!row) return
 
@@ -61,7 +61,7 @@ class BerryBushEffectCard extends EffectCard {
 		})
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer, slot, row} = pos
 
 		if (getActiveRow(player) === row) {

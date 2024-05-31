@@ -60,7 +60,7 @@ class PistonSingleUseCard extends SingleUseCard {
 		return [...result, 'UNMET_CONDITION']
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 		const rowIndexKey = this.getInstanceKey(instance, 'rowIndex')
 		const itemIndexKey = this.getInstanceKey(instance, 'itemIndex')

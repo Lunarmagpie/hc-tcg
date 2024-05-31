@@ -1,11 +1,13 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {getNonEmptyRows} from '../../../utils/board'
-import HermitCard from '../../base/hermit-card'
+import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
+import {OverridesAttach, OverridesDetach} from '../../base/card'
 
-class TangoTekRareHermitCard extends HermitCard {
+class TangoTekRareHermitCard  = (): HermitCard & OverridesAttach & OverridesDetach =>  {
 	constructor() {
-		super({
+		super({		...hermitCardDefaults,
+
 			id: 'tangotek_rare',
 			numericId: 95,
 			name: 'Tango',
@@ -28,7 +30,7 @@ class TangoTekRareHermitCard extends HermitCard {
 		})
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer} = pos
 
 		player.hooks.afterAttack.add(instance, (attack) => {
@@ -117,7 +119,7 @@ class TangoTekRareHermitCard extends HermitCard {
 		})
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 
 		player.hooks.afterAttack.remove(instance)

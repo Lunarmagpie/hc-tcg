@@ -1,15 +1,15 @@
-import {HERMIT_CARDS} from '../..'
 import {CardPosModel, getBasicCardPos} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {HermitAttackType} from '../../../types/attack'
-import {CardT} from '../../../types/game-state'
 import {getNonEmptyRows} from '../../../utils/board'
 import {formatText} from '../../../utils/formatting'
-import HermitCard from '../../base/hermit-card'
+import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
+import {OverridesAttach, OverridesDetach} from '../../base/card'
 
-class ZombieCleoRareHermitCard extends HermitCard {
+class ZombieCleoRareHermitCard  = (): HermitCard & OverridesAttach & OverridesDetach =>  {
 	constructor() {
-		super({
+		super({		...hermitCardDefaults,
+
 			id: 'zombiecleo_rare',
 			numericId: 116,
 			name: 'Cleo',
@@ -68,7 +68,7 @@ class ZombieCleoRareHermitCard extends HermitCard {
 		return newAttack
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 		const pickedCardKey = this.getInstanceKey(instance, 'pickedCard')
 
@@ -167,7 +167,7 @@ class ZombieCleoRareHermitCard extends HermitCard {
 		})
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 		const pickedCardKey = this.getInstanceKey(instance, 'pickedCard')
 		player.hooks.getAttackRequests.remove(instance)

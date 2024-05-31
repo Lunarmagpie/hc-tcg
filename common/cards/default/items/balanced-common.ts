@@ -1,20 +1,13 @@
-import {CardPosModel} from '../../../models/card-pos-model'
-import {GameModel} from '../../../models/game-model'
-import ItemCard from '../../base/item-card'
+import {ItemCard, itemCardDefaults} from '../../base/item-card'
 
-class BalancedCommonItemCard extends ItemCard {
-	constructor() {
-		super({
-			id: 'item_balanced_common',
-			numericId: 49,
-			name: 'Balanced',
-			rarity: 'common',
-			hermitType: 'balanced',
-		})
-	}
-
-	getEnergy(game: GameModel, instance: string, pos: CardPosModel) {
-		return [this.hermitType]
+const BalancedCommonItemCard = (): ItemCard => {
+	return {
+		...itemCardDefaults,
+		id: 'item_balanced_common',
+		numericId: 49,
+		name: 'Balanced',
+		rarity: 'common',
+		hermitType: 'balanced',
 	}
 }
 

@@ -47,7 +47,7 @@ class LadderSingleUseCard extends SingleUseCard {
 		return [...result, 'UNMET_CONDITION']
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 
 		game.addPickRequest({

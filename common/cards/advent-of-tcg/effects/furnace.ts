@@ -15,11 +15,11 @@ class FurnaceEffectCard extends EffectCard {
 		})
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		applyStatusEffect(game, 'smelting', instance)
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		game.state.statusEffects.forEach((ail) => {
 			if (ail.targetInstance === instance) {
 				removeStatusEffect(game, pos, ail.statusEffectInstance)

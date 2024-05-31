@@ -15,7 +15,7 @@ class ChorusFruitSingleUseCard extends SingleUseCard {
 		})
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 
 		player.hooks.afterAttack.add(instance, (attack) => {
@@ -44,7 +44,7 @@ class ChorusFruitSingleUseCard extends SingleUseCard {
 		return result
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 		player.hooks.afterAttack.remove(instance)
 	}

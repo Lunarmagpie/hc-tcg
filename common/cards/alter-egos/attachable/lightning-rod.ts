@@ -28,7 +28,7 @@ class LightningRodEffectCard extends EffectCard {
 		return result
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer, row, rowIndex} = pos
 
 		opponentPlayer.hooks.beforeAttack.add(instance, (attack) => {
@@ -56,7 +56,7 @@ class LightningRodEffectCard extends EffectCard {
 		})
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		const {opponentPlayer} = pos
 		opponentPlayer.hooks.beforeAttack.remove(instance)
 		opponentPlayer.hooks.afterAttack.remove(instance)

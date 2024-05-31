@@ -31,7 +31,7 @@ class EggSingleUseCard extends SingleUseCard {
 		return result
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer} = pos
 		const targetKey = this.getInstanceKey(instance, 'target')
 
@@ -105,7 +105,7 @@ class EggSingleUseCard extends SingleUseCard {
 		})
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 
 		player.hooks.getAttackRequests.remove(instance)

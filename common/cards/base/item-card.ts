@@ -1,12 +1,45 @@
-import {PlayCardLog, CardRarityT, EnergyT, HermitTypeT} from '../../types/cards'
-import {GameModel} from '../../models/game-model'
 import {CardPosModel} from '../../models/card-pos-model'
-import {TurnActions} from '../../types/game-state'
-import {FormattedTextNode, formatText} from '../../utils/formatting'
-import {HERMIT_CARDS} from '..'
-import {IsAttachableToItemSlots, Card} from './card'
+import {GameModel} from '../../models/game-model'
+import {CardCategoryT, PlayCardLog} from '../../types/cards'
+import {formatText} from '../../utils/formatting'
+import {
+	IsAttachableToItemSlots,
+	Card,
+	isCardDefaults,
+	isAttachableToItemSlotsDefaults,
+	HasHermitType,
+	hasHermitTypeDefaults,
+	itemDisplayInfoDefaults,
+	ItemDisplayInfo,
+	HasBattleLog,
+	hasBattleLogDefaults,
+} from './card'
 
-export type ItemCard = Card & IsAttachableToItemSlots
+export type ItemCard = Card & IsAttachableToItemSlots & HasHermitType & ItemDisplayInfo
+
+export const itemCardDefaults = {
+	...isCardDefaults,
+	...isAttachableToItemSlotsDefaults,
+	...hasHermitTypeDefaults,
+	...itemDisplayInfoDefaults,
+	...hasBattleLogDefaults,
+	category: 'item' as CardCategoryT,
+	expansion: 'default',
+	palette: 'default',
+	getBackground(this: Card) {
+		return this.id.split('_')[0]
+	},
+	getDescription(this: Card) {
+		return formatText('')
+	},
+	log: (values: PlayCardLog) =>
+		`$p{You|${values.player}}$ attached $m${values.pos.name}$ to $p${values.pos.hermitCard}$`,
+	sidebarDescriptions: [],
+	getEnergy(this: Card & HasHermitType, game: GameModel, pos: CardPosModel) {
+		if (this.rarity === 'rare') return [this.hermitType, this.hermitType]
+		return [this.hermitType]
+	},
+}
 
 // type ItemDefs = {
 // 	id: string
@@ -65,7 +98,7 @@ export type ItemCard = Card & IsAttachableToItemSlots
 // 		return this.rarity === 'rare' ? formatText('*Counts as 2 Item cards.*') : formatText('')
 // 	}
 
-// 	public abstract getEnergy(game: GameModel, instance: string, pos: CardPosModel): Array<EnergyT>
+// 	public abstract getEnergy(game: GameModel, pos: CardPosModel): Array<EnergyT>
 // }
 
 // export default ItemCard

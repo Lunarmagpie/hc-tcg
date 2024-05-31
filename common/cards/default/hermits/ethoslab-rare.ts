@@ -26,10 +26,10 @@ const EthosLabRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetac
 			damage: 80,
 			power: "Flip a coin.\nIf heads, burn your opponent's active Hermit.",
 		},
-		onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+		onAttach(game: GameModel, pos: CardPosModel) {
 			const {player, opponentPlayer} = pos
 
-			player.hooks.onAttack.add(instance, (attack) => {
+			player.hooks.onAttack.add(this, (attack) => {
 				const attacker = attack.getAttacker()
 				const target = attack.getTarget()?.row.hermitCard
 				if (attack.getCreator() !== this || attack.type !== 'secondary' || !target || !attacker)
@@ -46,10 +46,10 @@ const EthosLabRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetac
 			})
 		},
 
-		onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+		onDetach(game: GameModel, pos: CardPosModel) {
 			const {player} = pos
 			// Remove hooks
-			player.hooks.onAttack.remove(instance)
+			player.hooks.onAttack.remove(this)
 		},
 		sidebarDescriptions: [
 			{

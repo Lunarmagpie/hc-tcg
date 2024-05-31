@@ -1,58 +1,57 @@
-import {HERMIT_CARDS} from '../..'
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
-import HermitCard from '../../base/hermit-card'
+import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
+import {OverridesAttach, OverridesDetach} from '../../base/card'
 
-class FalseSymmetryRareHermitCard extends HermitCard {
-	constructor() {
-		super({
-			id: 'falsesymmetry_rare',
-			numericId: 23,
-			name: 'False',
-			rarity: 'rare',
-			hermitType: 'builder',
-			health: 250,
-			primary: {
-				name: 'High Noon',
-				cost: ['builder'],
-				damage: 60,
-				power: null,
-			},
-			secondary: {
-				name: 'Supremacy',
-				cost: ['builder', 'any'],
-				damage: 70,
-				power: 'Flip a coin.\nIf heads, heal this Hermit 40hp.',
-			},
-		})
-	}
+const FalseSymmetryRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
+	return {
+		...hermitCardDefaults,
+		id: 'falsesymmetry_rare',
+		numericId: 23,
+		name: 'False',
+		rarity: 'rare',
+		hermitType: 'builder',
+		health: 250,
+		primary: {
+			name: 'High Noon',
+			cost: ['builder'],
+			damage: 60,
+			power: null,
+		},
+		secondary: {
+			name: 'Supremacy',
+			cost: ['builder', 'any'],
+			damage: 70,
+			power: 'Flip a coin.\nIf heads, heal this Hermit 40hp.',
+		},
+		onAttach(game: GameModel, pos: CardPosModel) {
+			const {player} = pos
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
-		const {player} = pos
+			player.hooks.onAttack.add(this, (attack) => {
+				const attacker = attack.getAttacker()
+				if (attack.getCreator() !== this || attack.type !== 'secondary' || !attacker) return
 
-		player.hooks.onAttack.add(instance, (attack) => {
-			const attackId = this.getInstanceKey(instance)
-			const attacker = attack.getAttacker()
-			if (attack.id !== attackId || attack.type !== 'secondary' || !attacker) return
+				const coinFlip = flipCoin(player, attacker.row.hermitCard)
 
-			const coinFlip = flipCoin(player, attacker.row.hermitCard)
+				if (coinFlip[0] === 'tails') return
 
-			if (coinFlip[0] === 'tails') return
+				// Heal 40hp
+				const maxHealth = Math.max(attacker.row.health, attacker.row.hermitCard.health)
+				attacker.row.health = Math.min(attacker.row.health + 40, maxHealth)
 
-			// Heal 40hp
-			const hermitInfo = HERMIT_CARDS[attacker.row.hermitCard.id]
-			const maxHealth = Math.max(attacker.row.health, hermitInfo.health)
-			attacker.row.health = Math.min(attacker.row.health + 40, maxHealth)
+				game.battleLog.addCustomEntry(
+					player.id,
+					`$p${attacker.row.hermitCard.name}$ healed $g40hp$`
+				)
+			})
+		},
 
-			game.battleLog.addCustomEntry(player.id, `$p${hermitInfo.name}$ healed $g40hp$`)
-		})
-	}
-
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
-		const {player} = pos
-		// Remove hooks
-		player.hooks.onAttack.remove(instance)
+		onDetach(game: GameModel, pos: CardPosModel) {
+			const {player} = pos
+			// Remove hooks
+			player.hooks.onAttack.remove(this)
+		},
 	}
 }
 

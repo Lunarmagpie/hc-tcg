@@ -1,9 +1,9 @@
-import {HERMIT_CARDS} from '../..'
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {applyStatusEffect, getActiveRow, removeStatusEffect} from '../../../utils/board'
 import {OverridesAttach, OverridesDetach} from '../../base/card'
+import SleepingStatusEffect from '../../../status-effects/sleeping'
 
 const BdoubleO100RareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	return {
@@ -39,7 +39,7 @@ const BdoubleO100RareHermitCard = (): HermitCard & OverridesAttach & OverridesDe
 				if (!row) return
 
 				// Add new sleeping statusEffect
-				applyStatusEffect(game, 'sleeping', this)
+				applyStatusEffect(game, SleepingStatusEffect(this))
 			})
 		},
 		onDetach(game: GameModel, pos: CardPosModel) {

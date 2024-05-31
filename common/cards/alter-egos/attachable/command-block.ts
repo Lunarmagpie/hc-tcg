@@ -14,7 +14,7 @@ class CommandBlockEffectCard extends EffectCard {
 		})
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 
 		player.hooks.availableEnergy.add(instance, (availableEnergy) => {
@@ -33,7 +33,7 @@ class CommandBlockEffectCard extends EffectCard {
 		})
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 		player.hooks.availableEnergy.remove(instance)
 	}

@@ -1,12 +1,14 @@
 import {CardPosModel, getCardPos} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {HermitAttackType} from '../../../types/attack'
-import HermitCard from '../../base/hermit-card'
+import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
+import {OverridesAttach, OverridesDetach} from '../../base/card'
 import {isTargetingPos} from '../../../utils/attacks'
 import {getActiveRowPos} from '../../../utils/board'
-class XBCraftedRareHermitCard extends HermitCard {
+class XBCraftedRareHermitCard  = (): HermitCard & OverridesAttach & OverridesDetach =>  {
 	constructor() {
-		super({
+		super({		...hermitCardDefaults,
+
 			id: 'xbcrafted_rare',
 			numericId: 110,
 			name: 'xB',
@@ -46,7 +48,7 @@ class XBCraftedRareHermitCard extends HermitCard {
 		return attack
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer} = pos
 		const ignoreKey = this.getInstanceKey(instance, 'ignore')
 
@@ -80,7 +82,7 @@ class XBCraftedRareHermitCard extends HermitCard {
 		})
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 
 		// Remove hooks

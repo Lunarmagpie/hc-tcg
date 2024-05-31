@@ -31,7 +31,7 @@ class HumanCleoRareHermitCard extends HermitCard {
 		})
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer} = pos
 		const instanceKey = this.getInstanceKey(instance)
 		const opponentTargetKey = this.getInstanceKey(instance, 'opponentTarget')
@@ -162,7 +162,7 @@ class HumanCleoRareHermitCard extends HermitCard {
 		})
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer} = pos
 
 		// Remove hooks

@@ -60,7 +60,7 @@ class LeadSingleUseCard extends SingleUseCard {
 		return [...result, 'UNMET_CONDITION']
 	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer} = pos
 		const itemIndexKey = this.getInstanceKey(instance, 'itemIndex')
 
@@ -136,7 +136,7 @@ class LeadSingleUseCard extends SingleUseCard {
 		})
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 		const itemIndexKey = this.getInstanceKey(instance, 'itemIndex')
 		delete player.custom[itemIndexKey]
