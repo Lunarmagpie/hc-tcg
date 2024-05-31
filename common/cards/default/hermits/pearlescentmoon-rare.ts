@@ -1,12 +1,12 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
-import {defaultCardInfo} from '../../base/card'
-import {CustomAttachHermitCard} from '../../base/hermit-card'
+import {OverridesAttach, OverridesDetach, defaultHermitDisplayInfo} from '../../base/card'
+import {HermitCard} from '../../base/hermit-card'
 
-const PearlescentMoonRareHermitCard = (): CustomAttachHermitCard => {
+const PearlescentMoonRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	return {
-		...defaultCardInfo,
+		...defaultHermitDisplayInfo,
 		category: 'hermit',
 		id: 'pearlescentmoon_rare',
 		numericId: 85,
@@ -27,12 +27,6 @@ const PearlescentMoonRareHermitCard = (): CustomAttachHermitCard => {
 			power:
 				'If your opponent attacks on their next turn, flip a coin.\nIf heads, their attack $kmisses$. Your opponent can not miss due to this ability on consecutive turns.',
 		},
-		sidebarDescriptions: [
-			{
-				type: 'glossary',
-				name: 'missed',
-			},
-		],
 		onAttach(game: GameModel, pos: CardPosModel) {
 			const {player, opponentPlayer} = pos
 			let status: 'none' | 'missed' | 'heads' | 'tails' = 'none'
@@ -78,7 +72,6 @@ const PearlescentMoonRareHermitCard = (): CustomAttachHermitCard => {
 				status = 'none'
 			})
 		},
-
 		onDetach(game: GameModel, pos: CardPosModel) {
 			const {player, opponentPlayer} = pos
 			player.hooks.onAttack.remove(this)
@@ -86,6 +79,12 @@ const PearlescentMoonRareHermitCard = (): CustomAttachHermitCard => {
 			opponentPlayer.hooks.beforeAttack.remove(this)
 			opponentPlayer.hooks.onTurnEnd.remove(this)
 		},
+		sidebarDescriptions: [
+			{
+				type: 'glossary',
+				name: 'missed',
+			},
+		],
 	}
 }
 

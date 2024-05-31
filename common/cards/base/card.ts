@@ -8,7 +8,7 @@ import {
 import {GameModel} from '../../models/game-model'
 import {CardPosModel} from '../../models/card-pos-model'
 import {TurnActions} from '../../types/game-state'
-import {EmptyNode, FormattedTextNode} from '../../utils/formatting'
+import {EmptyNode, FormattedTextNode, formatText} from '../../utils/formatting'
 
 export interface IsCard {
 	category: CardCategoryT
@@ -17,28 +17,42 @@ export interface IsCard {
 	name: string
 	rarity: CardRarityT
 	/* The description for this card that shows up in the sidebar. */
-	description: FormattedTextNode
+	getDescription: () => FormattedTextNode
 
 	/* The expansion this card is a part of */
 	expansion: string
 	/* The palette for this card */
 	palette: string
-	/* The background this card uses */
-	getBackground: () => string
 
-	/* The short name for this card */
-	shortName: string | null
 	sidebarDescriptions: Array<Record<string, string>>
 }
 
-export const defaultCardInfo = {
+export interface HermitDisplayInfo {
+	/* The background this card uses */
+	getBackground: () => string
+	/* The shortened name for this card */
+	getShortName: () => string | null
+}
+
+export interface EffectDisplayInfo {}
+
+export interface SingleUseDisplayInfo {}
+
+export const defaultHermitDisplayInfo = {
 	expansion: 'default',
 	palette: 'default',
 	getBackground(this: IsCard) {
-		return this.name
+		return this.id.split('_')[0]
 	},
-	shortName: null,
-	description: new EmptyNode(),
+	getShortName(this: IsCard) {
+		return null
+	},
+	getDescription(this: IsCard & HasPrimaryAttack & HasSecondaryAttack) {
+		return formatText(
+			(this.primary.power ? `**${this.primary.name}**\n*${this.primary.power}*` : '') +
+				(this.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
+		)
+	},
 	sidebarDescriptions: [],
 }
 

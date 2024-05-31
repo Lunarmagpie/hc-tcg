@@ -1,6 +1,6 @@
 import { AttackModel } from '../../models/attack-model'
 import { GameModel } from '../../models/game-model'
-import { IsCard, CanAttachResult, IsAttachableToHermitSlots, OverridesDetach, HasHermitType, HasHealth, HasPrimaryAttack, HasSecondaryAttack, OverridesAttach } from './card'
+import { IsCard, CanAttachResult, IsAttachableToHermitSlots, OverridesDetach, HasHermitType, HasHealth, HasPrimaryAttack, HasSecondaryAttack, OverridesAttach, HermitDisplayInfo } from './card'
 import { CardRarityT, HermitAttackInfo, HermitTypeT, PlayCardLog } from '../../types/cards'
 import { HermitAttackType } from '../../types/attack'
 import { CardPosModel } from '../../models/card-pos-model'
@@ -15,6 +15,7 @@ export type HermitCard =
 	& HasHealth
 	& HasPrimaryAttack
 	& HasSecondaryAttack
+	& HermitDisplayInfo
 
 	// Default is to return
 	// 	public getAttacks(

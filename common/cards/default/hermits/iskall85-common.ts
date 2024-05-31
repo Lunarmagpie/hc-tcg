@@ -1,9 +1,9 @@
-import {defaultCardInfo} from '../../base/card'
+import {defaultHermitDisplayInfo} from '../../base/card'
 import {HermitCard} from '../../base/hermit-card'
 
 const Iskall85CommonHermitCard = (): HermitCard => {
 	return {
-		...defaultCardInfo,
+		...defaultHermitDisplayInfo,
 		category: 'hermit',
 		id: 'iskall85_common',
 		numericId: 47,

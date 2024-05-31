@@ -1,6 +1,6 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
-import {OverridesAttach, OverridesDetach, defaultCardInfo} from '../../base/card'
+import {OverridesAttach, OverridesDetach, defaultHermitDisplayInfo} from '../../base/card'
 import {HermitCard} from '../../base/hermit-card'
 
 const OverseerRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
@@ -39,7 +39,7 @@ const OverseerRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetac
 			const {player} = pos
 			player.hooks.beforeAttack.remove(this)
 		},
-		...defaultCardInfo(this),
+		...defaultHermitDisplayInfo(this),
 		palette: 'alter_egos',
 		expansion: 'alter_egos_ii',
 		background: 'alter_egos_background',
