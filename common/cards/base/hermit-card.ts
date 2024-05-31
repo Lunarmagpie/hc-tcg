@@ -9,6 +9,7 @@ import {
 	OverridesAttach,
 	HermitDisplayInfo,
 	CanAttack,
+	GivesPointOnKnockout,
 } from './card'
 import {
 	CardCategoryT,
@@ -27,7 +28,8 @@ export type HermitCard = IsCard &
 	HasHermitType &
 	HasHealth &
 	CanAttack &
-	HermitDisplayInfo
+	HermitDisplayInfo &
+	GivesPointOnKnockout
 
 export const defaultHermitInfo = {
 	category: 'hermit' as CardCategoryT,
