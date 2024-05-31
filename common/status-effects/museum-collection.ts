@@ -4,9 +4,9 @@ import {CardPosModel, getBasicCardPos} from '../models/card-pos-model'
 import {removeStatusEffect} from '../utils/board'
 import {executeAttacks} from '../utils/attacks'
 import {AttackModel} from '../models/attack-model'
-import { IsCard } from '../cards/base/card'
+import { Card } from '../cards/base/card'
 
-const MuseumCollectionStatusEffect  = (target: IsCard): StatusEffect => {
+const MuseumCollectionStatusEffect  = (target: Card): StatusEffect => {
 	constructor() {
 		super({
 			id: 'museum-collection',

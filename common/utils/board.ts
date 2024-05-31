@@ -5,7 +5,7 @@ import {GameModel} from '../models/game-model'
 import {BoardSlotTypeT, RowPos, SlotPos} from '../types/cards'
 import {GenericActionResult, PlayerState, RowState, RowStateWithHermit} from '../types/game-state'
 import {PickInfo} from '../types/server-requests'
-import {IsCard} from '../cards/base/card'
+import {Card} from '../cards/base/card'
 import StatusEffect from '../status-effects/status-effect'
 
 export function getActiveRow(player: PlayerState) {

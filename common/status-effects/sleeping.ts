@@ -3,9 +3,9 @@ import {GameModel} from '../models/game-model'
 import {HERMIT_CARDS} from '../cards'
 import {CardPosModel, getBasicCardPos} from '../models/card-pos-model'
 import {removeStatusEffect} from '../utils/board'
-import { IsCard } from '../cards/base/card'
+import { Card } from '../cards/base/card'
 
-const SleepingStatusEffect   = (target: IsCard): StatusEffect =>  {
+const SleepingStatusEffect   = (target: Card): StatusEffect =>  {
 	constructor() {
 		super({
 			id: 'sleeping',

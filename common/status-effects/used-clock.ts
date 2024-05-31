@@ -2,9 +2,9 @@ import StatusEffect from './status-effect'
 import {GameModel} from '../models/game-model'
 import {CardPosModel} from '../models/card-pos-model'
 import {removeStatusEffect} from '../utils/board'
-import { IsCard } from '../cards/base/card'
+import { Card } from '../cards/base/card'
 
-const UsedClockStatusEffect  = (target: IsCard): StatusEffect =>  {
+const UsedClockStatusEffect  = (target: Card): StatusEffect =>  {
 	constructor() {
 		super({
 			id: 'used-clock',

@@ -1,4 +1,4 @@
-import {IsCard} from '../cards/base/card'
+import {Card} from '../cards/base/card'
 import StatusEffect from '../status-effects/status-effect'
 import {RowPos} from './cards'
 
@@ -34,7 +34,7 @@ export type AttackLog = {
 }
 
 export type AttackDefs = {
-	creator: IsCard | StatusEffect
+	creator: Card | StatusEffect
 	attacker?: RowPos | null
 	target?: RowPos | null
 	type: AttackType

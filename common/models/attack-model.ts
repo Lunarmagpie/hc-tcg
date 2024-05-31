@@ -1,4 +1,4 @@
-import {IsCard} from '../cards/base/card'
+import {Card} from '../cards/base/card'
 import StatusEffect from '../status-effects/status-effect'
 import {
 	AttackHistory,
@@ -23,7 +23,7 @@ export class AttackModel {
 	/** The list of all changes made to this attack */
 	private history: Array<AttackHistory> = []
 	/** The creator of this attack */
-	private creator: IsCard | StatusEffect
+	private creator: Card | StatusEffect
 
 	/** The attacker */
 	private attacker: RowPos | null

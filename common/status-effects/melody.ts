@@ -2,9 +2,9 @@ import StatusEffect, {statusEffectDefaults} from './status-effect'
 import {GameModel} from '../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../models/card-pos-model'
 import {removeStatusEffect} from '../utils/board'
-import {IsCard, implementsHasHealth} from '../cards/base/card'
+import {Card, implementsHasHealth} from '../cards/base/card'
 
-const MelodyStatusEffect = (target: IsCard): StatusEffect => {
+const MelodyStatusEffect = (target: Card): StatusEffect => {
 	return {
 		...statusEffectDefaults,
 		id: 'melody',
