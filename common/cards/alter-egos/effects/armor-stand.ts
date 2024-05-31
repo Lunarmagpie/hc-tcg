@@ -4,9 +4,9 @@ import {GameModel} from '../../../models/game-model'
 import {discardCard} from '../../../utils/movement'
 import {CardPosModel} from '../../../models/card-pos-model'
 import {TurnActions} from '../../../types/game-state'
-import {CanAttachResult} from '../../base/card'
+import {CanAttachResult, HasHealth} from '../../base/card'
 
-class ArmorStandEffectCard extends EffectCard {
+const ArmorStandEffectCard = (): EffectCard & HasHealth {
 	constructor() {
 		super({
 			id: 'armor_stand',

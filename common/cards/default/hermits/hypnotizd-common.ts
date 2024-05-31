@@ -1,27 +1,26 @@
-import HermitCard from '../../base/hermit-card'
+import {HermitCard, defaultHermitInfo} from '../../base/hermit-card'
 
-class HypnotizdCommonHermitCard extends HermitCard {
-	constructor() {
-		super({
-			id: 'hypnotizd_common',
-			numericId: 36,
-			name: 'Hypno',
-			rarity: 'common',
-			hermitType: 'balanced',
-			health: 250,
-			primary: {
-				name: 'What Up',
-				cost: ['balanced'],
-				damage: 60,
-				power: null,
-			},
-			secondary: {
-				name: 'Max Attack',
-				cost: ['balanced', 'balanced', 'balanced'],
-				damage: 100,
-				power: null,
-			},
-		})
+const HypnotizdCommonHermitCard = (): HermitCard => {
+	return {
+		...defaultHermitInfo,
+		id: 'hypnotizd_common',
+		numericId: 36,
+		name: 'Hypno',
+		rarity: 'common',
+		hermitType: 'balanced',
+		health: 250,
+		primary: {
+			name: 'What Up',
+			cost: ['balanced'],
+			damage: 60,
+			power: null,
+		},
+		secondary: {
+			name: 'Max Attack',
+			cost: ['balanced', 'balanced', 'balanced'],
+			damage: 100,
+			power: null,
+		},
 	}
 }
 

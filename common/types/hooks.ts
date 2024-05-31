@@ -1,5 +1,5 @@
 export class Hook<T extends (...args: any) => any> {
-	public listeners: Array<[string, T]> = []
+	public listeners: Array<[any, T]> = []
 
 	/**
 	 * Adds a new listener to this hook
@@ -11,14 +11,14 @@ export class Hook<T extends (...args: any) => any> {
 	/**
 	 * Adds a new listener to this hook before any other existing listeners
 	 */
-	public addBefore(instance: string, listener: T) {
+	public addBefore(instance: any, listener: T) {
 		this.listeners.unshift([instance, listener])
 	}
 
 	/**
 	 * Removes all the listeners tied to a specific instance
 	 */
-	public remove(instance: string) {
+	public remove(instance: any) {
 		this.listeners = this.listeners.filter(([hookInstance, _]) => hookInstance == instance)
 	}
 
