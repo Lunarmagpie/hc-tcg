@@ -1,4 +1,4 @@
-import {IsCard} from '../cards/base/card'
+import {IsCard, OverridesAttach, OverridesDetach} from '../cards/base/card'
 import {HermitCard} from '../cards/base/hermit-card'
 import {AttackModel} from '../models/attack-model'
 import {BattleLogModel} from '../models/battle-log-model'
@@ -84,9 +84,9 @@ export type PlayerState = {
 		/** Hook called when checking if a card can be attached. The result can be modified and will be stored */
 		canAttach: GameHook<(canAttach: CanAttachResult, pos: CardPosModel) => void>
 		/** Hook called when a card is attached */
-		onAttach: GameHook<(instance: string) => void>
+		onAttach: GameHook<(instance: IsCard) => void>
 		/** Hook called when a card is detached */
-		onDetach: GameHook<(instance: string) => void>
+		onDetach: GameHook<(instance: IsCard) => void>
 
 		/** Hook called before a single use card is applied */
 		beforeApply: GameHook<() => void>

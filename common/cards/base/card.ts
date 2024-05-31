@@ -104,6 +104,18 @@ export function implementsOverridesAttach(obj: any): obj is OverridesAttach {
 	return '__overrides_attach' in obj
 }
 
+export interface OverridesDetach {
+	__overrides_detach: undefined,
+	/**
+	 * Called when an instance of this card is removed from the board
+	 */
+	onDetach(game: GameModel, pos: CardPosModel): void
+}
+export const overridesDetachDefaults = { __overrides_detach: undefined }
+export function implementsOverridesDetach(obj: any): obj is OverridesDetach {
+	return '__overrides_detach' in obj
+}
+
 export interface IsAttachableToHermitSlots { }
 export const isAttachableToHermitSlotsDefaults = { __is_attachable_to_hermit_slots: undefined }
 export function implementsIsAttachableToHermitSlots(obj: any): obj is IsAttachableToHermitSlots {
@@ -137,15 +149,6 @@ export const givesPointOnKnockoutDefaults = { __gives_point_on_knockout: undefin
 export function implementsGivesPointOnKnockout(obj: any): obj is GivesPointOnKnockout {
 	return '__gives_point_on_knockout' in obj
 }
-
-export interface OverridesDetach {
-	__overrides_detach: undefined,
-	/**
-	 * Called when an instance of this card is removed from the board
-	 */
-	onDetach(game: GameModel, pos: CardPosModel): void
-}
-export const overridesDetachDefaults = { __overrides_detach: undefined }
 
 export interface HasHermitType {
 	__has_hermit_type: undefined,
