@@ -1,10 +1,10 @@
 import StatusEffect from './status-effect'
 import {GameModel} from '../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../models/card-pos-model'
-import {StatusEffectT} from '../types/game-state'
 import {discardCard} from '../utils/movement'
+import { IsCard } from '../cards/base/card'
 
-class SmeltingStatusEffect extends StatusEffect {
+const SmeltingStatusEffect  = (target: IsCard): StatusEffect => {
 	constructor() {
 		super({
 			id: 'smelting',
@@ -18,7 +18,7 @@ class SmeltingStatusEffect extends StatusEffect {
 		})
 	}
 
-	override onApply(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
+	override onApply(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
 		game.state.statusEffects.push(statusEffectInfo)
 		const {player} = pos
 
@@ -35,7 +35,7 @@ class SmeltingStatusEffect extends StatusEffect {
 		})
 	}
 
-	override onRemoval(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
+	override onRemoval(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
 		const {player} = pos
 
 		player.hooks.onTurnStart.remove(statusEffectInfo.statusEffectInstance)

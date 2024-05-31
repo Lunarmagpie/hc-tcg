@@ -2,11 +2,11 @@ import StatusEffect from './status-effect'
 import {GameModel} from '../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../models/card-pos-model'
 import {removeStatusEffect} from '../utils/board'
-import {StatusEffectT} from '../types/game-state'
 import {executeAttacks} from '../utils/attacks'
 import {AttackModel} from '../models/attack-model'
+import { IsCard } from '../cards/base/card'
 
-class MuseumCollectionStatusEffect extends StatusEffect {
+const MuseumCollectionStatusEffect  = (target: IsCard): StatusEffect => {
 	constructor() {
 		super({
 			id: 'museum-collection',
@@ -20,7 +20,7 @@ class MuseumCollectionStatusEffect extends StatusEffect {
 		})
 	}
 
-	override onApply(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
+	override onApply(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
 		game.state.statusEffects.push(statusEffectInfo)
 		const oldHandSize = this.getInstanceKey(statusEffectInfo.statusEffectInstance)
 		const {player} = pos
@@ -90,7 +90,7 @@ class MuseumCollectionStatusEffect extends StatusEffect {
 		})
 	}
 
-	override onRemoval(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
+	override onRemoval(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
 		const {player} = pos
 		// Remove hooks
 		player.hooks.onApply.remove(statusEffectInfo.statusEffectInstance)

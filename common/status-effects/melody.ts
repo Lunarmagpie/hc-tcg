@@ -2,10 +2,10 @@ import StatusEffect from './status-effect'
 import {GameModel} from '../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../models/card-pos-model'
 import {removeStatusEffect} from '../utils/board'
-import {StatusEffectT} from '../types/game-state'
 import {HERMIT_CARDS} from '../cards'
+import { IsCard } from '../cards/base/card'
 
-class MelodyStatusEffect extends StatusEffect {
+const MelodyStatusEffect  = (target: IsCard): StatusEffect => {
 	constructor() {
 		super({
 			id: 'melody',
@@ -18,7 +18,7 @@ class MelodyStatusEffect extends StatusEffect {
 		})
 	}
 
-	override onApply(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
+	override onApply(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
 		const {player} = pos
 
 		const hasMelody = game.state.statusEffects.some(
@@ -50,7 +50,7 @@ class MelodyStatusEffect extends StatusEffect {
 		})
 	}
 
-	override onRemoval(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
+	override onRemoval(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
 		const {player} = pos
 
 		player.hooks.onTurnStart.remove(statusEffectInfo.statusEffectInstance)

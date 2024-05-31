@@ -8,7 +8,7 @@ import EffectCard from 'common/cards/base/effect-card'
 import SingleUseCard from 'common/cards/base/single-use-card'
 import ItemCard from 'common/cards/base/item-card'
 import HealthCard from 'common/cards/base/health-card'
-import {StatusEffectT} from 'common/types/game-state'
+import {StatusEffect} from 'common/types/game-state'
 import StatusEffect from 'components/status-effects/status-effect'
 import {STATUS_EFFECT_CLASSES} from 'common/status-effects'
 import {SlotTypeT} from 'common/types/cards'
@@ -20,7 +20,7 @@ export type SlotProps = {
 	rowState?: RowState
 	active?: boolean
 	cssId?: string
-	statusEffects: Array<StatusEffectT>
+	statusEffects: Array<StatusEffect>
 }
 const Slot = ({type, onClick, card, rowState, active, cssId, statusEffects}: SlotProps) => {
 	let cardInfo = card?.cardId
@@ -35,7 +35,7 @@ const Slot = ({type, onClick, card, rowState, active, cssId, statusEffects}: Slo
 		})
 	}
 
-	const renderStatusEffects = (cleanedStatusEffects: StatusEffectT[]) => {
+	const renderStatusEffects = (cleanedStatusEffects: StatusEffect[]) => {
 		return (
 			<div className={css.statusEffectContainer}>
 				{cleanedStatusEffects.map((a) => {
@@ -47,7 +47,7 @@ const Slot = ({type, onClick, card, rowState, active, cssId, statusEffects}: Slo
 			</div>
 		)
 	}
-	const renderDamageStatusEffects = (cleanedStatusEffects: StatusEffectT[] | null) => {
+	const renderDamageStatusEffects = (cleanedStatusEffects: StatusEffect[] | null) => {
 		return (
 			<div className={css.damageStatusEffectContainer}>
 				{cleanedStatusEffects

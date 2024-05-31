@@ -3,9 +3,9 @@ import {GameModel} from '../models/game-model'
 import {CARDS, HERMIT_CARDS} from '../cards'
 import {CardPosModel, getBasicCardPos} from '../models/card-pos-model'
 import {removeStatusEffect} from '../utils/board'
-import {StatusEffectT} from '../types/game-state'
+import { IsCard } from '../cards/base/card'
 
-class SlownessStatusEffect extends StatusEffect {
+const SlownessStatusEffect  = (target: IsCard): StatusEffect => {
 	constructor() {
 		super({
 			id: 'slowness',
@@ -18,7 +18,7 @@ class SlownessStatusEffect extends StatusEffect {
 		})
 	}
 
-	override onApply(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
+	override onApply(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
 		game.state.statusEffects.push(statusEffectInfo)
 		const {player} = pos
 
@@ -61,7 +61,7 @@ class SlownessStatusEffect extends StatusEffect {
 		})
 	}
 
-	override onRemoval(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
+	override onRemoval(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
 		const {player} = pos
 		player.hooks.onTurnStart.remove(statusEffectInfo.statusEffectInstance)
 		player.hooks.onTurnEnd.remove(statusEffectInfo.statusEffectInstance)

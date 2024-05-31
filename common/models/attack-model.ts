@@ -1,4 +1,5 @@
 import {IsCard} from '../cards/base/card'
+import StatusEffect from '../status-effects/status-effect'
 import {
 	AttackHistory,
 	AttackHistoryType,
@@ -22,7 +23,7 @@ export class AttackModel {
 	/** The list of all changes made to this attack */
 	private history: Array<AttackHistory> = []
 	/** The creator of this attack */
-	private creator: IsCard
+	private creator: IsCard | StatusEffect
 
 	/** The attacker */
 	private attacker: RowPos | null
@@ -45,6 +46,7 @@ export class AttackModel {
 	/** Whether or not the attack should create a weakness attack */
 	public createWeakness: WeaknessType
 
+	//@TODO Sort out attack model so it uses better types
 	constructor(defs: AttackDefs) {
 		this.creator = defs.creator
 		this.type = defs.type

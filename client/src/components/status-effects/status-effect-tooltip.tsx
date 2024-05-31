@@ -8,7 +8,7 @@ type Props = {
 
 const StatusEffectTooltip = ({statusEffect, duration}: Props) => {
 	return (
-		<div className={css.statusEffectTooltip}>
+		<div className={css.StatusEffectTooltip}>
 			<div className={css.topLine}>
 				<div className={css.name}>{statusEffect.name}</div>
 			</div>

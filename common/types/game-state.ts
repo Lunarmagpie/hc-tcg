@@ -3,6 +3,7 @@ import {HermitCard} from '../cards/base/hermit-card'
 import {AttackModel} from '../models/attack-model'
 import {BattleLogModel} from '../models/battle-log-model'
 import {CardPosModel} from '../models/card-pos-model'
+import StatusEffect from '../status-effects/status-effect'
 import {FormattedTextNode} from '../utils/formatting'
 import {HermitAttackType} from './attack'
 import {EnergyT, SlotPos} from './cards'
@@ -28,19 +29,6 @@ export type RowStateWithoutHermit = {
 export type RowState = RowStateWithHermit | RowStateWithoutHermit
 
 export type CoinFlipT = 'heads' | 'tails'
-
-export type StatusEffectT = {
-	/** The ID of the statusEffect. */
-	statusEffectId: string
-	/** The statusEffect's instance. */
-	statusEffectInstance: string
-	/** The target card's instance. */
-	target: IsCard
-	/** The duration of the effect. If undefined, the effect is infinite. */
-	duration?: number
-	/** Whether the statusEffect is a damage effect or not. */
-	damageEffect: boolean
-}
 
 export type CurrentCoinFlipT = {
 	cardId: string
@@ -198,7 +186,7 @@ export type GameState = {
 	turn: TurnState
 	order: Array<PlayerId>
 	players: Record<string, PlayerState>
-	statusEffects: Array<StatusEffectT>
+	statusEffects: Array<StatusEffect>
 
 	pickRequests: Array<PickRequest>
 	modalRequests: Array<ModalRequest>
@@ -276,7 +264,7 @@ export type LocalPlayerState = {
 export type LocalGameState = {
 	turn: LocalTurnState
 	order: Array<PlayerId>
-	statusEffects: Array<StatusEffectT>
+	statusEffects: Array<StatusEffect>
 
 	// personal data
 	hand: Array<IsCard>
