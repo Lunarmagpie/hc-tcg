@@ -1,6 +1,6 @@
 import { GameModel } from '../models/game-model'
 import { GameState, PlayerState } from '../types/game-state'
-import { IsCard, implementsOverridesDetach } from '../cards/base/card'
+import { Card, implementsOverridesDetach } from '../cards/base/card'
 import { CARDS } from '../cards'
 import { BasicCardPos, CardPosModel, getCardPos } from '../models/card-pos-model'
 import { equalCard } from './cards'
@@ -32,7 +32,7 @@ function discardAtPos(pos: CardPosModel) {
 
 export function discardCard(
 	game: GameModel,
-	card: IsCard | null,
+	card: Card | null,
 	playerDiscard?: PlayerState | null
 ) {
 	if (!card) return
@@ -66,7 +66,7 @@ export function discardCard(
 	}
 }
 
-export function retrieveCard(game: GameModel, card: IsCard | null) {
+export function retrieveCard(game: GameModel, card: Card | null) {
 	if (!card) return
 	for (let playerId in game.state.players) {
 		const player = game.state.players[playerId]
@@ -104,7 +104,7 @@ export function discardSingleUse(game: GameModel, playerState: PlayerState) {
 	}
 }
 
-export function discardFromHand(player: PlayerState, card: IsCard | null) {
+export function discardFromHand(player: PlayerState, card: Card | null) {
 	if (!card) return
 
 	player.hand = player.hand.filter((c) => !equalCard(c, card))
@@ -119,7 +119,7 @@ export function drawCards(playerState: PlayerState, amount: number) {
 	}
 }
 
-export function moveCardToHand(game: GameModel, card: IsCard, playerDiscard?: PlayerState | null) {
+export function moveCardToHand(game: GameModel, card: Card, playerDiscard?: PlayerState | null) {
 	const cardPos = getCardPos(game, card)
 	if (!cardPos) return
 
@@ -160,7 +160,7 @@ export function isSlotEmpty(slotPos: SlotPos): boolean {
 }
 
 /**Returns the card in the slot, or `null` if it's empty. */
-export function getSlotCard(slotPos: SlotPos): IsCard | null {
+export function getSlotCard(slotPos: SlotPos): Card | null {
 	const { row, slot } = slotPos
 	const { index, type } = slot
 
@@ -183,7 +183,7 @@ function exceptInvalidPlayer(
 export function canAttachToSlot(
 	game: GameModel,
 	slotPos: SlotPos,
-	card: IsCard,
+	card: Card,
 	excludeInvalidPlayer = false
 ): CanAttachResult {
 	const { player, rowIndex, row, slot } = slotPos

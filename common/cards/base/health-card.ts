@@ -1,7 +1,7 @@
-import {HasHealth, IsCard, hasHealthDefaults, isCardDefaults} from './card'
+import {HasHealth, Card, hasHealthDefaults, isCardDefaults} from './card'
 import {TextNode} from '../../utils/formatting'
 
-export type HealthCard = IsCard & HasHealth
+export type HealthCard = Card & HasHealth
 
 export const HealthIndicator = (): HealthCard => {
 	return {

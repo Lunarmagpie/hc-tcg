@@ -7,7 +7,7 @@ import {
 	HasDescription,
 	HasHealth,
 	IsAttachableToHermitSlots,
-	IsCard,
+	Card,
 	OverridesAttach,
 	OverridesDetach,
 	effectDisplayInfoDefaults,
@@ -21,7 +21,7 @@ import {
 import { attachableCardDefaults } from '../../base/attachable-card'
 import { PlayCardLog } from '../../../types/cards'
 
-const ArmorStandEffectCard = (): IsCard &
+const ArmorStandEffectCard = (): Card &
 	IsAttachableToHermitSlots &
 	EffectDisplayInfo &
 	HasDescription &

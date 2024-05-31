@@ -6,7 +6,7 @@ import {CardPosModel} from './card-pos-model'
 import {GameModel} from './game-model'
 import {LineNode, formatText} from '../utils/formatting'
 import {DEBUG_CONFIG} from '../config'
-import {IsCard} from '../cards/base/card'
+import {Card} from '../cards/base/card'
 import {PickInfo} from '../types/server-requests'
 import StatusEffect from '../status-effects/status-effect'
 
@@ -21,7 +21,7 @@ export class BattleLogModel {
 		this.logMessageQueue = []
 	}
 
-	private generateEffectEntryHeader(card: IsCard | null): string {
+	private generateEffectEntryHeader(card: Card | null): string {
 		const currentPlayer = this.game.currentPlayer.playerName
 		if (!card) return ''
 		const cardInfo = CARDS[card.id]
@@ -85,7 +85,7 @@ export class BattleLogModel {
 	}
 
 	public addPlayCardEntry(
-		card: IsCard,
+		card: Card,
 		pos: CardPosModel,
 		coinFlips: Array<CurrentCoinFlipT>,
 		pickInfo?: PickInfo
@@ -170,7 +170,7 @@ export class BattleLogModel {
 	public addAttackEntry(
 		attack: AttackModel,
 		coinFlips: Array<CurrentCoinFlipT>,
-		singleUse: IsCard | null
+		singleUse: Card | null
 	) {
 		const attacker = attack.getAttacker()
 		if (!attacker) return
@@ -264,8 +264,8 @@ export class BattleLogModel {
 	public addChangeRowEntry(
 		player: PlayerState,
 		newRow: number,
-		oldHermit: IsCard | null,
-		newHermit: IsCard | null
+		oldHermit: Card | null,
+		newHermit: Card | null
 	) {
 		if (!newHermit) return
 

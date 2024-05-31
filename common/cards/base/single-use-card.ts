@@ -4,7 +4,7 @@ import {
 	EffectDisplayInfo,
 	HasDescription,
 	IsAttachableToSingleUseSlot,
-	IsCard,
+	Card,
 	OverridesAttach,
 	OverridesDetach,
 } from './card'
@@ -13,7 +13,7 @@ import {CardPosModel} from '../../models/card-pos-model'
 import {TurnActions} from '../../types/game-state'
 import {FormattedTextNode, formatText} from '../../utils/formatting'
 
-export type SingleUseCard = IsCard &
+export type SingleUseCard = Card &
 	IsAttachableToSingleUseSlot &
 	EffectDisplayInfo &
 	HasDescription &
@@ -27,7 +27,7 @@ export const defaultSingleUseInfo = {
 	expansion: 'default',
 	palette: 'default',
 	sidebarDescriptions: [],
-	getDescription(this: IsCard & HasDescription) {
+	getDescription(this: Card & HasDescription) {
 		return formatText(this.description)
 	},
 }
@@ -37,7 +37,7 @@ export const defaultDamagingSingleUseInfo = {
 	expansion: 'default',
 	palette: 'default',
 	sidebarDescriptions: [],
-	getDescription(this: IsCard & HasDescription) {
+	getDescription(this: Card & HasDescription) {
 		return formatText(this.description)
 	},
 	log: null,

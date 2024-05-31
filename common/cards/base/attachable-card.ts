@@ -2,7 +2,7 @@ import {
 	EffectDisplayInfo,
 	HasDescription,
 	IsAttachableToEffectSlots,
-	IsCard,
+	Card,
 	OverridesAttach,
 	OverridesDetach,
     effectDisplayInfoDefaults,
@@ -20,7 +20,7 @@ import {TurnActions} from '../../types/game-state'
 import {FormattedTextNode, formatText} from '../../utils/formatting'
 
 export type AttachableCard =
-	& IsCard
+	& Card
 	& IsAttachableToEffectSlots
 	& EffectDisplayInfo
 	& HasDescription
@@ -38,7 +38,7 @@ export const attachableCardDefaults = {
 	expansion: 'default',
 	palette: 'default',
 	sidebarDescriptions: [],
-	getDescription(this: IsCard & HasDescription) {
+	getDescription(this: Card & HasDescription) {
 		return formatText(this.description)
 	},
 }

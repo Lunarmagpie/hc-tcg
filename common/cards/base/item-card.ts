@@ -4,9 +4,9 @@ import {CardPosModel} from '../../models/card-pos-model'
 import {TurnActions} from '../../types/game-state'
 import {FormattedTextNode, formatText} from '../../utils/formatting'
 import {HERMIT_CARDS} from '..'
-import {IsAttachableToItemSlots, IsCard} from './card'
+import {IsAttachableToItemSlots, Card} from './card'
 
-export type ItemCard = IsCard & IsAttachableToItemSlots
+export type ItemCard = Card & IsAttachableToItemSlots
 
 // type ItemDefs = {
 // 	id: string

@@ -1,4 +1,4 @@
-import {IsCard} from '../cards/base/card'
+import {Card} from '../cards/base/card'
 import {Slot} from '../types/cards'
 import {PlayerState, RowState} from '../types/game-state'
 import {GameModel} from './game-model'
@@ -14,7 +14,7 @@ export type BasicCardPos = {
 /**
  * Get the card position on the board for a card instance (in object form)
  */
-export function getBasicCardPos(game: GameModel, card: IsCard): BasicCardPos | null {
+export function getBasicCardPos(game: GameModel, card: Card): BasicCardPos | null {
 	const ids = game.getPlayerIds()
 	for (let i = 0; i < ids.length; i++) {
 		const playerId = ids[i]
@@ -77,7 +77,7 @@ export function getBasicCardPos(game: GameModel, card: IsCard): BasicCardPos | n
 	return null
 }
 
-export function getCardPos(game: GameModel, card: IsCard) {
+export function getCardPos(game: GameModel, card: Card) {
 	const basicPos = getBasicCardPos(game, card)
 
 	if (basicPos) {
@@ -87,7 +87,7 @@ export function getCardPos(game: GameModel, card: IsCard) {
 	return null
 }
 
-function getCardAtPos(game: GameModel, pos: BasicCardPos): IsCard | null {
+function getCardAtPos(game: GameModel, pos: BasicCardPos): Card | null {
 	const {player, rowIndex, slot} = pos
 
 	const suCard = player.board.singleUseCard
@@ -119,7 +119,7 @@ function getCardAtPos(game: GameModel, pos: BasicCardPos): IsCard | null {
 export class CardPosModel {
 	private game: GameModel
 	private internalPos: BasicCardPos
-	private internalCard: IsCard
+	private internalCard: Card
 
 	/**
 	 * Is this card pos fake - meaning not pointing to a card actually on the board?
@@ -128,7 +128,7 @@ export class CardPosModel {
 	 */
 	public fake: boolean
 
-	constructor(game: GameModel, cardPos: BasicCardPos, card: IsCard, fake: boolean = false) {
+	constructor(game: GameModel, cardPos: BasicCardPos, card: Card, fake: boolean = false) {
 		this.game = game
 		this.internalPos = cardPos
 		this.internalCard = card
