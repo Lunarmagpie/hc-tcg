@@ -3,14 +3,18 @@ import {
 	Card,
 	OverridesAttach,
 	OverridesDetach,
+	CanAttack,
 	implementsCanAttack,
+	implementsCard,
 	implementsOverridesAttach,
 	implementsOverridesDetach,
+	canAttackDefaults,
 } from '../../base/card'
 import {GameModel} from '../../../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../../../models/card-pos-model'
 import {AttackType, HermitAttackType} from '../../../types/attack'
 import {getNonEmptyRows} from '../../../utils/board'
+import {CardRarityT} from '../../../types/cards'
 
 const RendogRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	let imitatingCard: HermitCard | null = null
@@ -36,20 +40,18 @@ const RendogRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach 
 			damage: 0,
 			power: "Use an attack from any of your opponent's Hermits.",
 		},
-		getAttacks(
-			game: GameModel,
-			instance: string,
-			pos: CardPosModel,
-			hermitAttackType: HermitAttackType
-		) {
+		getAttacks(game: GameModel, pos: CardPosModel, hermitAttackType: HermitAttackType) {
 			const {player} = pos
-			const attack = super.getAttacks(game, instance, pos, hermitAttackType)
+			const attack = {
+				...this,
+				...hermitCardDefaults,
+			}.getAttack(game, pos, hermitAttackType)
 
 			if (!attack || attack.type !== 'secondary') return attack
-			if (attack.id !== this.getInstanceKey(instance)) return attack
+			if (attack.getCreator() !== this) return attack
 
 			if (!imitatingCard) return null
-			if (!implementsCanAttack(imitatingCard)) return null
+			if (!implementsCard(imitatingCard) || !implementsCanAttack(imitatingCard)) return null
 
 			// No loops please
 			if (imitatingCard.id === this.id) return null
@@ -57,7 +59,7 @@ const RendogRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach 
 			if (!attackType) return null
 
 			// Return the attack we picked from the card we picked
-			const newAttack = imitatingCard.getAttacks(game, pos, attackType)
+			const newAttack = imitatingCard.getAttack(game, pos, attackType)
 			if (!newAttack) return null
 			const attackName =
 				newAttack.type === 'primary' ? imitatingCard.primary.name : imitatingCard.secondary.name

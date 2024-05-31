@@ -9,6 +9,8 @@ import {GameModel} from '../../models/game-model'
 import {CardPosModel} from '../../models/card-pos-model'
 import {TurnActions} from '../../types/game-state'
 import {EmptyNode, FormattedTextNode, formatText} from '../../utils/formatting'
+import {HermitAttackType} from '../../types/attack'
+import {AttackModel} from '../../models/attack-model'
 
 export interface Card {
 	__card: undefined
@@ -175,7 +177,54 @@ export interface CanAttack {
 	primary: HermitAttackInfo
 	secondary: HermitAttackInfo
 }
-export const canAttackDefaults = {__can_attack: undefined}
+export const canAttackDefaults = {
+	__can_attack: undefined,
+	// Default is to return
+	getAttack(
+		this: Card & CanAttack,
+		game: GameModel,
+		pos: CardPosModel,
+		hermitAttackType: HermitAttackType
+	): AttackModel | null {
+		if (pos.rowIndex === null || !pos.row || !pos.row.hermitCard) return null
+
+		const {opponentPlayer: opponentPlayer} = game
+		const targetIndex = opponentPlayer.board.activeRow
+		if (targetIndex === null) return null
+
+		const targetRow = opponentPlayer.board.rows[targetIndex]
+		if (!targetRow.hermitCard) return null
+
+		// Create an attack with default damage
+		const attack = new AttackModel({
+			creator: this,
+			attacker: {
+				player: pos.player,
+				rowIndex: pos.rowIndex,
+				row: pos.row,
+			},
+			target: {
+				player: opponentPlayer,
+				rowIndex: targetIndex,
+				row: targetRow,
+			},
+			type: hermitAttackType,
+			createWeakness: 'ifWeak',
+			log: (values) =>
+				`${values.attacker} ${values.coinFlip ? values.coinFlip + ', then ' : ''} attacked ${
+					values.target
+				} with ${values.attackName} for ${values.damage} damage`,
+		})
+
+		if (hermitAttackType == 'primary') {
+			attack.addDamage(this, this.primary.damage)
+		} else if (hermitAttackType == 'secondary') {
+			attack.addDamage(this, this.secondary.damage)
+		}
+
+		return attack
+	},
+}
 export function implementsCanAttack(obj: any): obj is CanAttack {
 	return '__can_attack' in obj
 }
