@@ -29,10 +29,7 @@ const FireStatusEffect = (target: Card): StatusEffect => {
 			if (hasDamageEffect) return
 
 			game.state.statusEffects.push(this)
-
-			if (pos.card) {
-				game.battleLog.addCustomEntry(player.id, `$p${CARDS[pos.card.id].name}$ was $eBurned$`)
-			}
+			game.battleLog.addCustomEntry(player.id, `$p${this.target.name}$ was $eBurned$`)
 
 			opponentPlayer.hooks.onTurnEnd.add(this, () => {
 				const targetPos = getBasicCardPos(game, this.target)

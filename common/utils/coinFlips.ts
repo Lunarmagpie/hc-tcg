@@ -1,10 +1,10 @@
 import {DEBUG_CONFIG} from '../config'
-import {CardT, CoinFlipT, PlayerState} from '../types/game-state'
-import {CARDS} from '../cards'
+import {CoinFlipT, PlayerState} from '../types/game-state'
+import {Card} from '../cards/base/card'
 
 export function flipCoin(
 	playerTossingCoin: PlayerState,
-	card: CardT,
+	card: Card,
 	times: number = 1,
 	currentPlayer: PlayerState | null = null
 ) {
@@ -29,12 +29,11 @@ export function flipCoin(
 
 	playerTossingCoin.hooks.onCoinFlip.call(card, coinFlips)
 
-	const name = CARDS[card.id].name
 	const player = currentPlayer || playerTossingCoin
 	player.coinFlips.push({
-		cardId: card.id,
+		card: card,
 		opponentFlip: currentPlayer !== null,
-		name: !currentPlayer ? name : 'Opponent ' + name,
+		name: !currentPlayer ? card.name : 'Opponent ' + card.name,
 		tosses: coinFlips,
 		amount: coinFlipAmount,
 		delay: coinFlipAmount * 350 + 1000,

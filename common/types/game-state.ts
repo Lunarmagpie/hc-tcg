@@ -31,7 +31,7 @@ export type RowState = RowStateWithHermit | RowStateWithoutHermit
 export type CoinFlipT = 'heads' | 'tails'
 
 export type CurrentCoinFlipT = {
-	cardId: string
+	card: Card
 	opponentFlip: boolean
 	name: string
 	tosses: Array<CoinFlipT>

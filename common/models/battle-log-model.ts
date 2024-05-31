@@ -23,9 +23,8 @@ export class BattleLogModel {
 	private generateEffectEntryHeader(card: Card | null): string {
 		const currentPlayer = this.game.currentPlayer.playerName
 		if (!card) return ''
-		const cardInfo = CARDS[card.id]
 
-		return `$p{You|${currentPlayer}}$ used $e${cardInfo.name}$ `
+		return `$p{You|${currentPlayer}}$ used $e${card.name}$ `
 	}
 
 	private generateCoinFlipDescription(coinFlip: CurrentCoinFlipT): string {
@@ -51,8 +50,8 @@ export class BattleLogModel {
 			const description = this.generateCoinFlipDescription(coinFlip)
 
 			if (coinFlip.opponentFlip) return r
-			if (HERMIT_CARDS[coinFlip.cardId] && attack.type === 'effect') return r
-			if (SINGLE_USE_CARDS[coinFlip.cardId] && attack.type !== 'effect') return r
+			if (coinFlip.card.category === 'hermit' && attack.type === 'effect') return r
+			if (coinFlip.card.category === 'single_use' && attack.type !== 'effect') return r
 
 			return description
 		}, null)
@@ -97,25 +96,24 @@ export class BattleLogModel {
 			rowIndex: number | null | undefined
 		) => {
 			if (!cardId) return invalid
-			const cardInfo = CARDS[cardId]
-			if (cardInfo.type === 'item') {
-				return `${cardInfo.name} ${cardInfo.rarity === 'rare' ? ' item x2' : 'item'}`
+			if (card.category === 'item') {
+				return `${card.name} ${card.rarity === 'rare' ? ' item x2' : 'item'}`
 			}
 
 			if (
-				cardInfo.type === 'hermit' &&
+				card.category === 'hermit' &&
 				player &&
 				player.board.activeRow !== rowIndex &&
 				rowIndex !== null &&
 				rowIndex !== undefined
 			) {
-				return `${cardInfo.name} (${rowIndex + 1})`
+				return `${card.name} (${rowIndex + 1})`
 			}
 
-			return `${cardInfo.name}`
+			return `${card.name}`
 		}
 
-		const thisFlip = coinFlips.find((flip) => flip.cardId === card.id)
+		const thisFlip = coinFlips.find((flip) => flip.card === card)
 		const invalid = '$bINVALID VALUE$'
 
 		const pickInfoPlayer = () => {
@@ -194,8 +192,8 @@ export class BattleLogModel {
 
 			if (subAttack.getDamage() === 0) return reducer
 
-			const attackingHermitInfo = HERMIT_CARDS[attacker.row.hermitCard.id]
-			const targetHermitInfo = CARDS[target.row.hermitCard.id]
+			const attackingHermit = attacker.row.hermitCard
+			const targetHermit = target.row.hermitCard
 
 			const targetFormatting = target.player.id === playerId ? 'p' : 'o'
 
@@ -203,15 +201,13 @@ export class BattleLogModel {
 				target.player.board.activeRow === target.rowIndex ? '' : `(${target.rowIndex})`
 
 			const attackName =
-				subAttack.type === 'primary'
-					? attackingHermitInfo.primary.name
-					: attackingHermitInfo.secondary.name
+				subAttack.type === 'primary' ? attackingHermit.primary.name : attackingHermit.secondary.name
 
 			const logMessage = subAttack.log({
-				attacker: `$p${attackingHermitInfo.name}$`,
+				attacker: `$p${attackingHermit.name}$`,
 				player: attacker.player.playerName,
 				opponent: target.player.playerName,
-				target: `$${targetFormatting}${targetHermitInfo.name} ${rowNumberString}$`,
+				target: `$${targetFormatting}${targetHermit.name} ${rowNumberString}$`,
 				attackName: `$v${attackName}$`,
 				damage: `$b${subAttack.calculateDamage()}hp$`,
 				defaultLog: this.generateEffectEntryHeader(singleUse),
@@ -241,7 +237,7 @@ export class BattleLogModel {
 		const player = this.game.currentPlayer
 		// Opponent coin flips
 		coinFlips.forEach((coinFlip) => {
-			const cardName = CARDS[coinFlip.cardId].name
+			const cardName = coinFlip.card.name
 			if (!coinFlip.opponentFlip) return
 
 			this.logMessageQueue.push({
@@ -287,13 +283,12 @@ export class BattleLogModel {
 
 	public addDeathEntry(player: PlayerState, row: RowStateWithHermit) {
 		const card = row.hermitCard
-		const cardName = CARDS[card.id].name
 
 		const livesRemaining = player.lives === 3 ? 'two lives' : 'one life'
 
 		this.logMessageQueue.push({
 			player: player.id,
-			description: `$p${cardName}$ was knocked out, and $p{you|${player.playerName}}$ now {have|has} $b${livesRemaining}$ remaining`,
+			description: `$p${card.name}$ was knocked out, and $p{you|${player.playerName}}$ now {have|has} $b${livesRemaining}$ remaining`,
 		})
 		this.sendLogs()
 	}

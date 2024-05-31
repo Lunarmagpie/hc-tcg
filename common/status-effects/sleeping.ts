@@ -1,9 +1,8 @@
 import StatusEffect, {statusEffectDefaults} from './status-effect'
 import {GameModel} from '../models/game-model'
-import {HERMIT_CARDS} from '../cards'
 import {CardPosModel, getBasicCardPos} from '../models/card-pos-model'
 import {removeStatusEffect} from '../utils/board'
-import {Card} from '../cards/base/card'
+import {Card, implementsHasHealth} from '../cards/base/card'
 
 const SleepingStatusEffect = (target: Card): StatusEffect => {
 	return {
@@ -19,16 +18,16 @@ const SleepingStatusEffect = (target: Card): StatusEffect => {
 		onApply(game: GameModel, pos: CardPosModel) {
 			const {player, card, row, rowIndex} = pos
 
-			if (!card || !row?.hermitCard || !rowIndex) return
+			if (!card || !row?.hermitCard || !rowIndex || !implementsHasHealth(card)) return
 
 			game.state.statusEffects.push(this)
 			game.addBlockedActions(this.id, 'PRIMARY_ATTACK', 'SECONDARY_ATTACK', 'CHANGE_ACTIVE_HERMIT')
 
-			row.health = HERMIT_CARDS[card.id].health
+			row.health = card.health
 
 			game.battleLog.addCustomEntry(
 				player.id,
-				`$p${HERMIT_CARDS[card.id].name}$ went to $eSleep$ and restored $gfull health$`
+				`$p${card.name}$ went to $eSleep$ and restored $gfull health$`
 			)
 
 			player.hooks.onTurnStart.add(this, () => {
