@@ -45,8 +45,4 @@ const Iskall85RareHermitCard = (): HermitCard & OverridesAttach & OverridesDetac
 	}
 }
 
-const iskall = Iskall85RareHermitCard()
-
-iskall.getBackground()
-
 export default Iskall85RareHermitCard
