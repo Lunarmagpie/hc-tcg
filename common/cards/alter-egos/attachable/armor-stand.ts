@@ -35,7 +35,6 @@ const ArmorStandEffectCard = (): IsCard &
 			const {player, opponentPlayer, row} = pos
 			if (!row) return
 
-			row.health = 50
 			if (player.board.activeRow === null) {
 				game.changeActiveRow(player, pos.rowIndex)
 			}
@@ -70,9 +69,6 @@ const ArmorStandEffectCard = (): IsCard &
 				const attacker = attack.getAttacker()
 				if (!row.health && attacker && isTargetingPos(attack, pos)) {
 					// Discard to prevent losing a life
-					discardCard(game, row.hermitCard)
-					game.battleLog.addCustomEntry(player.id, `$p${this.name}$ was knocked out`)
-
 					const activeRow = player.board.activeRow
 					const isActive = activeRow !== null && activeRow == pos.rowIndex
 					if (isActive && attacker.player.id !== player.id) {
