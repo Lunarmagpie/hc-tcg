@@ -82,3 +82,7 @@ export interface CanAttack {
 	primary: HermitAttackInfo
 	secondary: HermitAttackInfo
 }
+
+export interface HasDescription {
+	description: string
+}

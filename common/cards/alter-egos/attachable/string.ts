@@ -3,7 +3,7 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {TurnActions} from '../../../types/game-state'
 import {CanAttachResult} from '../../base/card'
-import EffectCard from '../../base/effect-card'
+import EffectCard from '../../base/attachable-card'
 
 class StringEffectCard extends EffectCard {
 	constructor() {

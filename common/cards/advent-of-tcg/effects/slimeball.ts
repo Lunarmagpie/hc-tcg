@@ -4,7 +4,7 @@ import {GameModel} from '../../../models/game-model'
 import {TurnActions} from '../../../types/game-state'
 import {discardCard, isSlotEmpty} from '../../../utils/movement'
 import {CanAttachResult} from '../../base/card'
-import EffectCard from '../../base/effect-card'
+import EffectCard from '../../base/attachable-card'
 
 class SlimeballEffectCard extends EffectCard {
 	constructor() {

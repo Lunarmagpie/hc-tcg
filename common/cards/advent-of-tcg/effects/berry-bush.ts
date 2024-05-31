@@ -1,4 +1,4 @@
-import EffectCard from '../../base/effect-card'
+import EffectCard from '../../base/attachable-card'
 import {isTargetingPos} from '../../../utils/attacks'
 import {GameModel} from '../../../models/game-model'
 import {discardCard} from '../../../utils/movement'

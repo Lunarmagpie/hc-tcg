@@ -2,7 +2,7 @@ import {AttackModel} from '../../../models/attack-model'
 import {CardPosModel, getCardPos} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {isTargetingPos} from '../../../utils/attacks'
-import EffectCard from '../../base/effect-card'
+import EffectCard from '../../base/attachable-card'
 
 class ThornsIIEffectCard extends EffectCard {
 	constructor() {

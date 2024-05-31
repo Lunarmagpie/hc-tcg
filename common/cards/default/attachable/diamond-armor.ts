@@ -1,17 +1,17 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {isTargetingPos} from '../../../utils/attacks'
-import EffectCard from '../../base/effect-card'
+import EffectCard from '../../base/attachable-card'
 
-class IronArmorEffectCard extends EffectCard {
+class DiamondArmorEffectCard extends EffectCard {
 	constructor() {
 		super({
-			id: 'iron_armor',
-			numericId: 45,
-			name: 'Iron Armour',
-			rarity: 'common',
+			id: 'diamond_armor',
+			numericId: 13,
+			name: 'Diamond Armour',
+			rarity: 'rare',
 			description:
-				'When the Hermit this card is attached to takes damage, that damage is reduced by up to 20hp each turn.',
+				'When the Hermit this card is attached to takes damage, that damage is reduced by up to 30hp each turn.',
 		})
 	}
 
@@ -28,8 +28,8 @@ class IronArmorEffectCard extends EffectCard {
 
 			const totalReduction = player.custom[instanceKey]
 
-			if (totalReduction < 20) {
-				const damageReduction = Math.min(attack.calculateDamage(), 20 - totalReduction)
+			if (totalReduction < 30) {
+				const damageReduction = Math.min(attack.calculateDamage(), 30 - totalReduction)
 				player.custom[instanceKey] += damageReduction
 				attack.reduceDamage(this.id, damageReduction)
 			}
@@ -55,4 +55,4 @@ class IronArmorEffectCard extends EffectCard {
 	}
 }
 
-export default IronArmorEffectCard
+export default DiamondArmorEffectCard

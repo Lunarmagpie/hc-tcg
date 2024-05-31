@@ -6,7 +6,7 @@ import ChainmailArmorEffectCard from './chainmail-armor'
 import CommandBlockEffectCard from './command-block'
 import LightningRodEffectCard from './lightning-rod'
 import ArmorStandEffectCard from './armor-stand'
-import EffectCard from '../../base/effect-card'
+import EffectCard from '../../base/attachable-card'
 
 const effectCardClasses: Array<EffectCard> = [
 	// AE cards

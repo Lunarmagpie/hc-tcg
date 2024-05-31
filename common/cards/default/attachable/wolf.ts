@@ -2,7 +2,7 @@ import {AttackModel} from '../../../models/attack-model'
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {getActiveRowPos, getRowPos} from '../../../utils/board'
-import EffectCard from '../../base/effect-card'
+import EffectCard from '../../base/attachable-card'
 
 class WolfEffectCard extends EffectCard {
 	constructor() {

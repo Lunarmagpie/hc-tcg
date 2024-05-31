@@ -1,17 +1,17 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {isTargetingPos} from '../../../utils/attacks'
-import EffectCard from '../../base/effect-card'
+import EffectCard from '../../base/attachable-card'
 
-class NetheriteArmorEffectCard extends EffectCard {
+class IronArmorEffectCard extends EffectCard {
 	constructor() {
 		super({
-			id: 'netherite_armor',
-			numericId: 82,
-			name: 'Netherite Armour',
-			rarity: 'ultra_rare',
+			id: 'iron_armor',
+			numericId: 45,
+			name: 'Iron Armour',
+			rarity: 'common',
 			description:
-				'When the Hermit this card is attached to takes damage, that damage is reduced by up to 40hp each turn.',
+				'When the Hermit this card is attached to takes damage, that damage is reduced by up to 20hp each turn.',
 		})
 	}
 
@@ -28,8 +28,8 @@ class NetheriteArmorEffectCard extends EffectCard {
 
 			const totalReduction = player.custom[instanceKey]
 
-			if (totalReduction < 40) {
-				const damageReduction = Math.min(attack.calculateDamage(), 40 - totalReduction)
+			if (totalReduction < 20) {
+				const damageReduction = Math.min(attack.calculateDamage(), 20 - totalReduction)
 				player.custom[instanceKey] += damageReduction
 				attack.reduceDamage(this.id, damageReduction)
 			}
@@ -55,4 +55,4 @@ class NetheriteArmorEffectCard extends EffectCard {
 	}
 }
 
-export default NetheriteArmorEffectCard
+export default IronArmorEffectCard

@@ -1,5 +1,5 @@
 import Card from './base/card'
-import EffectCard from './base/effect-card'
+import EffectCard from './base/attachable-card'
 import HermitCard from './base/hermit-card'
 import ItemCard from './base/item-card'
 import SingleUseCard from './base/single-use-card'

@@ -1,4 +1,4 @@
-import EffectCard from '../../base/effect-card'
+import EffectCard from '../../base/attachable-card'
 import {GameModel} from '../../../models/game-model'
 import {HERMIT_CARDS} from '../..'
 import {discardCard} from '../../../utils/movement'
