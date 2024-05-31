@@ -37,7 +37,7 @@ export class Hook<T extends (...args: any) => any> {
  *
  * Allows adding and removing listeners with the card instance as a reference, and calling all or some of the listeners.
  */
-export class GameHook<T extends (...args: any) => any> extends Hook<(...args: any) => any> {
+export class GameHook<T extends (...args: any) => any> extends Hook<T> {
 	/**
 	 * Calls only the listeners belonging to instances that pass the predicate
 	 */
@@ -53,9 +53,7 @@ export class GameHook<T extends (...args: any) => any> extends Hook<(...args: an
  *
  * Allows adding and removing listeners with the card instance as a reference, and calling all listeners while passing through the first parameter.
  */
-export class WaterfallHook<T extends (...args: any) => Parameters<T>[0]> extends Hook<
-	(...args: any) => any
-> {
+export class WaterfallHook<T extends (...args: any) => Parameters<T>[0]> extends Hook<T> {
 	public override call(...params: Parameters<T>): Parameters<T>[0] {
 		return this.listeners.reduce(
 			(params, [_, listener]) => {
