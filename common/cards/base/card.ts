@@ -23,6 +23,8 @@ export interface IsCard {
 	expansion: string
 	/* The palette for this card */
 	palette: string
+	/* The background this card uses */
+	getBackground: () => string
 
 	/* The short name for this card */
 	shortName: string | null
@@ -32,6 +34,9 @@ export interface IsCard {
 export const defaultCardInfo = {
 	expansion: 'default',
 	palette: 'default',
+	getBackground(this: IsCard) {
+		return this.name
+	},
 	shortName: null,
 	description: new EmptyNode(),
 	sidebarDescriptions: [],

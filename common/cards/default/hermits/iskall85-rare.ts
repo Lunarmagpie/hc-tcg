@@ -1,9 +1,9 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
-import {defaultCardInfo} from '../../base/card'
-import {CustomAttachHermitCard} from '../../base/hermit-card'
+import {OverridesAttach, OverridesDetach, defaultCardInfo} from '../../base/card'
+import {HermitCard} from '../../base/hermit-card'
 
-const Iskall85RareHermitCard = (): CustomAttachHermitCard => {
+const Iskall85RareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	return {
 		...defaultCardInfo,
 		category: 'hermit',
@@ -42,5 +42,9 @@ const Iskall85RareHermitCard = (): CustomAttachHermitCard => {
 		},
 	}
 }
+
+const iskall = Iskall85RareHermitCard()
+
+iskall.getBackground()
 
 export default Iskall85RareHermitCard
