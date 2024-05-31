@@ -1,20 +1,21 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {TurnActions} from '../../../types/game-state'
-import EffectCard from '../../base/effect-card'
+import {discardCard} from '../../../utils/movement'
+import EffectCard from '../../base/attachable-card'
 import {CARDS} from '../..'
 import {applySingleUse, removeStatusEffect} from '../../../utils/board'
 import {CanAttachResult} from '../../base/card'
 
-class MilkBucketEffectCard extends EffectCard {
+class WaterBucketEffectCard extends EffectCard {
 	constructor() {
 		super({
-			id: 'milk_bucket',
-			numericId: 79,
-			name: 'Milk Bucket',
+			id: 'water_bucket',
+			numericId: 105,
+			name: 'Water Bucket',
 			rarity: 'common',
 			description:
-				'Remove poison and bad omen from one of your Hermits.\nIf attached, prevents the Hermit this card is attached to from being poisoned.',
+				'Remove burn and String from one of your Hermits.\nIf attached, prevents the Hermit this card is attached to from being burned.',
 			log: (values) => {
 				if (values.pos.slotType === 'single_use')
 					return `${values.defaultLog} on $p${values.pick.name}$`
@@ -39,13 +40,21 @@ class MilkBucketEffectCard extends EffectCard {
 
 					const statusEffectsToRemove = game.state.statusEffects.filter((ail) => {
 						return (
-							ail.targetInstance === pickResult.card?.cardInstance &&
-							(ail.statusEffectId == 'poison' || ail.statusEffectId == 'badomen')
+							ail.targetInstance === pickResult.card?.cardInstance && ail.statusEffectId == 'fire'
 						)
 					})
 					statusEffectsToRemove.forEach((ail) => {
 						removeStatusEffect(game, pos, ail.statusEffectInstance)
 					})
+
+					if (player.board.rows[pickResult.rowIndex].effectCard?.cardId === 'string') {
+						discardCard(game, player.board.rows[pickResult.rowIndex].effectCard)
+					}
+					for (let i = 0; i < player.board.rows[pickResult.rowIndex].itemCards.length; i++) {
+						if (player.board.rows[pickResult.rowIndex].itemCards[i]?.cardId === 'string') {
+							discardCard(game, player.board.rows[pickResult.rowIndex].itemCards[i])
+						}
+					}
 
 					applySingleUse(game, pickResult)
 
@@ -53,23 +62,18 @@ class MilkBucketEffectCard extends EffectCard {
 				},
 			})
 		} else if (slot.type === 'effect') {
-			// Straight away remove poison
-			const poisonStatusEffect = game.state.statusEffects.find((ail) => {
-				return (
-					ail.targetInstance === row?.hermitCard?.cardInstance && ail.statusEffectId == 'poison'
-				)
+			// Straight away remove fire
+			const fireStatusEffect = game.state.statusEffects.find((ail) => {
+				return ail.targetInstance === row?.hermitCard?.cardInstance && ail.statusEffectId == 'fire'
 			})
-			if (poisonStatusEffect) {
-				removeStatusEffect(game, pos, poisonStatusEffect.statusEffectInstance)
+			if (fireStatusEffect) {
+				removeStatusEffect(game, pos, fireStatusEffect.statusEffectInstance)
 			}
 
 			player.hooks.onDefence.add(instance, (attack) => {
 				if (!row) return
 				const statusEffectsToRemove = game.state.statusEffects.filter((ail) => {
-					return (
-						ail.targetInstance === row.hermitCard?.cardInstance &&
-						(ail.statusEffectId == 'poison' || ail.statusEffectId == 'badomen')
-					)
+					return ail.targetInstance === row.hermitCard?.cardInstance && ail.statusEffectId == 'fire'
 				})
 				statusEffectsToRemove.forEach((ail) => {
 					removeStatusEffect(game, pos, ail.statusEffectInstance)
@@ -79,10 +83,7 @@ class MilkBucketEffectCard extends EffectCard {
 			opponentPlayer.hooks.afterApply.add(instance, () => {
 				if (!row) return
 				const statusEffectsToRemove = game.state.statusEffects.filter((ail) => {
-					return (
-						ail.targetInstance === row.hermitCard?.cardInstance &&
-						(ail.statusEffectId == 'poison' || ail.statusEffectId == 'badomen')
-					)
+					return ail.targetInstance === row.hermitCard?.cardInstance && ail.statusEffectId == 'fire'
 				})
 				statusEffectsToRemove.forEach((ail) => {
 					removeStatusEffect(game, pos, ail.statusEffectInstance)
@@ -93,8 +94,8 @@ class MilkBucketEffectCard extends EffectCard {
 
 	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
 		const {player, opponentPlayer} = pos
-		player.hooks.onDefence.remove(instance)
 		opponentPlayer.hooks.afterApply.remove(instance)
+		player.hooks.onDefence.remove(instance)
 	}
 
 	override canAttach(game: GameModel, pos: CardPosModel) {
@@ -132,4 +133,4 @@ class MilkBucketEffectCard extends EffectCard {
 	}
 }
 
-export default MilkBucketEffectCard
+export default WaterBucketEffectCard

@@ -21,7 +21,7 @@ export type HermitTypeT =
 
 export type EnergyT = HermitTypeT | 'any'
 
-export type CardCategoryT = 'item' | 'single_use' | 'effect' | 'hermit' | 'health'
+export type CardCategoryT = 'item' | 'single_use' | 'attachable' | 'hermit' | 'health'
 export type BoardSlotTypeT = 'item' | 'effect' | 'hermit' | 'health'
 export type SlotTypeT = BoardSlotTypeT | 'single_use'
 

@@ -85,3 +85,7 @@ export interface HasPrimaryAttack {
 export interface HasSecondaryAttack {
 	secondary: HermitAttackInfo
 }
+
+export interface HasDescription {
+	description: string
+}
