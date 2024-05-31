@@ -1,41 +1,35 @@
-import StatusEffect from './status-effect'
+import StatusEffect, {statusEffectDefaults} from './status-effect'
 import {GameModel} from '../models/game-model'
 import {CardPosModel} from '../models/card-pos-model'
 import {removeStatusEffect} from '../utils/board'
-import { Card } from '../cards/base/card'
+import {Card} from '../cards/base/card'
 
-const UsedClockStatusEffect  = (target: Card): StatusEffect =>  {
-	constructor() {
-		super({
-			id: 'used-clock',
-			name: 'Turn Skipped',
-			description: 'Turns can not be skipped consecutively.',
-			duration: 2,
-			counter: false,
-			damageEffect: false,
-			visible: false,
-		})
-	}
+const UsedClockStatusEffect = (target: Card): StatusEffect => {
+	return {
+		...statusEffectDefaults,
+		id: 'used-clock',
+		name: 'Turn Skipped',
+		description: 'Turns can not be skipped consecutively.',
+		duration: 2,
+		counter: false,
+		damageEffect: false,
+		target: target,
+		onApply(game: GameModel, pos: CardPosModel) {
+			game.state.statusEffects.push(this)
+			const {player} = pos
 
-	override onApply(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
-		game.state.statusEffects.push(statusEffectInfo)
-		const {player} = pos
+			player.hooks.onTurnEnd.add(this, () => {
+				this.duration--
 
-		if (!statusEffectInfo.duration) statusEffectInfo.duration = this.duration
+				if (this.duration === 0) removeStatusEffect(game, pos, this)
+			})
+		},
 
-		player.hooks.onTurnEnd.add(statusEffectInfo.statusEffectInstance, () => {
-			if (!statusEffectInfo.duration) return
-			statusEffectInfo.duration--
-
-			if (statusEffectInfo.duration === 0)
-				removeStatusEffect(game, pos, statusEffectInfo.statusEffectInstance)
-		})
-	}
-
-	override onRemoval(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
-		const {player, opponentPlayer} = pos
-		opponentPlayer.hooks.beforeAttack.remove(statusEffectInfo.statusEffectInstance)
-		player.hooks.onTurnStart.remove(statusEffectInfo.statusEffectInstance)
+		onRemoval(game: GameModel, pos: CardPosModel) {
+			const {player, opponentPlayer} = pos
+			opponentPlayer.hooks.beforeAttack.remove(this)
+			player.hooks.onTurnStart.remove(this)
+		},
 	}
 }
 
