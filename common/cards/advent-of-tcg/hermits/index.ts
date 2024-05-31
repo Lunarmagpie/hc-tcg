@@ -12,24 +12,24 @@ import BigBSt4tzRareHermitCard from './bigbst4tz2-rare'
 import ShubbleYTRareHermitCard from './shubbleyt-rare'
 import PharaohRareHermitCard from './pharaoh-rare'
 import GrianchRareHermitCard from './grianch-rare'
-import HermitCard from '../../base/hermit-card'
+import { HermitCard } from '../../base/hermit-card'
 
 const hermitCardClasses: Array<HermitCard> = [
 	//Advent calendar cards
-	new MonkeyfarmRareHermitCard(),
-	new DungeonTangoRareHermitCard(),
-	new PythonGBRareHermitCard(),
-	new OrionSoundRareHermitCard(),
-	new SolidaritygamingRareHermitCard(),
-	new Smajor1995RareHermitCard(),
-	new Biffa2001RareHermitCard(),
-	new PixlriffsRareHermitCard(),
-	new ShubbleYTRareHermitCard(),
-	new LDShadowLadyRareHermitCard(),
-	new SmallishbeansRareHermitCard(),
-	new BigBSt4tzRareHermitCard(),
-	new PharaohRareHermitCard(),
-	new GrianchRareHermitCard(),
+	MonkeyfarmRareHermitCard,
+	DungeonTangoRareHermitCard,
+	PythonGBRareHermitCard,
+	OrionSoundRareHermitCard,
+	SolidaritygamingRareHermitCard,
+	Smajor1995RareHermitCard,
+	Biffa2001RareHermitCard,
+	PixlriffsRareHermitCard,
+	ShubbleYTRareHermitCard,
+	LDShadowLadyRareHermitCard,
+	SmallishbeansRareHermitCard,
+	BigBSt4tzRareHermitCard,
+	PharaohRareHermitCard,
+	GrianchRareHermitCard,
 ]
 
 export default hermitCardClasses

@@ -11,23 +11,23 @@ import FireChargeSingleUseCard from './fire-charge'
 import PistonSingleUseCard from './piston'
 import SplashPotionOfHealingIISingleUseCard from './splash-potion-of-healing-ii'
 import TargetBlockSingleUseCard from './target-block'
-import SingleUseCard from '../../base/single-use-card'
+import { SingleUseCard } from '../../base/single-use-card'
 
 const singleUseCardClasses: Array<SingleUseCard> = [
 	// AE Cards
-	new AnvilSingleUseCard(),
-	new BadOmenSingleUseCard(),
-	new EggSingleUseCard(),
-	new EnderPearlSingleUseCard(),
-	new FireChargeSingleUseCard(),
-	new LadderSingleUseCard(),
-	new PistonSingleUseCard(),
-	new PotionOfSlownessSingleUseCard(),
-	new PotionOfWeaknessSingleUseCard(),
-	new SplashPotionOfHealingIISingleUseCard(),
-	new SweepingEdgeSingleUseCard(),
-	new TargetBlockSingleUseCard(),
-	new TridentSingleUseCard(),
+	AnvilSingleUseCard,
+	BadOmenSingleUseCard,
+	EggSingleUseCard,
+	EnderPearlSingleUseCard,
+	FireChargeSingleUseCard,
+	LadderSingleUseCard,
+	PistonSingleUseCard,
+	PotionOfSlownessSingleUseCard,
+	PotionOfWeaknessSingleUseCard,
+	SplashPotionOfHealingIISingleUseCard,
+	SweepingEdgeSingleUseCard,
+	TargetBlockSingleUseCard,
+	TridentSingleUseCard,
 ]
 
 export default singleUseCardClasses
