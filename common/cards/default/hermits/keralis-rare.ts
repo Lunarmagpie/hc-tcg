@@ -96,7 +96,7 @@ class KeralisRareHermitCard  = (): HermitCard & OverridesAttach & OverridesDetac
 				// Heal
 				const maxHealth = Math.max(pickedRow.health, hermitInfo.health)
 				pickedRow.health = Math.min(pickedRow.health + 100, maxHealth)
-				game.battleLog.addCustomEntry(
+				game.battleLog.addEntry(
 					player.id,
 					`$p${hermitInfo.name} (${pickedRowIndex + 1})$ healed $g100hp$`
 				)
