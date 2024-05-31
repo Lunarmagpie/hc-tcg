@@ -1,8 +1,8 @@
-import {HermitCard, defaultHermitInfo} from '../../base/hermit-card'
+import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 
 const GeminiTayCommonHermitCard = (): HermitCard => {
 	return {
-		...defaultHermitInfo,
+		...hermitCardDefaults,
 		id: 'geminitay_common',
 		numericId: 27,
 		name: 'Gem',

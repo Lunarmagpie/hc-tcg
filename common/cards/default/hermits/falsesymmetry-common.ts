@@ -1,8 +1,8 @@
-import {HermitCard, defaultHermitInfo} from '../../base/hermit-card'
+import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 
 const FalseSymmetryCommonHermitCard = (): HermitCard => {
 	return {
-		...defaultHermitInfo,
+		...hermitCardDefaults,
 		id: 'falsesymmetry_common',
 		numericId: 22,
 		name: 'False',
