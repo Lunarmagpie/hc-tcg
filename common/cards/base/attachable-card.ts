@@ -13,12 +13,13 @@ import {CardPosModel} from '../../models/card-pos-model'
 import {TurnActions} from '../../types/game-state'
 import {FormattedTextNode, formatText} from '../../utils/formatting'
 
-export type AttachableCard = IsCard &
-	IsAttachableToEffectSlots &
-	EffectDisplayInfo &
-	HasDescription &
-	OverridesAttach &
-	OverridesDetach
+export type AttachableCard =
+	& IsCard
+	& IsAttachableToEffectSlots
+	& EffectDisplayInfo
+	& HasDescription
+	& OverridesAttach
+	& OverridesDetach
 
 export const defaultAttachableInfo = {
 	category: 'attachable' as CardCategoryT,
