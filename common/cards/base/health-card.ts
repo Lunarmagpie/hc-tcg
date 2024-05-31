@@ -1,38 +1,23 @@
-import {GameModel} from '../../models/game-model'
-import {CardRarityT} from '../../types/cards'
-import Card from './card'
-import {CardPosModel} from '../../models/card-pos-model'
-import {FormattedTextNode, formatText} from '../../utils/formatting'
+import {HasHealth, IsCard} from './card'
+import {TextNode} from '../../utils/formatting'
 
-type HealthDefs = {
-	id: string
-	name: string
-	rarity: CardRarityT
-	health: number
-}
+export type HealthCard = IsCard & HasHealth
 
-// @TODO extending card does not really make sense for this
-
-class HealthCard extends Card {
-	public health: number
-	constructor(defs: HealthDefs) {
-		super({
-			type: 'health',
-			id: defs.id,
-			numericId: -1,
-			name: defs.name,
-			rarity: defs.rarity,
-		})
-
-		this.health = defs.health
-	}
-
-	public override canAttach(game: GameModel, pos: CardPosModel) {
-		return []
-	}
-
-	public override getFormattedDescription(): FormattedTextNode {
-		return formatText(`${this.health}`)
+export const HealthIndicator = (): HealthCard => {
+	return {
+		category: 'health',
+		health: 300,
+		id: 'health',
+		numericId: -1,
+		name: 'Health Card',
+		rarity: 'common',
+		getDescription() {
+			return new TextNode('')
+		},
+		expansion: 'default',
+		palette: 'default',
+		sidebarDescriptions: [],
+		log: () => null,
 	}
 }
 

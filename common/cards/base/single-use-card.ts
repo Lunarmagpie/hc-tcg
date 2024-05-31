@@ -1,73 +1,87 @@
 import {PlayCardLog, CardRarityT} from '../../types/cards'
-import Card, {CanAttachResult} from './card'
+import {
+	EffectDisplayInfo,
+	HasDescription,
+	IsAttachableToSingleUseSlot,
+	IsCard,
+	OverridesAttach,
+	OverridesDetach,
+} from './card'
 import {GameModel} from '../../models/game-model'
 import {CardPosModel} from '../../models/card-pos-model'
 import {TurnActions} from '../../types/game-state'
 import {FormattedTextNode, formatText} from '../../utils/formatting'
 
-export type SingleUseDefs = {
-	id: string
-	numericId: number
-	name: string
-	rarity: CardRarityT
-	description: string
-	log?: ((values: PlayCardLog) => string) | null
-}
+export type SingleUseCard = IsCard &
+	IsAttachableToSingleUseSlot &
+	EffectDisplayInfo &
+	HasDescription &
+	OverridesAttach &
+	OverridesDetach
 
-class SingleUseCard extends Card {
-	public description: string
+// export type SingleUseDefs = {
+// 	id: string
+// 	numericId: number
+// 	name: string
+// 	rarity: CardRarityT
+// 	description: string
+// 	log?: ((values: PlayCardLog) => string) | null
+// }
 
-	constructor(defs: SingleUseDefs) {
-		super({
-			type: 'single_use',
-			id: defs.id,
-			numericId: defs.numericId,
-			name: defs.name,
-			rarity: defs.rarity,
-		})
+// class SingleUseCard extends Card {
+// 	public description: string
 
-		this.description = defs.description
-		this.log = defs.log !== undefined ? defs.log : (values) => `${values.defaultLog}`
-	}
+// 	constructor(defs: SingleUseDefs) {
+// 		super({
+// 			type: 'single_use',
+// 			id: defs.id,
+// 			numericId: defs.numericId,
+// 			name: defs.name,
+// 			rarity: defs.rarity,
+// 		})
 
-	public override canAttach(game: GameModel, pos: CardPosModel): CanAttachResult {
-		if (pos.slot.type !== 'single_use') return ['INVALID_SLOT']
+// 		this.description = defs.description
+// 		this.log = defs.log !== undefined ? defs.log : (values) => `${values.defaultLog}`
+// 	}
 
-		return []
-	}
+// 	public override canAttach(game: GameModel, pos: CardPosModel): CanAttachResult {
+// 		if (pos.slot.type !== 'single_use') return ['INVALID_SLOT']
 
-	public override getActions(game: GameModel): TurnActions {
-		const {currentPlayer} = game
+// 		return []
+// 	}
 
-		const hasHermit = currentPlayer.board.rows.some((row) => !!row.hermitCard)
-		const spaceForSingleUse = !currentPlayer.board.singleUseCard
+// 	public override getActions(game: GameModel): TurnActions {
+// 		const {currentPlayer} = game
 
-		return hasHermit && spaceForSingleUse ? ['PLAY_SINGLE_USE_CARD'] : []
-	}
+// 		const hasHermit = currentPlayer.board.rows.some((row) => !!row.hermitCard)
+// 		const spaceForSingleUse = !currentPlayer.board.singleUseCard
 
-	public override showSingleUseTooltip(): boolean {
-		return true
-	}
+// 		return hasHermit && spaceForSingleUse ? ['PLAY_SINGLE_USE_CARD'] : []
+// 	}
 
-	/**
-	 * Returns whether this card has apply functionality or not
-	 */
-	public canApply(): boolean {
-		// default is no
-		return false
-	}
+// 	public override showSingleUseTooltip(): boolean {
+// 		return true
+// 	}
 
-	/**
-	 * Returns whether you can attack with this card alone or not
-	 */
-	public canAttack(): boolean {
-		// default is no
-		return false
-	}
+// 	/**
+// 	 * Returns whether this card has apply functionality or not
+// 	 */
+// 	public canApply(): boolean {
+// 		// default is no
+// 		return false
+// 	}
 
-	public override getFormattedDescription(): FormattedTextNode {
-		return formatText(`*${this.description}*`)
-	}
-}
+// 	/**
+// 	 * Returns whether you can attack with this card alone or not
+// 	 */
+// 	public canAttack(): boolean {
+// 		// default is no
+// 		return false
+// 	}
 
-export default SingleUseCard
+// 	public override getFormattedDescription(): FormattedTextNode {
+// 		return formatText(`*${this.description}*`)
+// 	}
+// }
+
+// export default SingleUseCard

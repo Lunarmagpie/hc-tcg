@@ -39,7 +39,7 @@ export interface HermitDisplayInfo {
 
 export interface EffectDisplayInfo {}
 
-export interface SingleUseDisplayInfo {}
+export interface ItemDisplayInfo {}
 
 export interface HasBattleLog {
 	getLog: ((values: PlayCardLog) => string) | null
