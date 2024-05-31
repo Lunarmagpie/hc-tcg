@@ -22,7 +22,7 @@ function* playCardSaga(
 
 	const {playerId, rowIndex: pickedIndex, slot: pickedSlot} = pickInfo
 
-	const cardInfo = CARDS[card.cardId]
+	const cardInfo = CARDS[card.id]
 	// opponentPlayerId is relative to where the card is being placed
 	const opponentPlayerId = playerId === currentPlayer.id ? game.opponentPlayerId : currentPlayer.id
 

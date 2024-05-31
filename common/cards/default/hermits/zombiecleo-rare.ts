@@ -52,9 +52,9 @@ class ZombieCleoRareHermitCard extends HermitCard {
 		if (!pickedCard || !attackType) return null
 
 		// No loops please
-		if (pickedCard.cardId === this.id) return null
+		if (pickedcard.id === this.id) return null
 
-		const hermitInfo = HERMIT_CARDS[pickedCard.cardId]
+		const hermitInfo = HERMIT_CARDS[pickedcard.id]
 		if (!hermitInfo) return null
 
 		// Return that cards secondary attack
@@ -99,7 +99,7 @@ class ZombieCleoRareHermitCard extends HermitCard {
 					if (!pickedCard) return 'FAILURE_INVALID_SLOT'
 
 					// No picking the same card as us
-					if (pickedCard.cardId === this.id) return 'FAILURE_WRONG_PICK'
+					if (pickedcard.id === this.id) return 'FAILURE_WRONG_PICK'
 
 					game.addModalRequest({
 						playerId: player.id,
@@ -152,7 +152,7 @@ class ZombieCleoRareHermitCard extends HermitCard {
 		player.hooks.blockedActions.add(instance, (blockedActions) => {
 			// Block "Puppetry" if there are not AFK Hermit cards other than rare Cleo(s)
 			const afkHermits = getNonEmptyRows(player, true).filter((rowPos) => {
-				const hermitId = rowPos.row.hermitCard.cardId
+				const hermitId = rowPos.row.hermitCard.id
 				return HERMIT_CARDS[hermitId] && hermitId !== this.id
 			}).length
 			if (

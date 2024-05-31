@@ -38,7 +38,7 @@ function* pickForPickRequestSaga(action: SlotPickedAction): SagaIterator {
 }
 
 function* pickWithSelectedSaga(action: SlotPickedAction, selectedCard: CardT): SagaIterator {
-	const selectedCardInfo = CARDS[selectedCard.cardId]
+	const selectedCardInfo = CARDS[selectedcard.id]
 	const pickInfo = action.payload.pickInfo
 
 	yield putResolve(setSelectedCard(null))

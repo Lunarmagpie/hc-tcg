@@ -43,7 +43,7 @@ class BrewingStandEffectCard extends EffectCard {
 					const playerRow = player.board.rows[pickResult.rowIndex]
 					const hermitCard = playerRow.hermitCard
 					if (!hermitCard || !playerRow.health) return 'SUCCESS'
-					const hermitInfo = HERMIT_CARDS[hermitCard.cardId]
+					const hermitInfo = HERMIT_CARDS[hermitCard.id]
 					if (hermitInfo) {
 						const maxHealth = Math.max(playerRow.health, hermitInfo.health)
 						playerRow.health = Math.min(playerRow.health + 50, maxHealth)

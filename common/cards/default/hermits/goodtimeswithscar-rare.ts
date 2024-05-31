@@ -53,7 +53,7 @@ class GoodTimesWithScarRareHermitCard extends HermitCard {
 
 			row.health = 50
 
-			const revivedHermit = HERMIT_CARDS[row.hermitCard.cardId].name
+			const revivedHermit = HERMIT_CARDS[row.hermitCard.id].name
 
 			game.state.statusEffects.forEach((ail) => {
 				if (ail.targetInstance === targetInstance) {

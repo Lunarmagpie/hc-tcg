@@ -42,7 +42,7 @@ function getAvailableEnergy(game: GameModel) {
 			if (!card) continue
 			const pos = getCardPos(game, card.cardInstance)
 			if (!pos) continue
-			const itemInfo = ITEM_CARDS[card.cardId]
+			const itemInfo = ITEM_CARDS[card.id]
 			if (!itemInfo) continue
 
 			availableEnergy.push(...itemInfo.getEnergy(game, card.cardInstance, pos))
@@ -142,7 +142,7 @@ function getAvailableActions(game: GameModel, availableEnergy: Array<EnergyT>): 
 
 	// Play card actions require an active row unless it's the players first turn
 	if (activeRow !== null || turnState.turnNumber <= 2) {
-		const handCards = currentPlayer.hand.map((card) => CARDS[card.cardId])
+		const handCards = currentPlayer.hand.map((card) => CARDS[card.id])
 		const allDesiredActions: TurnActions = []
 		for (let x = 0; x < handCards.length; x++) {
 			const card = handCards[x]

@@ -51,7 +51,7 @@ export function discardCard(
 	}
 
 	// Call `onDetach`
-	const cardInfo = CARDS[card.cardId]
+	const cardInfo = CARDS[card.id]
 	cardInfo.onDetach(game, card.cardInstance, pos)
 	pos.player.hooks.onDetach.call(card.cardInstance)
 
@@ -62,7 +62,7 @@ export function discardCard(
 		const discardPlayer = playerDiscard ? playerDiscard : pos.player
 
 		discardPlayer.discarded.push({
-			cardId: card.cardId,
+			cardId: card.id,
 			cardInstance: card.cardInstance,
 		})
 	}
@@ -90,7 +90,7 @@ export function discardSingleUse(game: GameModel, playerState: PlayerState) {
 	if (!pos) return
 
 	// Water and Milk Buckets can be on this slot so we use CARDS to get the card info
-	const cardInfo = CARDS[suCard.cardId]
+	const cardInfo = CARDS[sucard.id]
 	cardInfo.onDetach(game, suCard.cardInstance, pos)
 
 	// Call onDetach hook
@@ -112,7 +112,7 @@ export function discardFromHand(player: PlayerState, card: CardT | null) {
 	player.hand = player.hand.filter((c) => !equalCard(c, card))
 
 	player.discarded.push({
-		cardId: card.cardId,
+		cardId: card.id,
 		cardInstance: card.cardInstance,
 	})
 }
@@ -128,7 +128,7 @@ export function moveCardToHand(game: GameModel, card: CardT, playerDiscard?: Pla
 	const cardPos = getCardPos(game, card.cardInstance)
 	if (!cardPos) return
 
-	const cardInfo = CARDS[card.cardId]
+	const cardInfo = CARDS[card.id]
 	cardInfo.onDetach(game, card.cardInstance, cardPos)
 
 	cardPos.player.hooks.onDetach.call(card.cardInstance)
@@ -206,7 +206,7 @@ export function canAttachToSlot(
 	// Create a fake card pos model
 	const pos = new CardPosModel(game, basicPos, card.cardInstance, true)
 
-	const cardInfo = CARDS[card.cardId]
+	const cardInfo = CARDS[card.id]
 	const canAttach = cardInfo.canAttach(game, pos)
 	player.hooks.canAttach.call(canAttach, pos)
 
@@ -260,7 +260,7 @@ export function swapSlots(
 		const results = cardPos.player.hooks.onSlotChange.call(slot)
 		if (results.includes(false)) return false
 
-		const cardInfo = CARDS[card.cardId]
+		const cardInfo = CARDS[card.id]
 
 		if (!withoutDetach) {
 			cardInfo.onDetach(game, card.cardInstance, cardPos)

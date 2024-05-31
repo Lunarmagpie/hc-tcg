@@ -144,27 +144,23 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 	const filteredCards: CardT[] = allCards.filter(
 		(card) =>
 			// Card Name Filter
-			TYPED_CARDS[card.cardId].name.toLowerCase().includes(deferredTextQuery.toLowerCase()) &&
+			TYPED_CARDS[card.id].name.toLowerCase().includes(deferredTextQuery.toLowerCase()) &&
 			// Card Type Filter
-			(HTYPE_CARDS[card.cardId].hermitType === undefined
-				? TYPED_CARDS[card.cardId]
-				: HTYPE_CARDS[card.cardId].hermitType.includes(typeQuery)) &&
+			(HTYPE_CARDS[card.id].hermitType === undefined
+				? TYPED_CARDS[card.id]
+				: HTYPE_CARDS[card.id].hermitType.includes(typeQuery)) &&
 			// Card Rarity Filter
-			(rankQuery === '' || getCardRank(card.cardId).name === rankQuery) &&
+			(rankQuery === '' || getCardRank(card.id).name === rankQuery) &&
 			// Card Expansion Filter
-			(expansionQuery === '' || getCardExpansion(card.cardId) === expansionQuery) &&
+			(expansionQuery === '' || getCardExpansion(card.id) === expansionQuery) &&
 			// Don't show disabled cards
-			!EXPANSIONS.disabled.includes(getCardExpansion(card.cardId))
+			!EXPANSIONS.disabled.includes(getCardExpansion(card.id))
 	)
 	const selectedCards = {
-		hermits: loadedDeck.cards.filter((card) => TYPED_CARDS[card.cardId].type === 'hermit'),
-		items: loadedDeck.cards.filter((card) => TYPED_CARDS[card.cardId].type === 'item'),
-		attachableEffects: loadedDeck.cards.filter(
-			(card) => TYPED_CARDS[card.cardId].type === 'effect'
-		),
-		singleUseEffects: loadedDeck.cards.filter(
-			(card) => TYPED_CARDS[card.cardId].type === 'single_use'
-		),
+		hermits: loadedDeck.cards.filter((card) => TYPED_CARDS[card.id].type === 'hermit'),
+		items: loadedDeck.cards.filter((card) => TYPED_CARDS[card.id].type === 'item'),
+		attachableEffects: loadedDeck.cards.filter((card) => TYPED_CARDS[card.id].type === 'effect'),
+		singleUseEffects: loadedDeck.cards.filter((card) => TYPED_CARDS[card.id].type === 'single_use'),
 	}
 
 	//CARD LOGIC
@@ -174,7 +170,7 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 	const addCard = (card: CardT) => {
 		setLoadedDeck((loadedDeck) => ({
 			...loadedDeck,
-			cards: [...loadedDeck.cards, {cardId: card.cardId, cardInstance: Math.random().toString()}],
+			cards: [...loadedDeck.cards, {cardId: card.id, cardInstance: Math.random().toString()}],
 		}))
 	}
 	const removeCard = (card: CardT) => {
@@ -243,7 +239,7 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 		})
 		back()
 	}
-	const validationMessage = validateDeck(loadedDeck.cards.map((card) => card.cardId))
+	const validationMessage = validateDeck(loadedDeck.cards.map((card) => card.id))
 
 	return (
 		<>
@@ -350,7 +346,7 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 					<Accordion header={'Hermits'}>
 						<CardList
 							cards={sortCards(filteredCards).filter(
-								(card) => TYPED_CARDS[card.cardId].type === 'hermit'
+								(card) => TYPED_CARDS[card.id].type === 'hermit'
 							)}
 							wrap={true}
 							onClick={addCard}
@@ -359,7 +355,7 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 					<Accordion header={'Attachable Effects'}>
 						<CardList
 							cards={sortCards(filteredCards).filter(
-								(card) => TYPED_CARDS[card.cardId].type === 'effect'
+								(card) => TYPED_CARDS[card.id].type === 'effect'
 							)}
 							wrap={true}
 							onClick={addCard}
@@ -368,7 +364,7 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 					<Accordion header={'Single Use Effects'}>
 						<CardList
 							cards={sortCards(filteredCards).filter(
-								(card) => TYPED_CARDS[card.cardId].type === 'single_use'
+								(card) => TYPED_CARDS[card.id].type === 'single_use'
 							)}
 							wrap={true}
 							onClick={addCard}
@@ -377,7 +373,7 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 					<Accordion header={'Items'}>
 						<CardList
 							cards={sortCards(filteredCards).filter(
-								(card) => TYPED_CARDS[card.cardId].type === 'item'
+								(card) => TYPED_CARDS[card.id].type === 'item'
 							)}
 							wrap={true}
 							onClick={addCard}
@@ -396,8 +392,8 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 									<span className={css.hideOnMobile}>cards</span>
 								</p>
 								<div className={classNames(css.cardCount, css.dark, css.tokens)}>
-									{getDeckCost(loadedDeck.cards.map((card) => card.cardId))}/
-									{CONFIG.limits.maxDeckCost} <span className={css.hideOnMobile}>tokens</span>
+									{getDeckCost(loadedDeck.cards.map((card) => card.id))}/{CONFIG.limits.maxDeckCost}{' '}
+									<span className={css.hideOnMobile}>tokens</span>
 								</div>
 							</div>
 						</>

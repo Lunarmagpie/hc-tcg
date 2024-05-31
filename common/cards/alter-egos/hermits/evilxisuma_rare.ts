@@ -43,7 +43,7 @@ class EvilXisumaRareHermitCard extends HermitCard {
 			if (!opponentActiveRow) return
 			if (opponentActiveRow.row.health <= 0) return
 
-			if (!HERMIT_CARDS[opponentActiveRow.row.hermitCard.cardId]) return
+			if (!HERMIT_CARDS[opponentActiveRow.row.hermitCard.id]) return
 
 			const coinFlip = flipCoin(player, attacker.row.hermitCard)
 

@@ -24,7 +24,7 @@ export type SlotProps = {
 }
 const Slot = ({type, onClick, card, rowState, active, cssId, statusEffects}: SlotProps) => {
 	let cardInfo = card?.cardId
-		? (CARDS[card.cardId] as HermitCard | EffectCard | SingleUseCard | ItemCard | HealthCard)
+		? (CARDS[card.id] as HermitCard | EffectCard | SingleUseCard | ItemCard | HealthCard)
 		: null
 	if (type === 'health' && rowState?.health) {
 		cardInfo = new HealthCard({

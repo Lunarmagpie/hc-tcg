@@ -4,7 +4,6 @@ import {CardPosModel, getCardPos} from '../models/card-pos-model'
 import {GameModel} from '../models/game-model'
 import {BoardSlotTypeT, RowPos, SlotPos} from '../types/cards'
 import {
-	CardT,
 	StatusEffectT,
 	GenericActionResult,
 	PlayerState,
@@ -12,6 +11,7 @@ import {
 	RowStateWithHermit,
 } from '../types/game-state'
 import {PickInfo} from '../types/server-requests'
+import {IsCard} from '../cards/base/card'
 
 export function getActiveRow(player: PlayerState) {
 	if (player.board.activeRow === null) return null
@@ -65,7 +65,7 @@ export function rowHasItem(row: RowState): boolean {
 	let total = 0
 	for (const itemCard of itemCards) {
 		if (!itemCard) continue
-		const cardInfo = ITEM_CARDS[itemCard.cardId]
+		const cardInfo = ITEM_CARDS[itemCard.id]
 		// String
 		if (!cardInfo) continue
 		total += 1
@@ -133,7 +133,7 @@ export function getAdjacentRows(playerState: PlayerState): Array<RowStateWithHer
 export function hasSingleUse(playerState: PlayerState, id: string, isUsed: boolean = false) {
 	const suCard = playerState.board.singleUseCard
 	const suUsed = playerState.board.singleUseCardUsed
-	return suCard?.cardId === id && suUsed === isUsed
+	return suCard?.id === id && suUsed === isUsed
 }
 
 export function applySingleUse(game: GameModel, pickResult?: PickInfo): GenericActionResult {
@@ -141,10 +141,10 @@ export function applySingleUse(game: GameModel, pickResult?: PickInfo): GenericA
 
 	const suCard = currentPlayer.board.singleUseCard
 	if (!suCard) return 'FAILURE_NOT_APPLICABLE'
-	const pos = getCardPos(game, suCard.cardInstance)
+	const pos = getCardPos(game, suCard)
 	if (!pos) return 'FAILURE_UNKNOWN_ERROR'
 
-	const cardInstance = currentPlayer.board.singleUseCard?.cardInstance
+	const cardInstance = currentPlayer.board.singleUseCard
 	if (!cardInstance) return 'FAILURE_NOT_APPLICABLE'
 
 	currentPlayer.hooks.beforeApply.call()
@@ -157,7 +157,7 @@ export function applySingleUse(game: GameModel, pickResult?: PickInfo): GenericA
 	game.addCompletedActions('PLAY_SINGLE_USE_CARD')
 
 	// Send the logs
-	game.battleLog.addPlayCardEntry(CARDS[suCard.cardId], pos, currentPlayer.coinFlips, pickResult)
+	game.battleLog.addPlayCardEntry(suCard, pos, currentPlayer.coinFlips, pickResult)
 
 	currentPlayer.hooks.afterApply.call()
 
@@ -171,11 +171,9 @@ export function applySingleUse(game: GameModel, pickResult?: PickInfo): GenericA
 export function applyStatusEffect(
 	game: GameModel,
 	statusEffectId: string,
-	targetInstance: string | undefined
+	target: IsCard
 ): GenericActionResult {
-	if (!targetInstance) return 'FAILURE_INVALID_DATA'
-
-	const pos = getCardPos(game, targetInstance)
+	const pos = getCardPos(game, target)
 
 	if (!pos) return 'FAILURE_INVALID_DATA'
 
@@ -185,7 +183,7 @@ export function applyStatusEffect(
 	const statusEffectInfo: StatusEffectT = {
 		statusEffectId: statusEffectId,
 		statusEffectInstance: statusEffectInstance,
-		targetInstance: targetInstance,
+		target: target,
 		damageEffect: statusEffect.damageEffect,
 	}
 

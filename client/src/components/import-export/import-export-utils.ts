@@ -19,7 +19,7 @@ export const getDeckFromHash = (hash: string): Array<CardT> => {
 			cardInstance: Math.random().toString(),
 		})
 	}
-	const deckCards = deck.filter((card: CardT) => CARDS[card.cardId])
+	const deckCards = deck.filter((card: CardT) => CARDS[card.id])
 	return deckCards
 }
 

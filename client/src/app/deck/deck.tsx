@@ -92,7 +92,7 @@ export const cardGroupHeader = (title: string, cards: CardT[]) => (
 		{`${title} `}
 		<span style={{fontSize: '0.9rem'}}>{`(${cards.length}) `}</span>
 		<span className={classNames(css.tokens, css.tokenHeader)}>
-			{getDeckCost(cards.map((card) => card.cardId))} tokens
+			{getDeckCost(cards.map((card) => card.id))} tokens
 		</span>
 	</p>
 )
@@ -149,7 +149,7 @@ const Deck = ({setMenuSection}: Props) => {
 
 	// MENU LOGIC
 	const backToMenu = () => {
-		if (validateDeck(loadedDeck.cards.map((card) => card.cardId))) {
+		if (validateDeck(loadedDeck.cards.map((card) => card.id))) {
 			return setShowValidateDeckModal(true)
 		}
 
@@ -183,7 +183,7 @@ const Deck = ({setMenuSection}: Props) => {
 		const deck = getSavedDeck(deckName)
 		if (!deck) return console.log(`[LoadDeck]: Could not load the ${deckName} deck.`)
 
-		const deckIds = deck.cards?.filter((card: CardT) => CARDS[card.cardId])
+		const deckIds = deck.cards?.filter((card: CardT) => CARDS[card.id])
 
 		setLoadedDeck({
 			...deck,
@@ -257,12 +257,12 @@ const Deck = ({setMenuSection}: Props) => {
 			</li>
 		)
 	})
-	const validationMessage = validateDeck(loadedDeck.cards.map((card) => card.cardId))
+	const validationMessage = validateDeck(loadedDeck.cards.map((card) => card.id))
 	const selectedCards = {
-		hermits: loadedDeck.cards.filter((card) => CARDS[card.cardId]?.type === 'hermit'),
-		items: loadedDeck.cards.filter((card) => CARDS[card.cardId]?.type === 'item'),
-		attachableEffects: loadedDeck.cards.filter((card) => CARDS[card.cardId]?.type === 'effect'),
-		singleUseEffects: loadedDeck.cards.filter((card) => CARDS[card.cardId]?.type === 'single_use'),
+		hermits: loadedDeck.cards.filter((card) => CARDS[card.id]?.type === 'hermit'),
+		items: loadedDeck.cards.filter((card) => CARDS[card.id]?.type === 'item'),
+		attachableEffects: loadedDeck.cards.filter((card) => CARDS[card.id]?.type === 'effect'),
+		singleUseEffects: loadedDeck.cards.filter((card) => CARDS[card.id]?.type === 'single_use'),
 	}
 
 	//MISC
@@ -357,7 +357,7 @@ const Deck = ({setMenuSection}: Props) => {
 									</p>
 									<div className={css.cardCount}>
 										<p className={css.tokens}>
-											{getDeckCost(loadedDeck.cards.map((card) => card.cardId))}/
+											{getDeckCost(loadedDeck.cards.map((card) => card.id))}/
 											{CONFIG.limits.maxDeckCost} <span className={css.hideOnMobile}>tokens</span>
 										</p>
 									</div>

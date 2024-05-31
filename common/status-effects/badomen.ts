@@ -27,7 +27,7 @@ class BadOmenStatusEffect extends StatusEffect {
 		if (pos.card) {
 			game.battleLog.addCustomEntry(
 				player.id,
-				`$p${CARDS[pos.card.cardId].name}$ was inflicted with $bBad Omen$`
+				`$p${CARDS[pos.card.id].name}$ was inflicted with $bBad Omen$`
 			)
 		}
 

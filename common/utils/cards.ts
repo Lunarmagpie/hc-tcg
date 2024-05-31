@@ -17,12 +17,12 @@ export function equalCard(card1: CardT | null, card2: CardT | null) {
  */
 export function isCardType(card: CardT | null, type: CardCategoryT): boolean {
 	if (!card) return false
-	const cardInfo = CARDS[card.cardId]
+	const cardInfo = CARDS[card.id]
 	return cardInfo.type === type
 }
 
 export const isRemovable = (card: CardT) => {
-	const cardInfo = EFFECT_CARDS[card.cardId]
+	const cardInfo = EFFECT_CARDS[card.id]
 	if (!cardInfo) return false
 	return cardInfo.getIsRemovable()
 }

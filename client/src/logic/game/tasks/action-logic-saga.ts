@@ -21,7 +21,7 @@ function* borrowSaga(): SagaIterator {
 
 function* singleUseSaga(card: CardT): SagaIterator {
 	// We use CARDS instead of SINGLE_USE_CARDS because of Water and Milk Buckets
-	const cardInfo = CARDS[card.cardId]
+	const cardInfo = CARDS[card.id]
 	if (!cardInfo) return
 
 	if (cardInfo instanceof SingleUseCard && cardInfo.canApply()) {

@@ -22,13 +22,13 @@ const CardList = (props: CardListProps) => {
 	const {wrap, onClick, cards, disabled, selected, picked} = props
 
 	const cardsOutput = cards.map((card) => {
-		const info = CARDS[card.cardId] as Card
+		const info = CARDS[card.id] as Card
 		if (!info) return null
 		const isSelected = selected
 			? selected.some((selectedCard) => equalCard(card, selectedCard))
 			: false
 		const isPicked = !!picked?.find((pickedCard) => equalCard(card, pickedCard))
-		const isDisabled = !!disabled?.find((id) => card.cardId === id)
+		const isDisabled = !!disabled?.find((id) => card.id === id)
 
 		return (
 			<CSSTransition

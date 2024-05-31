@@ -29,7 +29,7 @@ function ConfirmModal({closeModal}: Props) {
 		const singleUseCard = playerState.board.singleUseCard
 
 		if (!singleUseCard) return null
-		const cardId = singleUseCard.cardId
+		const cardId = singleUseCard.id
 		const cardName = CARDS[cardId].name
 
 		return cardName

@@ -32,7 +32,7 @@ class FireChargeSingleUseCard extends SingleUseCard {
 			const validTypes = new Set(['effect', 'item'])
 
 			for (const card of cards) {
-				if (card && validTypes.has(CARDS[card.cardId]?.type)) {
+				if (card && validTypes.has(CARDS[card.id]?.type)) {
 					total++
 				}
 			}
