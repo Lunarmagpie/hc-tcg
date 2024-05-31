@@ -47,7 +47,7 @@ export class FirebaseLogs {
 			const playerStates: Array<PlayerState> = Object.values(game.state.players)
 
 			function getHand(pState: PlayerState) {
-				return pState.hand.map((card: CardT) => card.cardId)
+				return pState.hand.map((card: CardT) => card.id)
 			}
 
 			this.gameLogs[game.id] = {

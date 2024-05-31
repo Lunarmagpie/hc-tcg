@@ -11,9 +11,7 @@ export function flipCoin(
 	const forceHeads = DEBUG_CONFIG.forceCoinFlip
 	const activeRowIndex = playerTossingCoin.board.activeRow
 	if (activeRowIndex === null) {
-		console.log(
-			`${card.cardId} attempted to flip coin with no active row!, that shouldn't be possible`
-		)
+		console.log(`${card.id} attempted to flip coin with no active row!, that shouldn't be possible`)
 		return []
 	}
 
@@ -31,10 +29,10 @@ export function flipCoin(
 
 	playerTossingCoin.hooks.onCoinFlip.call(card, coinFlips)
 
-	const name = CARDS[card.cardId].name
+	const name = CARDS[card.id].name
 	const player = currentPlayer || playerTossingCoin
 	player.coinFlips.push({
-		cardId: card.cardId,
+		cardId: card.id,
 		opponentFlip: currentPlayer !== null,
 		name: !currentPlayer ? name : 'Opponent ' + name,
 		tosses: coinFlips,

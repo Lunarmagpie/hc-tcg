@@ -51,7 +51,7 @@ class HotguyRareHermitCard extends HermitCard {
 			const singleUseCard = player.board.singleUseCard
 			if (
 				!singleUseCard ||
-				singleUseCard.cardId !== 'bow' ||
+				singleUseCard.id !== 'bow' ||
 				!player.custom[this.getInstanceKey(instance)]
 			)
 				return

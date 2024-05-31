@@ -87,7 +87,7 @@ class GrianRareHermitCard extends HermitCard {
 
 						if (newPos) {
 							// Call onAttach
-							const cardInfo = CARDS[opponentEffectCard.cardId]
+							const cardInfo = CARDS[opponentEffectcard.id]
 							cardInfo.onAttach(game, opponentEffectCard.cardInstance, newPos)
 							player.hooks.onAttach.call(opponentEffectCard.cardInstance)
 						}

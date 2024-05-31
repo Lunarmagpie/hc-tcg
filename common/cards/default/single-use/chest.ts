@@ -19,7 +19,7 @@ class ChestSingleUseCard extends SingleUseCard {
 		const result = super.canAttach(game, pos)
 		const {player} = pos
 
-		if (player.discarded.filter((card) => card.cardId !== 'clock').length <= 0)
+		if (player.discarded.filter((card) => card.id !== 'clock').length <= 0)
 			result.push('UNMET_CONDITION')
 
 		return result

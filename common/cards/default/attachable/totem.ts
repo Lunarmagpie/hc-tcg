@@ -38,7 +38,7 @@ class TotemEffectCard extends EffectCard {
 				removeStatusEffect(game, pos, ail.statusEffectInstance)
 			})
 
-			const revivedHermit = HERMIT_CARDS[row.hermitCard.cardId].name
+			const revivedHermit = HERMIT_CARDS[row.hermitCard.id].name
 
 			game.battleLog.addCustomEntry(
 				player.id,

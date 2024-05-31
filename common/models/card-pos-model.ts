@@ -1,3 +1,4 @@
+import {IsCard} from '../cards/base/card'
 import {Slot} from '../types/cards'
 import {PlayerState, RowState} from '../types/game-state'
 import {GameModel} from './game-model'
@@ -13,7 +14,7 @@ export type BasicCardPos = {
 /**
  * Get the card position on the board for a card instance (in object form)
  */
-export function getBasicCardPos(game: GameModel, instance: string): BasicCardPos | null {
+export function getBasicCardPos(game: GameModel, card: IsCard): BasicCardPos | null {
 	const ids = game.getPlayerIds()
 	for (let i = 0; i < ids.length; i++) {
 		const playerId = ids[i]
@@ -26,7 +27,7 @@ export function getBasicCardPos(game: GameModel, instance: string): BasicCardPos
 		const board = game.state.players[playerId].board
 
 		// single use slot
-		if (board.singleUseCard?.cardInstance === instance) {
+		if (board.singleUseCard === card) {
 			return {
 				player,
 				opponentPlayer,
@@ -40,7 +41,7 @@ export function getBasicCardPos(game: GameModel, instance: string): BasicCardPos
 		for (let rowIndex = 0; rowIndex < board.rows.length; rowIndex++) {
 			const row = board.rows[rowIndex]
 
-			if (row.hermitCard?.cardInstance === instance) {
+			if (row.hermitCard === card) {
 				return {
 					player,
 					opponentPlayer,
@@ -48,7 +49,7 @@ export function getBasicCardPos(game: GameModel, instance: string): BasicCardPos
 					row,
 					slot: {type: 'hermit', index: 0},
 				}
-			} else if (row.effectCard?.cardInstance === instance) {
+			} else if (row.effectCard === card) {
 				return {
 					player,
 					opponentPlayer,
@@ -58,8 +59,8 @@ export function getBasicCardPos(game: GameModel, instance: string): BasicCardPos
 				}
 			} else {
 				for (let i = 0; i < row.itemCards.length; i++) {
-					const card = row.itemCards[i]
-					if (card?.cardInstance === instance) {
+					const itemCard = row.itemCards[i]
+					if (itemCard === card) {
 						return {
 							player,
 							opponentPlayer,
@@ -76,17 +77,17 @@ export function getBasicCardPos(game: GameModel, instance: string): BasicCardPos
 	return null
 }
 
-export function getCardPos(game: GameModel, instance: string) {
-	const basicPos = getBasicCardPos(game, instance)
+export function getCardPos(game: GameModel, card: IsCard) {
+	const basicPos = getBasicCardPos(game, card)
 
 	if (basicPos) {
-		return new CardPosModel(game, basicPos, instance)
+		return new CardPosModel(game, basicPos, card)
 	}
 
 	return null
 }
 
-function getCardAtPos(game: GameModel, pos: BasicCardPos) {
+function getCardAtPos(game: GameModel, pos: BasicCardPos): IsCard | null {
 	const {player, rowIndex, slot} = pos
 
 	const suCard = player.board.singleUseCard
@@ -118,7 +119,7 @@ function getCardAtPos(game: GameModel, pos: BasicCardPos) {
 export class CardPosModel {
 	private game: GameModel
 	private internalPos: BasicCardPos
-	private instance: string
+	private internalCard: IsCard
 
 	/**
 	 * Is this card pos fake - meaning not pointing to a card actually on the board?
@@ -127,15 +128,15 @@ export class CardPosModel {
 	 */
 	public fake: boolean
 
-	constructor(game: GameModel, cardPos: BasicCardPos, instance: string, fake: boolean = false) {
+	constructor(game: GameModel, cardPos: BasicCardPos, card: IsCard, fake: boolean = false) {
 		this.game = game
 		this.internalPos = cardPos
-		this.instance = instance
+		this.internalCard = card
 		this.fake = fake
 	}
 
 	private recalculateInternalPos() {
-		const newPos = getBasicCardPos(this.game, this.instance)
+		const newPos = getBasicCardPos(this.game, this.internalCard)
 
 		// Only change the stored card pos if the card is somewhere else on the board - if it's nowhere change nothing
 		if (newPos) {

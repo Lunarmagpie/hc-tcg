@@ -21,7 +21,7 @@ function getAttacks(
 	if (!attackPos.row || !attackPos.row.hermitCard) return []
 
 	// hermit attacks
-	const hermitCard = HERMIT_CARDS[attackPos.row.hermitCard.cardId]
+	const hermitCard = HERMIT_CARDS[attackPos.row.hermitCard.id]
 
 	const nextAttack = hermitCard.getAttacks(
 		game,

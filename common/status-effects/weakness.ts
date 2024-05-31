@@ -28,7 +28,7 @@ class WeaknessStatusEffect extends StatusEffect {
 		if (pos.card) {
 			game.battleLog.addCustomEntry(
 				player.id,
-				`$p${CARDS[pos.card.cardId].name}$ was inflicted with $eWeakness$`
+				`$p${CARDS[pos.card.id].name}$ was inflicted with $eWeakness$`
 			)
 		}
 
@@ -66,8 +66,8 @@ class WeaknessStatusEffect extends StatusEffect {
 
 			if (!attacker || !opponentActiveHermit) return
 
-			const attackerType = CARDS[attacker.row.hermitCard.cardId].type
-			const opponentType = CARDS[opponentActiveHermit.hermitCard.cardId].type
+			const attackerType = CARDS[attacker.row.hermitCard.id].type
+			const opponentType = CARDS[opponentActiveHermit.hermitCard.id].type
 
 			if (attackerType !== opponentType) return
 

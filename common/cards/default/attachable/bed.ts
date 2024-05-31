@@ -53,7 +53,7 @@ class BedEffectCard extends EffectCard {
 		//Ladder
 		player.hooks.afterApply.add(instance, () => {
 			if (player.custom[hermitSlot] != row?.hermitCard?.cardInstance && row && row.hermitCard) {
-				row.health = HERMIT_CARDS[row.hermitCard.cardId].health
+				row.health = HERMIT_CARDS[row.hermitCard.id].health
 
 				// Add new sleeping statusEffect
 				applyStatusEffect(game, 'sleeping', row.hermitCard.cardInstance)
