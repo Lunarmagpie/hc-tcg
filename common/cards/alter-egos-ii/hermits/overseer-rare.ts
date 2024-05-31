@@ -1,11 +1,11 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
-import {OverridesAttach, OverridesDetach, defaultHermitDisplayInfo} from '../../base/card'
-import {HermitCard} from '../../base/hermit-card'
+import {OverridesAttach, OverridesDetach} from '../../base/card'
+import {HermitCard, defaultHermitInfo} from '../../base/hermit-card'
 
 const OverseerRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	return {
-		category: 'hermit',
+		...defaultHermitInfo,
 		id: 'overseer_rare',
 		numericId: 235,
 		name: 'Overseer',
@@ -39,10 +39,9 @@ const OverseerRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetac
 			const {player} = pos
 			player.hooks.beforeAttack.remove(this)
 		},
-		...defaultHermitDisplayInfo(this),
 		palette: 'alter_egos',
 		expansion: 'alter_egos_ii',
-		background: 'alter_egos_background',
+		getBackground: () => 'alter_egos_background',
 	}
 }
 

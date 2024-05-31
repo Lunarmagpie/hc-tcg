@@ -1,12 +1,12 @@
 import {AttackModel} from '../../../models/attack-model'
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
-import {defaultHermitDisplayInfo} from '../../base/card'
+
 import {CustomAttachHermitCard} from '../../base/hermit-card'
 
 const StressMonster101RareHermitCard = (): CustomAttachHermitCard => {
 	return {
-		...defaultHermitDisplayInfo,
+		...defaultHermitInfo,
 		category: 'hermit',
 		id: 'stressmonster101_rare',
 		numericId: 93,

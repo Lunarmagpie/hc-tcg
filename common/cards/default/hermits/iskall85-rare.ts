@@ -1,11 +1,11 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
-import {OverridesAttach, OverridesDetach, defaultHermitDisplayInfo} from '../../base/card'
-import {HermitCard} from '../../base/hermit-card'
+import {OverridesAttach, OverridesDetach} from '../../base/card'
+import {HermitCard, defaultHermitInfo} from '../../base/hermit-card'
 
 const Iskall85RareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	return {
-		...defaultHermitDisplayInfo,
+		...defaultHermitInfo,
 		category: 'hermit',
 		id: 'iskall85_rare',
 		numericId: 48,

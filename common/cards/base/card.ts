@@ -38,24 +38,6 @@ export interface EffectDisplayInfo {}
 
 export interface SingleUseDisplayInfo {}
 
-export const defaultHermitDisplayInfo = {
-	expansion: 'default',
-	palette: 'default',
-	getBackground(this: IsCard) {
-		return this.id.split('_')[0]
-	},
-	getShortName(this: IsCard) {
-		return null
-	},
-	getDescription(this: IsCard & HasPrimaryAttack & HasSecondaryAttack) {
-		return formatText(
-			(this.primary.power ? `**${this.primary.name}**\n*${this.primary.power}*` : '') +
-				(this.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
-		)
-	},
-	sidebarDescriptions: [],
-}
-
 export interface HasBattleLog {
 	log: ((values: PlayCardLog) => string) | null
 }

@@ -1,4 +1,4 @@
-import HermitCard from '../../base/hermit-card'
+import {HermitCard, defaultHermitInfo} from '../../base/hermit-card'
 
 class TinFoilChefCommonHermitCard extends HermitCard {
 	constructor() {

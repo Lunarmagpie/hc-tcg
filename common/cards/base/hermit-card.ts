@@ -1,7 +1,7 @@
 import { AttackModel } from '../../models/attack-model'
 import { GameModel } from '../../models/game-model'
 import { IsCard, CanAttachResult, IsAttachableToHermitSlots, OverridesDetach, HasHermitType, HasHealth, HasPrimaryAttack, HasSecondaryAttack, OverridesAttach, HermitDisplayInfo } from './card'
-import { CardRarityT, HermitAttackInfo, HermitTypeT, PlayCardLog } from '../../types/cards'
+import { CardCategoryT, CardRarityT, HermitAttackInfo, HermitTypeT, PlayCardLog } from '../../types/cards'
 import { HermitAttackType } from '../../types/attack'
 import { CardPosModel } from '../../models/card-pos-model'
 import { TurnActions } from '../../types/game-state'
@@ -16,6 +16,25 @@ export type HermitCard =
 	& HasPrimaryAttack
 	& HasSecondaryAttack
 	& HermitDisplayInfo
+
+export const defaultHermitInfo = {
+		category: 'hermit' as CardCategoryT,
+		expansion: 'default',
+		palette: 'default',
+		getBackground(this: IsCard) {
+			return this.id.split('_')[0]
+		},
+		getShortName(this: IsCard) {
+			return null
+		},
+		getDescription(this: IsCard & HasPrimaryAttack & HasSecondaryAttack) {
+			return formatText(
+				(this.primary.power ? `**${this.primary.name}**\n*${this.primary.power}*` : '') +
+					(this.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
+			)
+		},
+		sidebarDescriptions: [],
+	}
 
 	// Default is to return
 	// 	public getAttacks(
