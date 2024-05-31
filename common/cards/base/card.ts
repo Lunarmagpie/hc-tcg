@@ -5,10 +5,10 @@ import {
 	HermitTypeT,
 	HermitAttackInfo,
 } from '../../types/cards'
-import {GameModel} from '../../models/game-model'
-import {CardPosModel} from '../../models/card-pos-model'
-import {TurnActions} from '../../types/game-state'
-import {EmptyNode, FormattedTextNode, formatText} from '../../utils/formatting'
+import { GameModel } from '../../models/game-model'
+import { CardPosModel } from '../../models/card-pos-model'
+import { TurnActions } from '../../types/game-state'
+import { EmptyNode, FormattedTextNode, formatText } from '../../utils/formatting'
 
 export interface IsCard {
 	category: CardCategoryT
@@ -34,15 +34,15 @@ export interface HermitDisplayInfo {
 	getShortName: () => string | null
 }
 
-export interface EffectDisplayInfo {}
+export interface EffectDisplayInfo { }
 
-export interface SingleUseDisplayInfo {}
+export interface SingleUseDisplayInfo { }
 
 export interface HasBattleLog {
 	log: ((values: PlayCardLog) => string) | null
 }
 
-export interface IsSingleUse {}
+export interface IsSingleUse { }
 
 export interface HasTurnActions {
 	/**
@@ -55,13 +55,13 @@ export interface OverridesAttach {
 	onAttach(game: GameModel, pos: CardPosModel): void
 }
 
-export interface IsAttachableToHermitSlots {}
+export interface IsAttachableToHermitSlots { }
 
-export interface IsAttachableToItemSlots {}
+export interface IsAttachableToItemSlots { }
 
-export interface IsAttachableToEffectSlots {}
+export interface IsAttachableToEffectSlots { }
 
-export interface IsAttachableToSingleUseSlot {}
+export interface IsAttachableToSingleUseSlot { }
 
 export interface OverridesDetach {
 	/**
@@ -78,10 +78,7 @@ export interface HasHealth {
 	health: number
 }
 
-export interface HasPrimaryAttack {
+export interface CanAttack {
 	primary: HermitAttackInfo
-}
-
-export interface HasSecondaryAttack {
 	secondary: HermitAttackInfo
 }

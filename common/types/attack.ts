@@ -52,7 +52,7 @@ export type AttackHistoryType =
 	| 'set_target'
 
 export type AttackHistory = {
-	sourceId: string
+	source: any
 	type: AttackHistoryType
 	value?: any
 }

@@ -1,6 +1,6 @@
 import { AttackModel } from '../../models/attack-model'
 import { GameModel } from '../../models/game-model'
-import { IsCard, IsAttachableToHermitSlots, OverridesDetach, HasHermitType, HasHealth, HasPrimaryAttack, HasSecondaryAttack, OverridesAttach, HermitDisplayInfo } from './card'
+import { IsCard, IsAttachableToHermitSlots, OverridesDetach, HasHermitType, HasHealth, OverridesAttach, HermitDisplayInfo, CanAttack } from './card'
 import { CardCategoryT, CardRarityT, HermitAttackInfo, HermitTypeT, PlayCardLog } from '../../types/cards'
 import { HermitAttackType } from '../../types/attack'
 import { CardPosModel } from '../../models/card-pos-model'
@@ -13,8 +13,7 @@ export type HermitCard =
 	& IsAttachableToHermitSlots
 	& HasHermitType
 	& HasHealth
-	& HasPrimaryAttack
-	& HasSecondaryAttack
+	& CanAttack
 	& HermitDisplayInfo
 
 export const defaultHermitInfo = {
@@ -37,67 +36,66 @@ export const defaultHermitInfo = {
 }
 
 // Default is to return
-// 	public getAttacks(
-// 		game: GameModel,
-// 		instance: string,
-// 		pos: CardPosModel,
-// 		hermitAttackType: HermitAttackType
-// 	): AttackModel | null {
-// 		if (pos.rowIndex === null || !pos.row || !pos.row.hermitCard) return null
+function createAttackModel(
+	game: GameModel,
+	hermit: IsCard & CanAttack,
+	pos: CardPosModel,
+	hermitAttackType: HermitAttackType
+): AttackModel | null {
+	if (pos.rowIndex === null || !pos.row || !pos.row.hermitCard) return null
 
-// 		const {opponentPlayer: opponentPlayer} = game
-// 		const targetIndex = opponentPlayer.board.activeRow
-// 		if (targetIndex === null) return null
+	const { opponentPlayer: opponentPlayer } = game
+	const targetIndex = opponentPlayer.board.activeRow
+	if (targetIndex === null) return null
 
-// 		const targetRow = opponentPlayer.board.rows[targetIndex]
-// 		if (!targetRow.hermitCard) return null
+	const targetRow = opponentPlayer.board.rows[targetIndex]
+	if (!targetRow.hermitCard) return null
 
-// 		// Create an attack with default damage
-// 		const attack = new AttackModel({
-// 			id: this.getInstanceKey(instance),
-// 			attacker: {
-// 				player: pos.player,
-// 				rowIndex: pos.rowIndex,
-// 				row: pos.row,
-// 			},
-// 			target: {
-// 				player: opponentPlayer,
-// 				rowIndex: targetIndex,
-// 				row: targetRow,
-// 			},
-// 			type: hermitAttackType,
-// 			createWeakness: 'ifWeak',
-// 			log: (values) =>
-// 				`${values.attacker} ${values.coinFlip ? values.coinFlip + ', then ' : ''} attacked ${
-// 					values.target
-// 				} with ${values.attackName} for ${values.damage} damage`,
-// 		})
+	// Create an attack with default damage
+	const attack = new AttackModel({
+		creator: hermit,
+		attacker: {
+			player: pos.player,
+			rowIndex: pos.rowIndex,
+			row: pos.row,
+		},
+		target: {
+			player: opponentPlayer,
+			rowIndex: targetIndex,
+			row: targetRow,
+		},
+		type: hermitAttackType,
+		createWeakness: 'ifWeak',
+		log: (values) =>
+			`${values.attacker} ${values.coinFlip ? values.coinFlip + ', then ' : ''} attacked ${values.target
+			} with ${values.attackName} for ${values.damage} damage`,
+	})
 
-// 		if (attack.type === 'primary') {
-// 			attack.addDamage(this.id, this.primary.damage)
-// 		} else if (attack.type === 'secondary') {
-// 			attack.addDamage(this.id, this.secondary.damage)
-// 		}
+	if (hermitAttackType == 'primary') {
+		attack.addDamage(hermit, hermit.primary.damage)
+	} else if (hermitAttackType == 'secondary') {
+		attack.addDamage(hermit, hermit.secondary.damage)
+	}
 
-// 		return attack
-// 	}
+	return attack
+}
 
-// 	public override getActions(game: GameModel): TurnActions {
-// 		const {currentPlayer} = game
+function getActions(game: GameModel): TurnActions {
+	const {currentPlayer} = game
 
-// 		// Is there a hermit slot free on the board
-// 		const spaceForHermit = currentPlayer.board.rows.some((row) => !row.hermitCard)
+	// Is there a hermit slot free on the board
+	const spaceForHermit = currentPlayer.board.rows.some((row) => !row.hermitCard)
 
-// 		return spaceForHermit ? ['PLAY_HERMIT_CARD'] : []
-// 	}
+	return spaceForHermit ? ['PLAY_HERMIT_CARD'] : []
+}
 
-// 	public override getFormattedDescription(): FormattedTextNode {
-// 		return formatText(
-// 			(this.primary.power ? `**${this.primary.name}**\n*${this.primary.power}*` : '') +
-// 				(this.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
-// 		)
-// 	}
+// export function getFormattedDescription(): FormattedTextNode {
+// 	return formatText(
+// 		(this.primary.power ? `**${this.primary.name}**\n*${this.primary.power}*` : '') +
+// 			(this.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
+// 	)
 // }
+
 
 export function getHermitCardDefaults(name: string) {
 	return {
