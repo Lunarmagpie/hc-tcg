@@ -2,6 +2,7 @@ import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {
 	OverridesAttach,
 	OverridesDetach,
+	canAttackDefaults,
 	implementsCanAttack,
 	implementsCard,
 	implementsOverridesAttach,
@@ -39,7 +40,7 @@ const RendogRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach 
 			damage: 0,
 			power: "Use an attack from any of your opponent's Hermits.",
 		},
-		getAttacks(game: GameModel, pos: CardPosModel, hermitAttackType: HermitAttackType) {
+		getAttack(game: GameModel, pos: CardPosModel, hermitAttackType: HermitAttackType) {
 			const {player} = pos
 			const attack = {
 				...this,

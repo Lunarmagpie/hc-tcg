@@ -16,7 +16,7 @@ const DiamondSwordSingleUseCard = (): DamageSingleUseCard => {
 		onAttach(game: GameModel, pos: CardPosModel) {
 			const {player, opponentPlayer} = pos
 
-			player.hooks.getAttacks.add(this, () => {
+			player.hooks.getAttack.add(this, () => {
 				const activePos = getActiveRowPos(player)
 				if (!activePos) return null
 
@@ -50,7 +50,7 @@ const DiamondSwordSingleUseCard = (): DamageSingleUseCard => {
 		},
 		onDetach(game: GameModel, pos: CardPosModel) {
 			const {player} = pos
-			player.hooks.getAttacks.remove(this)
+			player.hooks.getAttack.remove(this)
 			player.hooks.onAttack.remove(this)
 		},
 	}
