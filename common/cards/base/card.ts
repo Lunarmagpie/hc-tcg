@@ -29,7 +29,7 @@ export interface IsCard {
 	sidebarDescriptions: Array<Record<string, string>>
 
 	//@TODO remove this and make mixin
-	log: (values: PlayCardLog) => string | null
+	log: ((values: PlayCardLog) => string) | null
 }
 export const isCardDefaults = { __is_card: undefined }
 export function implementsIsCard(obj: any): obj is IsCard {
@@ -54,6 +54,11 @@ export function implementsEffectDisplayInfo(obj: any): obj is EffectDisplayInfo 
 	return '__effect_display_info' in obj
 }
 
+export interface ItemDisplayInfo { }
+export const itemDisplayInfoDefaults ={ __item_display_info: undefined }
+export function implementsItemDisplayInfo(obj: any): obj is ItemDisplayInfo {
+  return '__item_display_info' in obj  
+}
 
 export interface SingleUseDisplayInfo { __single_use_display_info: undefined }
 export const SingleUseDisplayInfo = { __single_use_display_info: undefined }
@@ -168,6 +173,10 @@ export interface CanAttack {
 export const canAttackDefaults = { __can_attack: undefined }
 export function implementsCanAttack(obj: any): obj is CanAttack {
 	return '__can_attack' in obj
+}
+
+export interface AllowAttacks {
+	allowAttacks: boolean
 }
 
 export interface HasDescription {

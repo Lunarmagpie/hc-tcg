@@ -2,11 +2,11 @@ import { CardPosModel } from '../../../models/card-pos-model'
 import { GameModel } from '../../../models/game-model'
 import { IsAttachableToEffectSlots, overridesAttachDefaults, overridesDetachDefaults } from '../../base/card'
 import { OverridesAttach, OverridesDetach } from '../../base/card'
-import { HermitCard, defaultHermitInfo } from '../../base/hermit-card'
+import { HermitCard, hermitCardDefaults } from '../../base/hermit-card'
 
 const Iskall85RareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	return {
-		...defaultHermitInfo,
+		...hermitCardDefaults,
 		...overridesAttachDefaults,
 		...overridesDetachDefaults,
 		category: 'hermit',
@@ -30,7 +30,7 @@ const Iskall85RareHermitCard = (): HermitCard & OverridesAttach & OverridesDetac
 		},
 		onAttach(game: GameModel, pos: CardPosModel) {
 			console.log(this)
-			const { player } = pos
+			const {player} = pos
 
 			player.hooks.beforeAttack.add(this, (attack) => {
 				const target = attack.getTarget()
@@ -41,7 +41,7 @@ const Iskall85RareHermitCard = (): HermitCard & OverridesAttach & OverridesDetac
 			})
 		},
 		onDetach(game: GameModel, pos: CardPosModel) {
-			const { player } = pos
+			const {player} = pos
 			player.hooks.beforeAttack.remove(this)
 		},
 	}

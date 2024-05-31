@@ -1,69 +1,71 @@
-import Card, {CanAttachResult} from './card'
 import {PlayCardLog, CardRarityT, EnergyT, HermitTypeT} from '../../types/cards'
 import {GameModel} from '../../models/game-model'
 import {CardPosModel} from '../../models/card-pos-model'
 import {TurnActions} from '../../types/game-state'
 import {FormattedTextNode, formatText} from '../../utils/formatting'
 import {HERMIT_CARDS} from '..'
+import {IsAttachableToItemSlots, IsCard} from './card'
 
-type ItemDefs = {
-	id: string
-	numericId: number
-	name: string
-	rarity: CardRarityT
-	hermitType: HermitTypeT
-}
+export type ItemCard = IsCard & IsAttachableToItemSlots
 
-abstract class ItemCard extends Card {
-	public hermitType: HermitTypeT
+// type ItemDefs = {
+// 	id: string
+// 	numericId: number
+// 	name: string
+// 	rarity: CardRarityT
+// 	hermitType: HermitTypeT
+// }
 
-	constructor(defs: ItemDefs) {
-		super({
-			type: 'item',
-			id: defs.id,
-			numericId: defs.numericId,
-			name: defs.name,
-			rarity: defs.rarity,
-		})
+// abstract class ItemCard extends Card {
+// 	public hermitType: HermitTypeT
 
-		this.hermitType = defs.hermitType
+// 	constructor(defs: ItemDefs) {
+// 		super({
+// 			type: 'item',
+// 			id: defs.id,
+// 			numericId: defs.numericId,
+// 			name: defs.name,
+// 			rarity: defs.rarity,
+// 		})
 
-		this.log = (values) =>
-			`$p{You|${values.player}}$ attached $m${values.pos.name}$ to $p${values.pos.hermitCard}$`
-	}
+// 		this.hermitType = defs.hermitType
 
-	public override canAttach(game: GameModel, pos: CardPosModel): CanAttachResult {
-		const {currentPlayer} = game
+// 		this.log = (values) =>
+// 			`$p{You|${values.player}}$ attached $m${values.pos.name}$ to $p${values.pos.hermitCard}$`
+// 	}
 
-		const result: CanAttachResult = []
+// 	public override canAttach(game: GameModel, pos: CardPosModel): CanAttachResult {
+// 		const {currentPlayer} = game
 
-		if (pos.slot.type !== 'item') result.push('INVALID_SLOT')
-		if (pos.player.id !== currentPlayer.id) result.push('INVALID_PLAYER')
+// 		const result: CanAttachResult = []
 
-		// Can't attach without hermit - this does not show the unmet condition modal
-		if (!pos.row?.hermitCard) result.push('UNMET_CONDITION_SILENT')
+// 		if (pos.slot.type !== 'item') result.push('INVALID_SLOT')
+// 		if (pos.player.id !== currentPlayer.id) result.push('INVALID_PLAYER')
 
-		return result
-	}
+// 		// Can't attach without hermit - this does not show the unmet condition modal
+// 		if (!pos.row?.hermitCard) result.push('UNMET_CONDITION_SILENT')
 
-	public override getActions(game: GameModel): TurnActions {
-		const {currentPlayer} = game
+// 		return result
+// 	}
 
-		// Is there is a hermit on the board with space for an item card
-		const spaceForItem = currentPlayer.board.rows.some((row) => {
-			const hasHermit = !!row.hermitCard
-			const hasEmptyItemSlot = row.itemCards.some((card) => card === null)
-			return hasHermit && hasEmptyItemSlot
-		})
+// 	public override getActions(game: GameModel): TurnActions {
+// 		const {currentPlayer} = game
 
-		return spaceForItem ? ['PLAY_ITEM_CARD'] : []
-	}
+// 		// Is there is a hermit on the board with space for an item card
+// 		const spaceForItem = currentPlayer.board.rows.some((row) => {
+// 			const hasHermit = !!row.hermitCard
+// 			const hasEmptyItemSlot = row.itemCards.some((card) => card === null)
+// 			return hasHermit && hasEmptyItemSlot
+// 		})
 
-	public override getFormattedDescription(): FormattedTextNode {
-		return this.rarity === 'rare' ? formatText('*Counts as 2 Item cards.*') : formatText('')
-	}
+// 		return spaceForItem ? ['PLAY_ITEM_CARD'] : []
+// 	}
 
-	public abstract getEnergy(game: GameModel, instance: string, pos: CardPosModel): Array<EnergyT>
-}
+// 	public override getFormattedDescription(): FormattedTextNode {
+// 		return this.rarity === 'rare' ? formatText('*Counts as 2 Item cards.*') : formatText('')
+// 	}
 
-export default ItemCard
+// 	public abstract getEnergy(game: GameModel, instance: string, pos: CardPosModel): Array<EnergyT>
+// }
+
+// export default ItemCard
