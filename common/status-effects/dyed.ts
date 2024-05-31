@@ -23,7 +23,7 @@ const DyedStatusEffect = (target: Card): StatusEffect => {
 
 				const activeRow = player.board.rows[player.board.activeRow]
 
-				if (this !== activeRow.hermitCard?.cardInstance) return availableEnergy
+				if (this.target !== activeRow.hermitCard) return availableEnergy
 
 				return availableEnergy.map(() => 'any')
 			})

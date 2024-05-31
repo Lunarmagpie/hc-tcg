@@ -19,10 +19,7 @@ const WeaknessStatusEffect = (target: Card): StatusEffect => {
 			game.state.statusEffects.push(this)
 			const {player, opponentPlayer} = pos
 
-			game.battleLog.addCustomEntry(
-				player.id,
-				`$p${this.target.name}$ was inflicted with $eWeakness$`
-			)
+			game.battleLog.addEntry(player.id, `$p${this.target.name}$ was inflicted with $eWeakness$`)
 
 			player.hooks.onTurnStart.add(this, () => {
 				this.duration--
@@ -51,7 +48,7 @@ const WeaknessStatusEffect = (target: Card): StatusEffect => {
 			player.hooks.afterDefence.add(this, (attack) => {
 				const attackTarget = attack.getTarget()
 				if (!attackTarget) return
-				if (attackTarget.row.hermitCard.cardInstance !== this.target) return
+				if (attackTarget.row.hermitCard !== this.target) return
 				if (attackTarget.row.health > 0) return
 				removeStatusEffect(game, pos, this)
 			})

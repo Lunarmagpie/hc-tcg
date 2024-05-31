@@ -25,7 +25,7 @@ const SleepingStatusEffect = (target: Card): StatusEffect => {
 
 			row.health = card.health
 
-			game.battleLog.addCustomEntry(
+			game.battleLog.addEntry(
 				player.id,
 				`$p${card.name}$ went to $eSleep$ and restored $gfull health$`
 			)

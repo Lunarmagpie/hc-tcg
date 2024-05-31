@@ -52,7 +52,7 @@ const ProtectedStatusEffect = (target: Card): StatusEffect => {
 			player.hooks.afterDefence.add(this, (attack) => {
 				const attackTarget = attack.getTarget()
 				if (!attackTarget) return
-				if (attackTarget.row.hermitCard.cardInstance !== this.target) return
+				if (attackTarget.row.hermitCard !== this.target) return
 				if (attackTarget.row.health > 0) return
 				removeStatusEffect(game, pos, this)
 			})

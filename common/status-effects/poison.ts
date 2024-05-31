@@ -29,7 +29,7 @@ const PoisonStatusEffect = (target: Card): StatusEffect => {
 			if (hasDamageEffect) return
 
 			game.state.statusEffects.push(this)
-			game.battleLog.addCustomEntry(player.id, `$p${this.target.name}$ was $ePoisoned$`)
+			game.battleLog.addEntry(player.id, `$p${this.target.name}$ was $ePoisoned$`)
 
 			opponentPlayer.hooks.onTurnEnd.add(this, () => {
 				const targetPos = getBasicCardPos(game, this.target)
@@ -72,7 +72,7 @@ const PoisonStatusEffect = (target: Card): StatusEffect => {
 			player.hooks.afterDefence.add(this, (attack) => {
 				const attackTarget = attack.getTarget()
 				if (!attackTarget) return
-				if (attackTarget.row.hermitCard.cardInstance !== this) return
+				if (attackTarget.row.hermitCard !== this.target) return
 				if (attackTarget.row.health > 0) return
 				removeStatusEffect(game, pos, this)
 			})
