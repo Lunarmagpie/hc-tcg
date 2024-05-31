@@ -18,7 +18,6 @@ const PoisonStatusEffect = (target: IsCard): StatusEffect => {
 		duration: 0,
 		counter: false,
 		damageEffect: true,
-		visible: true,
 		target: target,
 		onApply(game: GameModel, pos: CardPosModel) {
 			const {player, opponentPlayer} = pos

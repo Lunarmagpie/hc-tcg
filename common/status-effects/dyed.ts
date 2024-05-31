@@ -12,7 +12,6 @@ const DyedStatusEffect = (target: IsCard): StatusEffect => {
 		duration: 0,
 		counter: false,
 		damageEffect: false,
-		visible: true,
 		target: target,
 		onApply(game: GameModel, pos: CardPosModel) {
 			const {player} = pos

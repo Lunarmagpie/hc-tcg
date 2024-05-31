@@ -14,7 +14,6 @@ const BadOmenStatusEffect = (target: IsCard): StatusEffect => {
 		duration: 3,
 		counter: false,
 		damageEffect: false,
-		visible: true,
 		target: target,
 		onApply(game: GameModel, pos: CardPosModel) {
 			game.state.statusEffects.push(this)

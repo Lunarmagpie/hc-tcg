@@ -13,8 +13,6 @@ export interface StatusEffect {
 	damageEffect: boolean
 	/* The target of this status effect */
 	target: IsCard
-	/* Whether or not this status effect should be rendered */
-	visible: boolean
 
 	/**
 	 * Called when this statusEffect is applied
