@@ -16,11 +16,6 @@ export type HermitCard =
 	& HasPrimaryAttack
 	& HasSecondaryAttack
 
-export type CustomAttachHermitCard =
-	& HermitCard
-	& OverridesAttach
-	& OverridesDetach
-
 	// Default is to return
 	// 	public getAttacks(
 	// 		game: GameModel,

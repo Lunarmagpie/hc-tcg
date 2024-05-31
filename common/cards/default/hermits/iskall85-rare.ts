@@ -1,9 +1,11 @@
-import {CardPosModel} from '../../../models/card-pos-model'
-import {GameModel} from '../../../models/game-model'
-import {defaultCardInfo} from '../../base/card'
-import {CustomAttachHermitCard} from '../../base/hermit-card'
+import { CardPosModel } from '../../../models/card-pos-model'
+import { GameModel } from '../../../models/game-model'
+import { IsAttachableToEffectSlots, defaultCardInfo } from '../../base/card'
 
-const Iskall85RareHermitCard = (): CustomAttachHermitCard => {
+import { OverridesAttach, OverridesDetach } from '../../base/card'
+import { HermitCard } from '../../base/hermit-card'
+
+const Iskall85RareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	return {
 		...defaultCardInfo,
 		category: 'hermit',
@@ -26,7 +28,8 @@ const Iskall85RareHermitCard = (): CustomAttachHermitCard => {
 			power: 'Attack damage doubles versus Builder types.',
 		},
 		onAttach(game: GameModel, pos: CardPosModel) {
-			const {player} = pos
+			console.log(this)
+			const { player } = pos
 
 			player.hooks.beforeAttack.add(this, (attack) => {
 				const target = attack.getTarget()
@@ -37,7 +40,7 @@ const Iskall85RareHermitCard = (): CustomAttachHermitCard => {
 			})
 		},
 		onDetach(game: GameModel, pos: CardPosModel) {
-			const {player} = pos
+			const { player } = pos
 			player.hooks.beforeAttack.remove(this)
 		},
 	}
