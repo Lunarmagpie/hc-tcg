@@ -51,7 +51,7 @@ export interface HasTurnActions {
 }
 
 export interface OverridesAttach {
-	onAttach(instance: T, game: GameModel, pos: CardPosModel): void
+	onAttach(game: GameModel, pos: CardPosModel): void
 }
 
 export interface IsAttachableToHermitSlots {}
@@ -66,7 +66,7 @@ export interface OverridesDetach {
 	/**
 	 * Called when an instance of this card is removed from the board
 	 */
-	onDetach(instance: T, game: GameModel, pos: CardPosModel): void
+	onDetach(game: GameModel, pos: CardPosModel): void
 }
 
 export interface HasHermitType {

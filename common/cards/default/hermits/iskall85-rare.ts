@@ -25,20 +25,20 @@ const Iskall85RareHermitCard = (): CustomAttachHermitCard => {
 			damage: 80,
 			power: 'Attack damage doubles versus Builder types.',
 		},
-		onAttach: (instance: CustomAttachHermitCard, game: GameModel, pos: CardPosModel) => {
+		onAttach(game: GameModel, pos: CardPosModel) {
 			const {player} = pos
 
-			player.hooks.beforeAttack.add(instance, (attack) => {
+			player.hooks.beforeAttack.add(this, (attack) => {
 				const target = attack.getTarget()
-				if (attack.getCreator() !== instance || attack.type !== 'secondary' || !target) return
+				if (attack.getCreator() !== this || attack.type !== 'secondary' || !target) return
 				if (target.row.hermitCard.hermitType !== 'builder') return
 
-				attack.multiplyDamage(instance.id, 2)
+				attack.multiplyDamage(this.id, 2)
 			})
 		},
-		onDetach: (instance: CustomAttachHermitCard, game: GameModel, pos: CardPosModel) => {
+		onDetach(game: GameModel, pos: CardPosModel) {
 			const {player} = pos
-			player.hooks.beforeAttack.remove(instance)
+			player.hooks.beforeAttack.remove(this)
 		},
 	}
 }

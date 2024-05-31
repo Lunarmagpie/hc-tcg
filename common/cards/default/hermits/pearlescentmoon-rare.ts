@@ -33,14 +33,14 @@ const PearlescentMoonRareHermitCard = (): CustomAttachHermitCard => {
 				name: 'missed',
 			},
 		],
-		onAttach: (instance: CustomAttachHermitCard, game: GameModel, pos: CardPosModel) => {
+		onAttach(game: GameModel, pos: CardPosModel) {
 			const {player, opponentPlayer} = pos
 			let status: 'none' | 'missed' | 'heads' | 'tails' = 'none'
 			status = 'none'
 
-			player.hooks.onAttack.add(instance, (attack) => {
+			player.hooks.onAttack.add(this, (attack) => {
 				const attacker = attack.getAttacker()
-				if (attack.getCreator() !== instance || attack.type !== 'secondary' || !attacker) return
+				if (attack.getCreator() !== this || attack.type !== 'secondary' || !attacker) return
 
 				if (status === 'missed') {
 					status = 'none'
@@ -48,7 +48,7 @@ const PearlescentMoonRareHermitCard = (): CustomAttachHermitCard => {
 				}
 
 				const attackerHermit = attacker.row.hermitCard
-				opponentPlayer.hooks.beforeAttack.add(instance, (attack) => {
+				opponentPlayer.hooks.beforeAttack.add(this, (attack) => {
 					if (!attack.isType('primary', 'secondary')) return
 
 					const hasFlipped = status === 'heads' || status === 'tails'
@@ -60,31 +60,31 @@ const PearlescentMoonRareHermitCard = (): CustomAttachHermitCard => {
 					}
 
 					if (status === 'heads') {
-						attack.multiplyDamage(instance.id, 0).lockDamage(instance.id)
+						attack.multiplyDamage(this.id, 0).lockDamage(this.id)
 					}
 				})
 
-				opponentPlayer.hooks.onTurnEnd.add(instance, () => {
+				opponentPlayer.hooks.onTurnEnd.add(this, () => {
 					if (status === 'heads') status = 'missed'
 
-					opponentPlayer.hooks.beforeAttack.remove(instance)
-					opponentPlayer.hooks.onTurnEnd.remove(instance)
+					opponentPlayer.hooks.beforeAttack.remove(this)
+					opponentPlayer.hooks.onTurnEnd.remove(this)
 				})
 			})
 
 			// If the opponent missed the previous turn and we switch hermits or we don't
 			// attack this turn then we reset the status
-			player.hooks.onTurnEnd.add(instance, () => {
+			player.hooks.onTurnEnd.add(this, () => {
 				status = 'none'
 			})
 		},
 
-		onDetach: (instance: CustomAttachHermitCard, game: GameModel, pos: CardPosModel) => {
+		onDetach(game: GameModel, pos: CardPosModel) {
 			const {player, opponentPlayer} = pos
-			player.hooks.onAttack.remove(instance)
-			player.hooks.onTurnEnd.remove(instance)
-			opponentPlayer.hooks.beforeAttack.remove(instance)
-			opponentPlayer.hooks.onTurnEnd.remove(instance)
+			player.hooks.onAttack.remove(this)
+			player.hooks.onTurnEnd.remove(this)
+			opponentPlayer.hooks.beforeAttack.remove(this)
+			opponentPlayer.hooks.onTurnEnd.remove(this)
 		},
 	}
 }

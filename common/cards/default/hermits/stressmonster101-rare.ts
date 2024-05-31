@@ -27,16 +27,16 @@ const StressMonster101RareHermitCard = (): CustomAttachHermitCard => {
 			power:
 				"You and your opponent's active Hermit take damage equal to your active Hermit's health.\nAny damage this Hermit takes due to this ability can not be redirected.",
 		},
-		onAttach(instance: CustomAttachHermitCard, game: GameModel, pos: CardPosModel) {
+		onAttach(game: GameModel, pos: CardPosModel) {
 			const {player} = pos
 
-			player.hooks.onAttack.add(instance, (attack) => {
-				if (attack.getCreator() !== instance || attack.type !== 'secondary') return
+			player.hooks.onAttack.add(this, (attack) => {
+				if (attack.getCreator() !== this || attack.type !== 'secondary') return
 				const attacker = attack.getAttacker()
 				if (!attacker) return
 
 				const backlashAttack = new AttackModel({
-					creator: instance,
+					creator: this,
 					attacker,
 					target: attacker,
 					type: 'secondary',
@@ -44,16 +44,16 @@ const StressMonster101RareHermitCard = (): CustomAttachHermitCard => {
 					log: (values) => ` and took ${values.damage} backlash damage`,
 				})
 				const attackDamage = attacker.row.health
-				attack.addDamage(instance.id, attackDamage)
-				backlashAttack.addDamage(instance.id, attackDamage)
+				attack.addDamage(this.id, attackDamage)
+				backlashAttack.addDamage(this.id, attackDamage)
 
 				attack.addNewAttack(backlashAttack)
 			})
 		},
-		onDetach(instance: CustomAttachHermitCard, game: GameModel, pos: CardPosModel) {
+		onDetach(game: GameModel, pos: CardPosModel) {
 			const {player} = pos
 			// Remove hooks
-			player.hooks.onAttack.remove(instance)
+			player.hooks.onAttack.remove(this)
 		},
 	}
 }
