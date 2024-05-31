@@ -1,7 +1,7 @@
 import {AttackModel} from '../../models/attack-model'
 import {GameModel} from '../../models/game-model'
 import {
-	IsCard,
+	Card,
 	IsAttachableToHermitSlots,
 	OverridesDetach,
 	HasHermitType,
@@ -31,7 +31,7 @@ import {CardPosModel} from '../../models/card-pos-model'
 import {TurnActions} from '../../types/game-state'
 import {FormattedTextNode, formatText} from '../../utils/formatting'
 
-export type HermitCard = IsCard &
+export type HermitCard = Card &
 	IsAttachableToHermitSlots &
 	HasHermitType &
 	HasHealth &
@@ -50,13 +50,13 @@ export const hermitCardDefaults = {
 	category: 'hermit' as CardCategoryT,
 	expansion: 'default',
 	palette: 'default',
-	getBackground(this: IsCard) {
+	getBackground(this: Card) {
 		return this.id.split('_')[0]
 	},
-	getShortName(this: IsCard) {
+	getShortName(this: Card) {
 		return null
 	},
-	getDescription(this: IsCard & HermitAttack) {
+	getDescription(this: Card & HermitAttack) {
 		return formatText(
 			(this.primary.power ? `**${this.primary.name}**\n*${this.primary.power}*` : '') +
 				(this.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
@@ -69,7 +69,7 @@ export const hermitCardDefaults = {
 // Default is to return
 function createAttackModel(
 	game: GameModel,
-	hermit: IsCard & HermitAttack,
+	hermit: Card & HermitAttack,
 	pos: CardPosModel,
 	hermitAttackType: HermitAttackType
 ): AttackModel | null {
