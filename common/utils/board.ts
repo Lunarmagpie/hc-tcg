@@ -1,4 +1,3 @@
-import {CARDS, ITEM_CARDS} from '../cards'
 import {STATUS_EFFECT_CLASSES} from '../status-effects'
 import {CardPosModel, getCardPos} from '../models/card-pos-model'
 import {GameModel} from '../models/game-model'

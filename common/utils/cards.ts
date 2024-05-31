@@ -1,7 +1,4 @@
-import {CARDS, EFFECT_CARDS} from '../cards'
 import {CardCategoryT, RankT} from '../types/cards'
-import {CardT} from '../types/game-state'
-import Card from '../cards/base/card'
 
 /**
  * Returns true if the two cards are equal

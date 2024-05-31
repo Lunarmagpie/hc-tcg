@@ -1,4 +1,3 @@
-import {CARDS, HERMIT_CARDS, SINGLE_USE_CARDS} from '../cards'
 import {CurrentCoinFlipT, PlayerState, RowStateWithHermit, BattleLogT} from '../types/game-state'
 import {broadcast} from '../../server/src/utils/comm'
 import {AttackModel} from './attack-model'

@@ -1,4 +1,4 @@
-import {CARDS, HERMIT_CARDS} from 'common/cards'
+import {CARDS} from 'common/cards'
 import {GameModel} from 'common/models/game-model'
 import {equalCard} from 'common/utils/cards'
 import {PlayCardActionData} from 'common/types/action-data'

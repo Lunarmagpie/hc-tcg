@@ -1,5 +1,4 @@
 import {RowStateWithHermit} from 'common/types/game-state'
-import {ITEM_CARDS} from 'common/cards'
 import {DEBUG_CONFIG} from 'common/config'
 import {GameModel} from 'common/models/game-model'
 import {getCardPos} from 'common/models/card-pos-model'

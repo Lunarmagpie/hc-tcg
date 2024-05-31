@@ -13,19 +13,18 @@ import adventOfTcgAttachableCards from './advent-of-tcg/effects'
 import adventOfTcgHermitCards from './advent-of-tcg/hermits'
 import adventOfTcgSingleUseCards from './advent-of-tcg/single-use'
 
-import { Card } from './base/card'
-
+import {Card} from './base/card'
 
 export const CARDS: Array<Card> = [
-	...defaultAttachableCards,
-	...defaultHermitCards,
-	...defaultItemCards,
-	...defaultSingleUseCards,
-	...alterEgosAttachableCards,
-	...alterEgosHermitCards,
-	...alterEgosSingleUseCards,
-	...alterEgosIIHermitCards,
-	...adventOfTcgAttachableCards,
-	...adventOfTcgHermitCards,
-	...adventOfTcgSingleUseCards,
+	// ...defaultAttachableCards,
+	// ...defaultHermitCards,
+	// ...defaultItemCards,
+	// ...defaultSingleUseCards,
+	// ...alterEgosAttachableCards,
+	// ...alterEgosHermitCards,
+	// ...alterEgosSingleUseCards,
+	// ...alterEgosIIHermitCards,
+	// ...adventOfTcgAttachableCards,
+	// ...adventOfTcgHermitCards,
+	// ...adventOfTcgSingleUseCards,
 ]
