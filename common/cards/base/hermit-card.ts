@@ -17,6 +17,7 @@ import {
     hermitDisplayInfoDefaults,
     givesPointOnKnockoutDefaults,
     hasHealthDefaults,
+    isAttachableToHermitSlotsDefaults,
 } from './card'
 import {
 	CardCategoryT,
@@ -40,7 +41,7 @@ export type HermitCard = IsCard &
 
 export const hermitCardDefaults = {
 	...isCardDefaults,
-	...isAttachableToEffectSlotsDefaults,
+	...isAttachableToHermitSlotsDefaults,
 	...hasHermitTypeDefaults,
 	...hasHealthDefaults,
 	...canAttackDefaults,
