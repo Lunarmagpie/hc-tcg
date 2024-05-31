@@ -48,7 +48,7 @@ export interface HasTurnActions {
 	/**
 	 * Returns the actions this card makes available when in the hand
 	 */
-	getActions(instance: T, game: GameModel): TurnActions
+	getActions(game: GameModel): TurnActions
 }
 
 export interface OverridesAttach {
