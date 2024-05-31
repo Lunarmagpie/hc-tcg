@@ -1,9 +1,8 @@
-import { PlayCardLog, CardRarityT, CardTypeT, HermitTypeT, HermitAttackInfo } from '../../types/cards'
-import { GameModel } from '../../models/game-model'
-import { CardPosModel } from '../../models/card-pos-model'
-import { TurnActions } from '../../types/game-state'
-import { EmptyNode, FormattedTextNode } from '../../utils/formatting'
-
+import {PlayCardLog, CardRarityT, CardTypeT, HermitTypeT, HermitAttackInfo} from '../../types/cards'
+import {GameModel} from '../../models/game-model'
+import {CardPosModel} from '../../models/card-pos-model'
+import {TurnActions} from '../../types/game-state'
+import {EmptyNode, FormattedTextNode} from '../../utils/formatting'
 
 export interface IsCard {
 	type: CardTypeT
@@ -15,18 +14,18 @@ export interface IsCard {
 	description: FormattedTextNode
 
 	/* The expansion this card is a part of */
-	expansion: string;
+	expansion: string
 	/* The palette for this card */
-	palette: string;
+	palette: string
 
 	/* The short name for this card */
-	shortName: string | null;
+	shortName: string | null
 	sidebarDescriptions: Array<Record<string, string>>
 }
 
 export const defaultCardInfo = {
-	expansion: "default",
-	palette: "default",
+	expansion: 'default',
+	palette: 'default',
 	shortName: null,
 	description: new EmptyNode(),
 	sidebarDescriptions: [],
@@ -36,7 +35,7 @@ export interface HasBattleLog {
 	log: ((values: PlayCardLog) => string) | null
 }
 
-export interface IsSingleUse { }
+export interface IsSingleUse {}
 
 export interface HasTurnActions {
 	/**
@@ -49,13 +48,13 @@ export interface OverridesAttach {
 	onAttach(instance: T, game: GameModel, pos: CardPosModel): void
 }
 
-export interface IsAttachableToHermitSlots { }
+export interface IsAttachableToHermitSlots {}
 
-export interface IsAttachableToItemSlots { }
+export interface IsAttachableToItemSlots {}
 
-export interface IsAttachableToEffectSlots { }
+export interface IsAttachableToEffectSlots {}
 
-export interface IsAttachableToSingleUseSlot { }
+export interface IsAttachableToSingleUseSlot {}
 
 export interface OverridesDetach {
 	/**
