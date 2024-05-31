@@ -3,9 +3,9 @@ import {GameModel} from '../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../models/card-pos-model'
 import {removeStatusEffect} from '../utils/board'
 import {CARDS} from '../cards'
-import {IsCard} from '../cards/base/card'
+import {Card} from '../cards/base/card'
 
-const BadOmenStatusEffect = (target: IsCard): StatusEffect => {
+const BadOmenStatusEffect = (target: Card): StatusEffect => {
 	return {
 		...statusEffectDefaults,
 		id: 'badomen',
@@ -14,7 +14,6 @@ const BadOmenStatusEffect = (target: IsCard): StatusEffect => {
 		duration: 3,
 		counter: false,
 		damageEffect: false,
-		visible: true,
 		target: target,
 		onApply(game: GameModel, pos: CardPosModel) {
 			game.state.statusEffects.push(this)

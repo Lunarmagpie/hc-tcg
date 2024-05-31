@@ -2,9 +2,9 @@ import StatusEffect from './status-effect'
 import {GameModel} from '../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../models/card-pos-model'
 import {discardCard} from '../utils/movement'
-import { IsCard } from '../cards/base/card'
+import { Card } from '../cards/base/card'
 
-const SmeltingStatusEffect  = (target: IsCard): StatusEffect => {
+const SmeltingStatusEffect  = (target: Card): StatusEffect => {
 	constructor() {
 		super({
 			id: 'smelting',

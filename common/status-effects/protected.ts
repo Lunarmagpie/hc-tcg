@@ -3,9 +3,9 @@ import {GameModel} from '../models/game-model'
 import {CardPosModel, getBasicCardPos, getCardPos} from '../models/card-pos-model'
 import {removeStatusEffect} from '../utils/board'
 import {isTargetingPos} from '../utils/attacks'
-import { IsCard } from '../cards/base/card'
+import { Card } from '../cards/base/card'
 
-const ProtectedStatusEffect  = (target: IsCard): StatusEffect => {
+const ProtectedStatusEffect  = (target: Card): StatusEffect => {
 	constructor() {
 		super({
 			id: 'protected',

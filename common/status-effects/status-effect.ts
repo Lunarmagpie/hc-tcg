@@ -1,4 +1,4 @@
-import {IsCard} from '../cards/base/card'
+import {Card} from '../cards/base/card'
 import {CardPosModel} from '../models/card-pos-model'
 import {GameModel} from '../models/game-model'
 
@@ -12,9 +12,7 @@ export interface StatusEffect {
 	counter: boolean
 	damageEffect: boolean
 	/* The target of this status effect */
-	target: IsCard
-	/* Whether or not this status effect should be rendered */
-	visible: boolean
+	target: Card
 
 	/**
 	 * Called when this statusEffect is applied
@@ -27,7 +25,7 @@ export interface StatusEffect {
 }
 
 export const statusEffectDefaults = {__status_effect: undefined}
-export function implementsIsCard(obj: any): obj is StatusEffect {
+export function implementsCard(obj: any): obj is StatusEffect {
 	return '__status_effect' in obj
 }
 

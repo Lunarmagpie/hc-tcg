@@ -1,9 +1,9 @@
 import StatusEffect, {statusEffectDefaults} from './status-effect'
 import {GameModel} from '../models/game-model'
 import {CardPosModel, getBasicCardPos, getCardPos} from '../models/card-pos-model'
-import {IsCard} from '../cards/base/card'
+import {Card} from '../cards/base/card'
 
-const DyedStatusEffect = (target: IsCard): StatusEffect => {
+const DyedStatusEffect = (target: Card): StatusEffect => {
 	return {
 		...statusEffectDefaults,
 		id: 'dyed',
@@ -12,7 +12,6 @@ const DyedStatusEffect = (target: IsCard): StatusEffect => {
 		duration: 0,
 		counter: false,
 		damageEffect: false,
-		visible: true,
 		target: target,
 		onApply(game: GameModel, pos: CardPosModel) {
 			const {player} = pos

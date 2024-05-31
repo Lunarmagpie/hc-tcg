@@ -1,4 +1,4 @@
-import {IsCard, OverridesAttach, OverridesDetach} from '../cards/base/card'
+import {Card, OverridesAttach, OverridesDetach} from '../cards/base/card'
 import {HermitCard} from '../cards/base/hermit-card'
 import {AttackModel} from '../models/attack-model'
 import {BattleLogModel} from '../models/battle-log-model'
@@ -14,8 +14,8 @@ export type PlayerId = string
 
 export type RowStateWithHermit = {
 	hermitCard: HermitCard
-	effectCard: IsCard | null
-	itemCards: Array<IsCard | null>
+	effectCard: Card | null
+	itemCards: Array<Card | null>
 	health: number
 }
 
@@ -48,16 +48,16 @@ export type PlayerState = {
 	id: PlayerId
 	playerName: string
 	minecraftName: string
-	playerDeck: Array<IsCard>
+	playerDeck: Array<Card>
 	censoredPlayerName: string
 	coinFlips: Array<CurrentCoinFlipT>
-	hand: Array<IsCard>
+	hand: Array<Card>
 	lives: number
-	pile: Array<IsCard>
-	discarded: Array<IsCard>
+	pile: Array<Card>
+	discarded: Array<Card>
 	board: {
 		activeRow: number | null
-		singleUseCard: IsCard | null
+		singleUseCard: Card | null
 		singleUseCardUsed: boolean
 		rows: Array<RowState>
 	}
@@ -72,9 +72,9 @@ export type PlayerState = {
 		/** Hook called when checking if a card can be attached. The result can be modified and will be stored */
 		canAttach: GameHook<(canAttach: CanAttachResult, pos: CardPosModel) => void>
 		/** Hook called when a card is attached */
-		onAttach: GameHook<(instance: IsCard) => void>
+		onAttach: GameHook<(instance: Card) => void>
 		/** Hook called when a card is detached */
-		onDetach: GameHook<(instance: IsCard) => void>
+		onDetach: GameHook<(instance: Card) => void>
 
 		/** Hook called before a single use card is applied */
 		beforeApply: GameHook<() => void>
@@ -122,10 +122,10 @@ export type PlayerState = {
 		 */
 		onTurnStart: GameHook<() => void>
 		/** Hook called at the end of the turn */
-		onTurnEnd: GameHook<(drawCards: Array<IsCard | null>) => void>
+		onTurnEnd: GameHook<(drawCards: Array<Card | null>) => void>
 
 		/** Hook called when the player flips a coin */
-		onCoinFlip: GameHook<(card: IsCard, coinFlips: Array<CoinFlipT>) => Array<CoinFlipT>>
+		onCoinFlip: GameHook<(card: Card, coinFlips: Array<CoinFlipT>) => Array<CoinFlipT>>
 
 		// @TODO eventually to simplify a lot more code this could potentially be called whenever anything changes the row, using a helper.
 		/** Hook called before the active row is changed. Returns whether or not the change can be completed. */
@@ -255,7 +255,7 @@ export type LocalPlayerState = {
 	lives: number
 	board: {
 		activeRow: number | null
-		singleUseCard: IsCard | null
+		singleUseCard: Card | null
 		singleUseCardUsed: boolean
 		rows: Array<RowState>
 	}
@@ -267,9 +267,9 @@ export type LocalGameState = {
 	statusEffects: Array<StatusEffect>
 
 	// personal data
-	hand: Array<IsCard>
+	hand: Array<Card>
 	pileCount: number
-	discarded: Array<IsCard>
+	discarded: Array<Card>
 
 	// ids
 	playerId: PlayerId
@@ -303,7 +303,7 @@ export type LocalGameRoot = {
 	localGameState: LocalGameState | null
 	time: number
 
-	selectedCard: IsCard | null
+	selectedCard: Card | null
 	openedModal: {
 		id: string
 		info: null

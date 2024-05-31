@@ -5,10 +5,10 @@ import {AttackModel} from '../models/attack-model'
 import {getActiveRowPos, removeStatusEffect} from '../utils/board'
 import {executeExtraAttacks} from '../utils/attacks'
 import {CARDS} from '../cards'
-import {IsCard} from '../cards/base/card'
+import {Card} from '../cards/base/card'
 import {CardPosModel, getBasicCardPos, getCardPos} from '../models/card-pos-model'
 
-const FireStatusEffect = (target: IsCard): StatusEffect => {
+const FireStatusEffect = (target: Card): StatusEffect => {
 	return {
 		...statusEffectDefaults,
 		id: 'fire',
@@ -18,7 +18,6 @@ const FireStatusEffect = (target: IsCard): StatusEffect => {
 		duration: 0,
 		counter: false,
 		damageEffect: true,
-		visible: true,
 		target: target,
 		onApply(game: GameModel, pos: CardPosModel) {
 			const {player, opponentPlayer} = pos

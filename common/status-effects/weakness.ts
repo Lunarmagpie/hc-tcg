@@ -4,9 +4,9 @@ import {CARDS} from '../cards'
 import {CardPosModel, getCardPos} from '../models/card-pos-model'
 import {getActiveRow, removeStatusEffect} from '../utils/board'
 import {isTargetingPos} from '../utils/attacks'
-import { IsCard } from '../cards/base/card'
+import { Card } from '../cards/base/card'
 
-const WeaknessStatusEffect   = (target: IsCard): StatusEffect =>  {
+const WeaknessStatusEffect   = (target: Card): StatusEffect =>  {
 	constructor() {
 		super({
 			id: 'weakness',
