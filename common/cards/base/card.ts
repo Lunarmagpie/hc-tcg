@@ -25,6 +25,9 @@ export interface IsCard {
 	palette: string
 
 	sidebarDescriptions: Array<Record<string, string>>
+
+	//@TODO remove this and make mixin
+	log: (values: PlayCardLog) => string | null
 }
 
 export interface HermitDisplayInfo {
@@ -39,7 +42,7 @@ export interface EffectDisplayInfo { }
 export interface SingleUseDisplayInfo { }
 
 export interface HasBattleLog {
-	log: ((values: PlayCardLog) => string) | null
+	getLog: ((values: PlayCardLog) => string) | null
 }
 
 export interface IsSingleUse { }

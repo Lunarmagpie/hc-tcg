@@ -1,131 +1,108 @@
-import EffectCard from '../../base/attachable-card'
 import {isTargetingPos} from '../../../utils/attacks'
 import {GameModel} from '../../../models/game-model'
 import {discardCard} from '../../../utils/movement'
 import {CardPosModel} from '../../../models/card-pos-model'
-import {TurnActions} from '../../../types/game-state'
-import {CanAttachResult, HasHealth} from '../../base/card'
+import {
+	EffectDisplayInfo,
+	HasDescription,
+	HasHealth,
+	IsAttachableToHermitSlots,
+	IsCard,
+	OverridesAttach,
+	OverridesDetach,
+} from '../../base/card'
+import {defaultAttachableInfo} from '../../base/attachable-card'
+import {PlayCardLog} from '../../../types/cards'
 
-const ArmorStandEffectCard = (): EffectCard & HasHealth {
-	constructor() {
-		super({
-			id: 'armor_stand',
-			numericId: 118,
-			name: 'Armour Stand',
-			rarity: 'ultra_rare',
-			description:
-				'Use like a Hermit card with a maximum 50hp.\nYou can not attach any cards to this card. While this card is active, you can not attack, or use damaging effect cards.\nIf this card is knocked out, it does not count as a knockout.',
-			log: (values) => `$p{You|${values.player}}$ placed $p${this.name}$`,
-		})
-	}
+const ArmorStandEffectCard = (): IsCard &
+	IsAttachableToHermitSlots &
+	EffectDisplayInfo &
+	HasDescription &
+	HasHealth &
+	OverridesAttach &
+	OverridesDetach => {
+	return {
+		...defaultAttachableInfo,
+		health: 50,
+		id: 'armor_stand',
+		numericId: 118,
+		name: 'Armour Stand',
+		rarity: 'ultra_rare',
+		description:
+			'Use like a Hermit card with a maximum 50hp.\nYou can not attach any cards to this card. While this card is active, you can not attack, or use damaging effect cards.\nIf this card is knocked out, it does not count as a knockout.',
+		log: (values: PlayCardLog) => `$p{You|${values.player}}$ placed $p${values.pos.name}$`,
+		onAttach(game: GameModel, pos: CardPosModel) {
+			const {player, opponentPlayer, row} = pos
+			if (!row) return
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
-		const {player, opponentPlayer, row} = pos
-		if (!row) return
-
-		row.health = 50
-		if (player.board.activeRow === null) {
-			game.changeActiveRow(player, pos.rowIndex)
-		}
-
-		// The menu won't show up but just in case someone tries to cheat
-		player.hooks.blockedActions.add(instance, (blockedActions) => {
-			if (player.board.activeRow === pos.rowIndex) {
-				blockedActions.push('PRIMARY_ATTACK')
-				blockedActions.push('SECONDARY_ATTACK')
-				blockedActions.push('SINGLE_USE_ATTACK')
+			row.health = 50
+			if (player.board.activeRow === null) {
+				game.changeActiveRow(player, pos.rowIndex)
 			}
 
-			return blockedActions
-		})
-
-		player.hooks.afterAttack.add(instance, (attack) => {
-			const attacker = attack.getAttacker()
-			if (!row.health && attacker && isTargetingPos(attack, pos)) {
-				// Discard to prevent losing a life
-				discardCard(game, row.hermitCard)
-
-				const activeRow = player.board.activeRow
-				const isActive = activeRow !== null && activeRow == pos.rowIndex
-				if (isActive && attacker.player.id !== player.id) {
-					// Reset the active row so the player can switch
-					game.changeActiveRow(player, null)
+			// The menu won't show up but just in case someone tries to cheat
+			player.hooks.blockedActions.add(this, (blockedActions) => {
+				if (player.board.activeRow === pos.rowIndex) {
+					blockedActions.push('PRIMARY_ATTACK')
+					blockedActions.push('SECONDARY_ATTACK')
+					blockedActions.push('SINGLE_USE_ATTACK')
 				}
-			}
-		})
 
-		player.hooks.canAttach.add(instance, (result, pos) => {
-			if (pos.row?.hermitCard?.cardInstance !== instance) return
-			result.push('UNMET_CONDITION_SILENT')
-		})
+				return blockedActions
+			})
 
-		opponentPlayer.hooks.afterAttack.add(instance, (attack) => {
-			const attacker = attack.getAttacker()
-			if (!row.health && attacker && isTargetingPos(attack, pos)) {
-				// Discard to prevent losing a life
-				discardCard(game, row.hermitCard)
-				game.battleLog.addCustomEntry(player.id, `$p${this.name}$ was knocked out`)
+			player.hooks.afterAttack.add(this, (attack) => {
+				const attacker = attack.getAttacker()
+				if (!row.health && attacker && isTargetingPos(attack, pos)) {
+					// Discard to prevent losing a life
+					discardCard(game, row.hermitCard)
 
-				const activeRow = player.board.activeRow
-				const isActive = activeRow !== null && activeRow == pos.rowIndex
-				if (isActive && attacker.player.id !== player.id) {
-					// Reset the active row so the player can switch
-					game.changeActiveRow(player, null)
+					const activeRow = player.board.activeRow
+					const isActive = activeRow !== null && activeRow == pos.rowIndex
+					if (isActive && attacker.player.id !== player.id) {
+						// Reset the active row so the player can switch
+						game.changeActiveRow(player, null)
+					}
 				}
+			})
+
+			opponentPlayer.hooks.afterAttack.add(this, (attack) => {
+				const attacker = attack.getAttacker()
+				if (!row.health && attacker && isTargetingPos(attack, pos)) {
+					// Discard to prevent losing a life
+					discardCard(game, row.hermitCard)
+					game.battleLog.addCustomEntry(player.id, `$p${this.name}$ was knocked out`)
+
+					const activeRow = player.board.activeRow
+					const isActive = activeRow !== null && activeRow == pos.rowIndex
+					if (isActive && attacker.player.id !== player.id) {
+						// Reset the active row so the player can switch
+						game.changeActiveRow(player, null)
+					}
+				}
+			})
+		},
+
+		onDetach(game: GameModel, pos: CardPosModel) {
+			const {player, opponentPlayer, slot, row} = pos
+			if (slot && slot.type === 'hermit' && row) {
+				row.health = null
+				row.effectCard = null
+				row.itemCards = []
 			}
-		})
-	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
-		const {player, opponentPlayer, slot, row} = pos
-		if (slot && slot.type === 'hermit' && row) {
-			row.health = null
-			row.effectCard = null
-			row.itemCards = []
-		}
-
-		player.hooks.blockedActions.remove(instance)
-		player.hooks.afterAttack.remove(instance)
-		player.hooks.canAttach.remove(instance)
-		opponentPlayer.hooks.afterAttack.remove(instance)
-		delete player.custom[this.getInstanceKey(instance)]
-	}
-
-	override canAttach(game: GameModel, pos: CardPosModel) {
-		const {slot} = pos
-		const {currentPlayer} = game
-		const result: CanAttachResult = []
-
-		if (!slot || slot.type !== 'hermit') result.push('INVALID_SLOT')
-		if (pos.player.id !== currentPlayer.id) result.push('INVALID_PLAYER')
-
-		return result
-	}
-
-	public override getActions(game: GameModel): TurnActions {
-		const {currentPlayer} = game
-
-		// Is there a hermit slot free on the board
-		const spaceForHermit = currentPlayer.board.rows.some((row) => !row.hermitCard)
-
-		return spaceForHermit ? ['PLAY_HERMIT_CARD'] : []
-	}
-
-	override getExpansion() {
-		return 'alter_egos'
-	}
-
-	override showAttachTooltip() {
-		return false
-	}
-
-	override sidebarDescriptions() {
-		return [
+			player.hooks.blockedActions.remove(this)
+			player.hooks.afterAttack.remove(this)
+			player.hooks.canAttach.remove(this)
+			opponentPlayer.hooks.afterAttack.remove(this)
+		},
+		expansion: 'alter_egos',
+		sidebarDescriptions: [
 			{
 				type: 'glossary',
 				name: 'knockout',
 			},
-		]
+		],
 	}
 }
 

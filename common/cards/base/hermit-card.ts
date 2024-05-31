@@ -1,20 +1,33 @@
-import { AttackModel } from '../../models/attack-model'
-import { GameModel } from '../../models/game-model'
-import { IsCard, IsAttachableToHermitSlots, OverridesDetach, HasHermitType, HasHealth, OverridesAttach, HermitDisplayInfo, CanAttack } from './card'
-import { CardCategoryT, CardRarityT, HermitAttackInfo, HermitTypeT, PlayCardLog } from '../../types/cards'
-import { HermitAttackType } from '../../types/attack'
-import { CardPosModel } from '../../models/card-pos-model'
-import { TurnActions } from '../../types/game-state'
-import { FormattedTextNode, formatText } from '../../utils/formatting'
+import {AttackModel} from '../../models/attack-model'
+import {GameModel} from '../../models/game-model'
+import {
+	IsCard,
+	IsAttachableToHermitSlots,
+	OverridesDetach,
+	HasHermitType,
+	HasHealth,
+	OverridesAttach,
+	HermitDisplayInfo,
+	CanAttack,
+} from './card'
+import {
+	CardCategoryT,
+	CardRarityT,
+	HermitAttackInfo,
+	HermitTypeT,
+	PlayCardLog,
+} from '../../types/cards'
+import {HermitAttackType} from '../../types/attack'
+import {CardPosModel} from '../../models/card-pos-model'
+import {TurnActions} from '../../types/game-state'
+import {FormattedTextNode, formatText} from '../../utils/formatting'
 
-
-export type HermitCard =
-	& IsCard
-	& IsAttachableToHermitSlots
-	& HasHermitType
-	& HasHealth
-	& CanAttack
-	& HermitDisplayInfo
+export type HermitCard = IsCard &
+	IsAttachableToHermitSlots &
+	HasHermitType &
+	HasHealth &
+	CanAttack &
+	HermitDisplayInfo
 
 export const defaultHermitInfo = {
 	category: 'hermit' as CardCategoryT,
@@ -26,12 +39,13 @@ export const defaultHermitInfo = {
 	getShortName(this: IsCard) {
 		return null
 	},
-	getDescription(this: IsCard & HasPrimaryAttack & HasSecondaryAttack) {
+	getDescription(this: IsCard & CanAttack) {
 		return formatText(
 			(this.primary.power ? `**${this.primary.name}**\n*${this.primary.power}*` : '') +
-			(this.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
+				(this.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
 		)
 	},
+	log: (values: PlayCardLog) => `$p{You|${values.player}}$ placed $p${values.pos.name}$`,
 	sidebarDescriptions: [],
 }
 
@@ -44,7 +58,7 @@ function createAttackModel(
 ): AttackModel | null {
 	if (pos.rowIndex === null || !pos.row || !pos.row.hermitCard) return null
 
-	const { opponentPlayer: opponentPlayer } = game
+	const {opponentPlayer: opponentPlayer} = game
 	const targetIndex = opponentPlayer.board.activeRow
 	if (targetIndex === null) return null
 
@@ -67,7 +81,8 @@ function createAttackModel(
 		type: hermitAttackType,
 		createWeakness: 'ifWeak',
 		log: (values) =>
-			`${values.attacker} ${values.coinFlip ? values.coinFlip + ', then ' : ''} attacked ${values.target
+			`${values.attacker} ${values.coinFlip ? values.coinFlip + ', then ' : ''} attacked ${
+				values.target
 			} with ${values.attackName} for ${values.damage} damage`,
 	})
 
@@ -96,10 +111,8 @@ function getActions(game: GameModel): TurnActions {
 // 	)
 // }
 
-
 export function getHermitCardDefaults(name: string) {
 	return {
-		log: (values: PlayCardLog) => `$p{You|${values.player}}$ placed $p${name}$`
+		log: (values: PlayCardLog) => `$p{You|${values.player}}$ placed $p${name}$`,
 	}
 }
-
