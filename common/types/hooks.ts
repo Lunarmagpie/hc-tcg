@@ -1,11 +1,11 @@
 export class Hook<T extends (...args: any) => any> {
-	public listeners: Record<string, T> = {}
+	public listeners: Array<[any, T]> = []
 
 	/**
 	 * Adds a new listener to this hook
 	 */
 	public add(identifier: string, listener: T) {
-		this.listeners[identifier] = listener
+		this.listeners.push([identifier, listener])
 	}
 
 	/**

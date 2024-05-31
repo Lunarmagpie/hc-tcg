@@ -2,9 +2,8 @@ import { PlayCardLog, CardRarityT, CardTypeT, HermitTypeT, HermitAttackInfo } fr
 import { GameModel } from '../../models/game-model'
 import { CardPosModel } from '../../models/card-pos-model'
 import { TurnActions } from '../../types/game-state'
-import { FormattedTextNode } from '../../utils/formatting'
+import { EmptyNode, FormattedTextNode } from '../../utils/formatting'
 
-export type CanAttachResult = Array<CanAttachError>
 
 export interface IsCard {
 	type: CardTypeT
@@ -12,27 +11,26 @@ export interface IsCard {
 	numericId: number
 	name: string
 	rarity: CardRarityT
+	/* The description for this card that shows up in the sidebar. */
+	description: FormattedTextNode
 
 	/* The expansion this card is a part of */
 	expansion: string;
 	/* The palette for this card */
 	palette: string;
 
-	/* The description for this card that shows up in the sidebar. */
-	description: FormattedTextNode
-
 	/* The short name for this card */
-	shortNode: string;
+	shortName: string | null;
 	sidebarDescriptions: Array<Record<string, string>>
 }
 
-export const cardDefaults = {
+export const defaultCardInfo = {
 	expansion: "default",
 	palette: "default",
-	sidebarDescriptions: []
+	shortName: null,
+	description: new EmptyNode(),
+	sidebarDescriptions: [],
 }
-
-
 
 export interface HasBattleLog {
 	log: ((values: PlayCardLog) => string) | null
@@ -44,11 +42,11 @@ export interface HasTurnActions {
 	/**
 	 * Returns the actions this card makes available when in the hand
 	 */
-	getActions(game: GameModel): TurnActions
+	getActions(instance: T, game: GameModel): TurnActions
 }
 
-export interface CanAttach {
-	onAttach(game: GameModel, pos: CardPosModel): null
+export interface OverridesAttach {
+	onAttach(instance: T, game: GameModel, pos: CardPosModel): void
 }
 
 export interface IsAttachableToHermitSlots { }
@@ -59,11 +57,11 @@ export interface IsAttachableToEffectSlots { }
 
 export interface IsAttachableToSingleUseSlot { }
 
-export interface CanDetach {
+export interface OverridesDetach {
 	/**
 	 * Called when an instance of this card is removed from the board
 	 */
-	onDetach(game: GameModel, pos: CardPosModel): null
+	onDetach(instance: T, game: GameModel, pos: CardPosModel): void
 }
 
 export interface HasHermitType {
