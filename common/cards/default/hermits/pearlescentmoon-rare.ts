@@ -3,10 +3,13 @@ import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
 import {OverridesAttach, OverridesDetach} from '../../base/card'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
+import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
 
 const PearlescentMoonRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	return {
 		...hermitCardDefaults,
+		...overridesAttachDefaults,
+		...overridesDetachDefaults,
 		category: 'hermit',
 		id: 'pearlescentmoon_rare',
 		numericId: 85,

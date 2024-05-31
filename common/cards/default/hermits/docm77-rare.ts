@@ -2,10 +2,14 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
+import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
 import {OverridesAttach, OverridesDetach} from '../../base/card'
+
 const Docm77RareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	return {
 		...hermitCardDefaults,
+		...overridesAttachDefaults,
+		...overridesDetachDefaults,
 		id: 'docm77_rare',
 		numericId: 16,
 		name: 'Docm77',

@@ -3,10 +3,13 @@ import {GameModel} from '../../../models/game-model'
 import {removeStatusEffect} from '../../../utils/board'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {OverridesAttach, OverridesDetach} from '../../base/card'
+import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
 
 const GoodTimesWithScarRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	return {
 		...hermitCardDefaults,
+		...overridesAttachDefaults,
+		...overridesDetachDefaults,
 		id: 'goodtimeswithscar_rare',
 		numericId: 33,
 		name: 'Scar',

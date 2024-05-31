@@ -5,9 +5,13 @@ import {applyStatusEffect, getActiveRow} from '../../../utils/board'
 import {OverridesAttach, OverridesDetach} from '../../base/card'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import FireStatusEffect from '../../../status-effects/fire'
+import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
 
 const EthosLabRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	return {
+		...hermitCardDefaults,
+		...overridesAttachDefaults,
+		...overridesDetachDefaults,
 		id: 'ethoslab_rare',
 		numericId: 20,
 		name: 'Etho',

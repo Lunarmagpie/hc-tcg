@@ -3,11 +3,14 @@ import {GameModel} from '../../../models/game-model'
 import {discardSingleUse} from '../../../utils/movement'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {OverridesAttach, OverridesDetach} from '../../base/card'
+import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
 
 // Because of this card we can't rely elsewhere on the suCard to be in state on turnEnd hook
 const GeminiTayRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	return {
 		...hermitCardDefaults,
+		...overridesAttachDefaults,
+		...overridesDetachDefaults,
 		id: 'geminitay_rare',
 		numericId: 28,
 		name: 'Gem',

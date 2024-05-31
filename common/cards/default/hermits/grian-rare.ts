@@ -7,6 +7,7 @@ import {flipCoin} from '../../../utils/coinFlips'
 import {canAttachToSlot, discardCard, swapSlots} from '../../../utils/movement'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {OverridesAttach, OverridesDetach, implementsOverridesAttach} from '../../base/card'
+import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
 
 // The tricky part about this one are destroyable items (shield, totem, loyalty) since they are available at the moment of attack, but not after
 
@@ -21,6 +22,8 @@ Some assumptions that make sense to me:
 const GrianRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	return {
 		...hermitCardDefaults,
+		...overridesAttachDefaults,
+		...overridesDetachDefaults,
 		id: 'grian_rare',
 		numericId: 35,
 		name: 'Grian',

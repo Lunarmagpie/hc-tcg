@@ -29,7 +29,7 @@ const PoisonStatusEffect = (target: Card): StatusEffect => {
 			if (hasDamageEffect) return
 
 			game.state.statusEffects.push(this)
-			game.battleLog.addCustomEntry(player.id, `$p${this.target.name}$ was $eBurned$`)
+			game.battleLog.addCustomEntry(player.id, `$p${this.target.name}$ was $ePoisoned$`)
 
 			opponentPlayer.hooks.onTurnEnd.add(this, () => {
 				const targetPos = getBasicCardPos(game, this.target)

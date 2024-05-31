@@ -1,20 +1,17 @@
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {
-	Card,
 	OverridesAttach,
 	OverridesDetach,
-	CanAttack,
 	implementsCanAttack,
 	implementsCard,
 	implementsOverridesAttach,
 	implementsOverridesDetach,
-	canAttackDefaults,
 } from '../../base/card'
 import {GameModel} from '../../../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../../../models/card-pos-model'
 import {AttackType, HermitAttackType} from '../../../types/attack'
 import {getNonEmptyRows} from '../../../utils/board'
-import {CardRarityT} from '../../../types/cards'
+import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
 
 const RendogRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	let imitatingCard: HermitCard | null = null
@@ -22,6 +19,8 @@ const RendogRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach 
 
 	return {
 		...hermitCardDefaults,
+		...overridesAttachDefaults,
+		...overridesDetachDefaults,
 		id: 'rendog_rare',
 		numericId: 87,
 		name: 'Rendog',

@@ -1,8 +1,8 @@
-import { CardPosModel } from '../../../models/card-pos-model'
-import { GameModel } from '../../../models/game-model'
-import { IsAttachableToEffectSlots, overridesAttachDefaults, overridesDetachDefaults } from '../../base/card'
-import { OverridesAttach, OverridesDetach } from '../../base/card'
-import { HermitCard, hermitCardDefaults } from '../../base/hermit-card'
+import {CardPosModel} from '../../../models/card-pos-model'
+import {GameModel} from '../../../models/game-model'
+import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
+import {OverridesAttach, OverridesDetach} from '../../base/card'
+import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 
 const Iskall85RareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	return {

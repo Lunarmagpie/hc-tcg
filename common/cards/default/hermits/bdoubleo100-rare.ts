@@ -4,10 +4,13 @@ import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {applyStatusEffect, getActiveRow, removeStatusEffect} from '../../../utils/board'
 import {OverridesAttach, OverridesDetach} from '../../base/card'
 import SleepingStatusEffect from '../../../status-effects/sleeping'
+import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
 
 const BdoubleO100RareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	return {
 		...hermitCardDefaults,
+		...overridesAttachDefaults,
+		...overridesDetachDefaults,
 		id: 'bdoubleo100_rare',
 		numericId: 1,
 		name: 'Bdubs',

@@ -6,6 +6,7 @@ import {getActiveRow, getNonEmptyRows} from '../../../utils/board'
 import {discardCard} from '../../../utils/movement'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {OverridesAttach, OverridesDetach, implementsIsAttachableToItemSlots} from '../../base/card'
+import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
 
 /*
 - Has to support having two different afk targets (one for hypno, one for su effect like bow)
@@ -17,6 +18,8 @@ const HypnotizdRareHermitCard = (): HermitCard & OverridesAttach & OverridesDeta
 
 	return {
 		...hermitCardDefaults,
+		...overridesAttachDefaults,
+		...overridesDetachDefaults,
 		id: 'hypnotizd_rare',
 		numericId: 37,
 		name: 'Hypno',
@@ -36,14 +39,9 @@ const HypnotizdRareHermitCard = (): HermitCard & OverridesAttach & OverridesDeta
 			power:
 				"You can choose to attack one of your opponent's AFK Hermits. If you do this, you must discard one item card attached to your active Hermit.",
 		},
-		getAttacks(
-			game: GameModel,
-			instance: string,
-			pos: CardPosModel,
-			hermitAttackType: HermitAttackType
-		) {
+		getAttack(game: GameModel, pos: CardPosModel, hermitAttackType: HermitAttackType) {
 			const {player, opponentPlayer} = pos
-			const attack = super.getAttacks(game, instance, pos, hermitAttackType)
+			const attack = super.getAttacks(game, pos, hermitAttackType)
 
 			if (!attack || attack.type !== 'secondary') return attack
 

@@ -6,6 +6,7 @@ import {flipCoin} from '../../../utils/coinFlips'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {Card, OverridesAttach, OverridesDetach} from '../../base/card'
 import UsedClockStatusEffect from '../../../status-effects/used-clock'
+import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
 
 const JoeHillsRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	let skipped: Card | null = null
