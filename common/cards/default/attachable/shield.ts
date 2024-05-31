@@ -2,17 +2,18 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {isTargetingPos} from '../../../utils/attacks'
 import {discardCard} from '../../../utils/movement'
-import {AttachableCard, defaultAttachableInfo} from '../../base/attachable-card'
+import {AttachableCard, attachableCardDefaults} from '../../base/attachable-card'
 
 const ShieldEffectCard = (): AttachableCard => {
 	return {
-		...defaultAttachableInfo,
+		...attachableCardDefaults,
 		id: 'shield',
 		numericId: 88,
 		name: 'Shield',
 		rarity: 'common',
 		description:
 			'When the Hermit this card is attached to takes damage, that damage is reduced by up to 60hp, and then this card is discarded.',
+		log: null,
 		onAttach(game: GameModel, pos: CardPosModel) {
 			const {player} = pos
 			let blockedAmount: number | null = null

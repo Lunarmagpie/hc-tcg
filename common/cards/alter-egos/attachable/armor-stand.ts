@@ -1,7 +1,7 @@
-import {isTargetingPos} from '../../../utils/attacks'
-import {GameModel} from '../../../models/game-model'
-import {discardCard} from '../../../utils/movement'
-import {CardPosModel} from '../../../models/card-pos-model'
+import { isTargetingPos } from '../../../utils/attacks'
+import { GameModel } from '../../../models/game-model'
+import { discardCard } from '../../../utils/movement'
+import { CardPosModel } from '../../../models/card-pos-model'
 import {
 	EffectDisplayInfo,
 	HasDescription,
@@ -10,9 +10,16 @@ import {
 	IsCard,
 	OverridesAttach,
 	OverridesDetach,
+	effectDisplayInfoDefaults,
+	hasDescriptionDefaults,
+	hasHealthDefaults,
+	isAttachableToHermitSlotsDefaults,
+	isCardDefaults,
+	overridesAttachDefaults,
+	overridesDetachDefaults,
 } from '../../base/card'
-import {defaultAttachableInfo} from '../../base/attachable-card'
-import {PlayCardLog} from '../../../types/cards'
+import { attachableCardDefaults } from '../../base/attachable-card'
+import { PlayCardLog } from '../../../types/cards'
 
 const ArmorStandEffectCard = (): IsCard &
 	IsAttachableToHermitSlots &
@@ -22,7 +29,14 @@ const ArmorStandEffectCard = (): IsCard &
 	OverridesAttach &
 	OverridesDetach => {
 	return {
-		...defaultAttachableInfo,
+		...isCardDefaults,
+		...isAttachableToHermitSlotsDefaults,
+		...effectDisplayInfoDefaults,
+		...hasDescriptionDefaults,
+		...hasHealthDefaults,
+		...overridesAttachDefaults,
+		...overridesDetachDefaults,
+		...attachableCardDefaults,
 		health: 50,
 		id: 'armor_stand',
 		numericId: 118,
@@ -32,7 +46,7 @@ const ArmorStandEffectCard = (): IsCard &
 			'Use like a Hermit card with a maximum 50hp.\nYou can not attach any cards to this card. While this card is active, you can not attack, or use damaging effect cards.\nIf this card is knocked out, it does not count as a knockout.',
 		log: (values: PlayCardLog) => `$p{You|${values.player}}$ placed $p${values.pos.name}$`,
 		onAttach(game: GameModel, pos: CardPosModel) {
-			const {player, opponentPlayer, row} = pos
+			const { player, opponentPlayer, row } = pos
 			if (!row) return
 
 			if (player.board.activeRow === null) {
@@ -80,7 +94,7 @@ const ArmorStandEffectCard = (): IsCard &
 		},
 
 		onDetach(game: GameModel, pos: CardPosModel) {
-			const {player, opponentPlayer, slot, row} = pos
+			const { player, opponentPlayer, slot, row } = pos
 			if (slot && slot.type === 'hermit' && row) {
 				row.health = null
 				row.effectCard = null

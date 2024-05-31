@@ -5,6 +5,12 @@ import {
 	IsCard,
 	OverridesAttach,
 	OverridesDetach,
+    effectDisplayInfoDefaults,
+    hasDescriptionDefaults,
+    isAttachableToEffectSlotsDefaults,
+    isCardDefaults,
+    overridesAttachDefaults,
+    overridesDetachDefaults,
 } from './card'
 import {CARDS} from '..'
 import {GameModel} from '../../models/game-model'
@@ -21,7 +27,13 @@ export type AttachableCard =
 	& OverridesAttach
 	& OverridesDetach
 
-export const defaultAttachableInfo = {
+export const attachableCardDefaults = {
+	...isCardDefaults,
+	...isAttachableToEffectSlotsDefaults,
+	...effectDisplayInfoDefaults,
+	...hasDescriptionDefaults,
+	...overridesAttachDefaults,
+	...overridesDetachDefaults,
 	category: 'attachable' as CardCategoryT,
 	expansion: 'default',
 	palette: 'default',
