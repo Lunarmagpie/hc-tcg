@@ -10,8 +10,8 @@ import { CardPosModel } from '../../models/card-pos-model'
 import { TurnActions } from '../../types/game-state'
 import { EmptyNode, FormattedTextNode, formatText } from '../../utils/formatting'
 
-export interface IsCard {
-	__is_card: undefined,
+export interface Card {
+	__card: undefined,
 
 	category: CardCategoryT
 	id: string
@@ -31,9 +31,9 @@ export interface IsCard {
 	//@TODO remove this and make mixin
 	log: ((values: PlayCardLog) => string) | null
 }
-export const isCardDefaults = { __is_card: undefined }
-export function implementsIsCard(obj: any): obj is IsCard {
-	return '__is_card' in obj
+export const isCardDefaults = { __card: undefined }
+export function implementsCard(obj: any): obj is Card {
+	return '__card' in obj
 }
 
 export interface HermitDisplayInfo {
