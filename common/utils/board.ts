@@ -133,7 +133,7 @@ export function getAdjacentRows(playerState: PlayerState): Array<RowStateWithHer
 export function hasSingleUse(playerState: PlayerState, id: string, isUsed: boolean = false) {
 	const suCard = playerState.board.singleUseCard
 	const suUsed = playerState.board.singleUseCardUsed
-	return suCard?.cardId === id && suUsed === isUsed
+	return suCard?.id === id && suUsed === isUsed
 }
 
 export function applySingleUse(game: GameModel, pickResult?: PickInfo): GenericActionResult {
