@@ -2,10 +2,10 @@ import StatusEffect from './status-effect'
 import {GameModel} from '../models/game-model'
 import {CardPosModel, getBasicCardPos, getCardPos} from '../models/card-pos-model'
 import {removeStatusEffect} from '../utils/board'
-import {StatusEffectT} from '../types/game-state'
 import {isTargetingPos} from '../utils/attacks'
+import { IsCard } from '../cards/base/card'
 
-class ProtectedStatusEffect extends StatusEffect {
+const ProtectedStatusEffect  = (target: IsCard): StatusEffect => {
 	constructor() {
 		super({
 			id: 'protected',
@@ -18,7 +18,7 @@ class ProtectedStatusEffect extends StatusEffect {
 		})
 	}
 
-	override onApply(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
+	override onApply(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
 		game.state.statusEffects.push(statusEffectInfo)
 		const {player, opponentPlayer} = pos
 		const instanceKey = this.getInstanceKey(statusEffectInfo.statusEffectInstance)
@@ -61,7 +61,7 @@ class ProtectedStatusEffect extends StatusEffect {
 		})
 	}
 
-	override onRemoval(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
+	override onRemoval(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
 		const {player} = pos
 		const instanceKey = this.getInstanceKey(statusEffectInfo.statusEffectInstance)
 

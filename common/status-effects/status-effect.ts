@@ -1,63 +1,34 @@
-import {GameModel} from '../models/game-model'
+import {IsCard} from '../cards/base/card'
 import {CardPosModel} from '../models/card-pos-model'
-import {StatusEffectT} from '../types/game-state'
+import {GameModel} from '../models/game-model'
 
-type StatusEffectDefs = {
+export interface StatusEffect {
+	__status_effect: undefined
+
 	id: string
 	name: string
 	description: string
 	duration: number
 	counter: boolean
 	damageEffect: boolean
+	/* The target of this status effect */
+	target: IsCard
+	/* Whether or not this status effect should be rendered */
 	visible: boolean
-}
-
-abstract class StatusEffect {
-	public id: string
-	public name: string
-	public description: string
-	public duration: number
-	public counter: boolean
-	public damageEffect: boolean
-	public visible: boolean
-
-	constructor(defs: StatusEffectDefs) {
-		this.id = defs.id
-		this.name = defs.name
-		this.description = defs.description
-		this.duration = defs.duration
-		this.counter = defs.counter
-		this.damageEffect = defs.damageEffect
-		this.visible = defs.visible
-	}
-
-	public getKey(keyName: string) {
-		return this.id + ':' + keyName
-	}
-	public getInstanceKey(instance: string, keyName: string = '') {
-		return this.id + ':' + instance + ':' + keyName
-	}
-
-	/**
-	 * Same as `getInstanceKey` but for the statusEffect's target
-	 */
-	public getTargetInstanceKey(targetId: string, instance: string, keyName: string = '') {
-		return targetId + ':' + instance + ':' + keyName
-	}
 
 	/**
 	 * Called when this statusEffect is applied
 	 */
-	public onApply(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
-		// default is do nothing
-	}
-
+	onApply(game: GameModel, pos: CardPosModel): void
 	/**
 	 * Called when the statusEffect is removed, from either timeout or other means
 	 */
-	public onRemoval(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
-		// default is do nothing
-	}
+	onRemoval(game: GameModel, pos: CardPosModel): void
+}
+
+export const statusEffectDefaults = {__status_effect: undefined}
+export function implementsIsCard(obj: any): obj is StatusEffect {
+	return '__status_effect' in obj
 }
 
 export default StatusEffect

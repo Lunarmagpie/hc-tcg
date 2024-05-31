@@ -3,15 +3,10 @@ import {STATUS_EFFECT_CLASSES} from '../status-effects'
 import {CardPosModel, getCardPos} from '../models/card-pos-model'
 import {GameModel} from '../models/game-model'
 import {BoardSlotTypeT, RowPos, SlotPos} from '../types/cards'
-import {
-	StatusEffectT,
-	GenericActionResult,
-	PlayerState,
-	RowState,
-	RowStateWithHermit,
-} from '../types/game-state'
+import {GenericActionResult, PlayerState, RowState, RowStateWithHermit} from '../types/game-state'
 import {PickInfo} from '../types/server-requests'
 import {IsCard} from '../cards/base/card'
+import StatusEffect from '../status-effects/status-effect'
 
 export function getActiveRow(player: PlayerState) {
 	if (player.board.activeRow === null) return null
@@ -170,28 +165,11 @@ export function applySingleUse(game: GameModel, pickResult?: PickInfo): GenericA
  */
 export function applyStatusEffect(
 	game: GameModel,
-	statusEffectId: string,
-	target: IsCard
+	statusEffect: StatusEffect
 ): GenericActionResult {
-	const pos = getCardPos(game, target)
-
+	const pos = getCardPos(game, statusEffect.target)
 	if (!pos) return 'FAILURE_INVALID_DATA'
-
-	const statusEffect = STATUS_EFFECT_CLASSES[statusEffectId]
-	const statusEffectInstance = Math.random().toString()
-
-	const statusEffectInfo: StatusEffectT = {
-		statusEffectId: statusEffectId,
-		statusEffectInstance: statusEffectInstance,
-		target: target,
-		damageEffect: statusEffect.damageEffect,
-	}
-
-	statusEffect.onApply(game, statusEffectInfo, pos)
-
-	if (statusEffect.duration > 0 || statusEffect.counter)
-		statusEffectInfo.duration = statusEffect.duration
-
+	statusEffect.onApply(game, pos)
 	return 'SUCCESS'
 }
 
@@ -201,17 +179,11 @@ export function applyStatusEffect(
 export function removeStatusEffect(
 	game: GameModel,
 	pos: CardPosModel,
-	statusEffectInstance: string
+	statusEffect: StatusEffect
 ): GenericActionResult {
-	const statusEffects = game.state.statusEffects.filter(
-		(a) => a.statusEffectInstance === statusEffectInstance
-	)
-	if (statusEffects.length === 0) return 'FAILURE_NOT_APPLICABLE'
-
-	const statusEffectObject = STATUS_EFFECT_CLASSES[statusEffects[0].statusEffectId]
-	statusEffectObject.onRemoval(game, statusEffects[0], pos)
-	game.battleLog.addRemoveStatusEffectEntry(statusEffectObject)
-	game.state.statusEffects = game.state.statusEffects.filter((a) => !statusEffects.includes(a))
+	statusEffect.onRemoval(game, pos)
+	game.battleLog.addRemoveStatusEffectEntry(statusEffect)
+	game.state.statusEffects = game.state.statusEffects.filter((a) => a !== statusEffect)
 
 	return 'SUCCESS'
 }

@@ -3,9 +3,9 @@ import {GameModel} from '../models/game-model'
 import {HERMIT_CARDS} from '../cards'
 import {CardPosModel, getBasicCardPos} from '../models/card-pos-model'
 import {removeStatusEffect} from '../utils/board'
-import {StatusEffectT} from '../types/game-state'
+import { IsCard } from '../cards/base/card'
 
-class SleepingStatusEffect extends StatusEffect {
+const SleepingStatusEffect   = (target: IsCard): StatusEffect =>  {
 	constructor() {
 		super({
 			id: 'sleeping',
@@ -19,7 +19,7 @@ class SleepingStatusEffect extends StatusEffect {
 		})
 	}
 
-	override onApply(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
+	override onApply(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
 		const {player, card, row, rowIndex} = pos
 
 		if (!card || !row?.hermitCard || !rowIndex) return
@@ -63,7 +63,7 @@ class SleepingStatusEffect extends StatusEffect {
 		})
 	}
 
-	override onRemoval(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
+	override onRemoval(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
 		const {player} = pos
 		player.hooks.onTurnStart.remove(statusEffectInfo.statusEffectInstance)
 		player.hooks.afterDefence.remove(statusEffectInfo.statusEffectInstance)

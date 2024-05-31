@@ -3,10 +3,10 @@ import {GameModel} from '../models/game-model'
 import {CARDS} from '../cards'
 import {CardPosModel, getCardPos} from '../models/card-pos-model'
 import {getActiveRow, removeStatusEffect} from '../utils/board'
-import {StatusEffectT} from '../types/game-state'
 import {isTargetingPos} from '../utils/attacks'
+import { IsCard } from '../cards/base/card'
 
-class WeaknessStatusEffect extends StatusEffect {
+const WeaknessStatusEffect   = (target: IsCard): StatusEffect =>  {
 	constructor() {
 		super({
 			id: 'weakness',
@@ -19,7 +19,7 @@ class WeaknessStatusEffect extends StatusEffect {
 		})
 	}
 
-	override onApply(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
+	override onApply(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
 		game.state.statusEffects.push(statusEffectInfo)
 		const {player, opponentPlayer} = pos
 
@@ -83,7 +83,7 @@ class WeaknessStatusEffect extends StatusEffect {
 		})
 	}
 
-	override onRemoval(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
+	override onRemoval(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
 		const {player, opponentPlayer} = pos
 		opponentPlayer.hooks.onAttack.remove(statusEffectInfo.statusEffectInstance)
 		opponentPlayer.hooks.onAttack.remove(statusEffectInfo.statusEffectInstance)

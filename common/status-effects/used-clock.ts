@@ -2,9 +2,9 @@ import StatusEffect from './status-effect'
 import {GameModel} from '../models/game-model'
 import {CardPosModel} from '../models/card-pos-model'
 import {removeStatusEffect} from '../utils/board'
-import {StatusEffectT} from '../types/game-state'
+import { IsCard } from '../cards/base/card'
 
-class UsedClockStatusEffect extends StatusEffect {
+const UsedClockStatusEffect  = (target: IsCard): StatusEffect =>  {
 	constructor() {
 		super({
 			id: 'used-clock',
@@ -17,7 +17,7 @@ class UsedClockStatusEffect extends StatusEffect {
 		})
 	}
 
-	override onApply(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
+	override onApply(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
 		game.state.statusEffects.push(statusEffectInfo)
 		const {player} = pos
 
@@ -32,7 +32,7 @@ class UsedClockStatusEffect extends StatusEffect {
 		})
 	}
 
-	override onRemoval(game: GameModel, statusEffectInfo: StatusEffectT, pos: CardPosModel) {
+	override onRemoval(game: GameModel, statusEffectInfo: StatusEffect, pos: CardPosModel) {
 		const {player, opponentPlayer} = pos
 		opponentPlayer.hooks.beforeAttack.remove(statusEffectInfo.statusEffectInstance)
 		player.hooks.onTurnStart.remove(statusEffectInfo.statusEffectInstance)
