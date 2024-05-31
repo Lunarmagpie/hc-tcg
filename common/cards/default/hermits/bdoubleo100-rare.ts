@@ -1,13 +1,13 @@
 import {HERMIT_CARDS} from '../..'
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
-import {HermitCard, defaultHermitInfo} from '../../base/hermit-card'
+import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {applyStatusEffect, getActiveRow, removeStatusEffect} from '../../../utils/board'
 import {OverridesAttach, OverridesDetach} from '../../base/card'
 
 const BdoubleO100RareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	return {
-		...defaultHermitInfo,
+		...hermitCardDefaults,
 		id: 'bdoubleo100_rare',
 		numericId: 1,
 		name: 'Bdubs',

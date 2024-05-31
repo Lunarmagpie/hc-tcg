@@ -1,12 +1,12 @@
 import {AttackModel} from '../../../models/attack-model'
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
-import {HermitCard, defaultHermitInfo} from '../../base/hermit-card'
+import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {OverridesAttach, OverridesDetach} from '../../base/card'
 
 const StressMonster101RareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
 	return {
-		...defaultHermitInfo,
+		...hermitCardDefaults,
 		category: 'hermit',
 		id: 'stressmonster101_rare',
 		numericId: 93,
