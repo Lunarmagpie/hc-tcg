@@ -1,10 +1,12 @@
-import {HasHealth, IsCard} from './card'
+import {HasHealth, IsCard, hasHealthDefaults, isCardDefaults} from './card'
 import {TextNode} from '../../utils/formatting'
 
 export type HealthCard = IsCard & HasHealth
 
 export const HealthIndicator = (): HealthCard => {
 	return {
+		...isCardDefaults,
+		...hasHealthDefaults,
 		category: 'health',
 		health: 300,
 		id: 'health',
@@ -17,7 +19,7 @@ export const HealthIndicator = (): HealthCard => {
 		expansion: 'default',
 		palette: 'default',
 		sidebarDescriptions: [],
-		log: () => null,
+		log: null,
 	}
 }
 
