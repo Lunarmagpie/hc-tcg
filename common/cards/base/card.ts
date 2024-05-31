@@ -27,7 +27,7 @@ export interface IsCard {
 	sidebarDescriptions: Array<Record<string, string>>
 
 	//@TODO remove this and make mixin
-	log: (values: PlayCardLog) => string | null
+	log: ((values: PlayCardLog) => string) | null
 }
 
 export interface HermitDisplayInfo {
@@ -86,6 +86,10 @@ export interface HasHealth {
 export interface CanAttack {
 	primary: HermitAttackInfo
 	secondary: HermitAttackInfo
+}
+
+export interface AllowAttacks {
+	allowAttacks: boolean
 }
 
 export interface HasDescription {

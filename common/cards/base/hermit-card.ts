@@ -8,7 +8,7 @@ import {
 	HasHealth,
 	OverridesAttach,
 	HermitDisplayInfo,
-	CanAttack,
+	HermitAttack,
 	GivesPointOnKnockout,
 } from './card'
 import {
@@ -27,7 +27,7 @@ export type HermitCard = IsCard &
 	IsAttachableToHermitSlots &
 	HasHermitType &
 	HasHealth &
-	CanAttack &
+	HermitAttack &
 	HermitDisplayInfo &
 	GivesPointOnKnockout
 
@@ -41,7 +41,7 @@ export const defaultHermitInfo = {
 	getShortName(this: IsCard) {
 		return null
 	},
-	getDescription(this: IsCard & CanAttack) {
+	getDescription(this: IsCard & HermitAttack) {
 		return formatText(
 			(this.primary.power ? `**${this.primary.name}**\n*${this.primary.power}*` : '') +
 				(this.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
@@ -54,7 +54,7 @@ export const defaultHermitInfo = {
 // Default is to return
 function createAttackModel(
 	game: GameModel,
-	hermit: IsCard & CanAttack,
+	hermit: IsCard & HermitAttack,
 	pos: CardPosModel,
 	hermitAttackType: HermitAttackType
 ): AttackModel | null {

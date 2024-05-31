@@ -1,5 +1,6 @@
-import {PlayCardLog, CardRarityT} from '../../types/cards'
+import {PlayCardLog, CardRarityT, CardCategoryT} from '../../types/cards'
 import {
+	AllowAttacks,
 	EffectDisplayInfo,
 	HasDescription,
 	IsAttachableToSingleUseSlot,
@@ -18,6 +19,30 @@ export type SingleUseCard = IsCard &
 	HasDescription &
 	OverridesAttach &
 	OverridesDetach
+
+export type DamageSingleUseCard = SingleUseCard & AllowAttacks
+
+export const defaultSingleUseInfo = {
+	category: 'single_use' as CardCategoryT,
+	expansion: 'default',
+	palette: 'default',
+	sidebarDescriptions: [],
+	getDescription(this: IsCard & HasDescription) {
+		return formatText(this.description)
+	},
+}
+
+export const defaultDamagingSingleUseInfo = {
+	category: 'single_use' as CardCategoryT,
+	expansion: 'default',
+	palette: 'default',
+	sidebarDescriptions: [],
+	getDescription(this: IsCard & HasDescription) {
+		return formatText(this.description)
+	},
+	log: null,
+	allowAttacks: false,
+}
 
 // export type SingleUseDefs = {
 // 	id: string

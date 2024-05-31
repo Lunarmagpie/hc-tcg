@@ -1,13 +1,13 @@
-import { IsCard, CanAttachResult } from '../cards/base/card'
-import { HermitCard } from '../cards/base/hermit-card'
-import { AttackModel } from '../models/attack-model'
-import { BattleLogModel } from '../models/battle-log-model'
-import { CardPosModel } from '../models/card-pos-model'
-import { FormattedTextNode } from '../utils/formatting'
-import { HermitAttackType } from './attack'
-import { EnergyT, SlotPos } from './cards'
-import { GameHook, WaterfallHook } from './hooks'
-import { ModalRequest, PickRequest } from './server-requests'
+import {IsCard} from '../cards/base/card'
+import {HermitCard} from '../cards/base/hermit-card'
+import {AttackModel} from '../models/attack-model'
+import {BattleLogModel} from '../models/battle-log-model'
+import {CardPosModel} from '../models/card-pos-model'
+import {FormattedTextNode} from '../utils/formatting'
+import {HermitAttackType} from './attack'
+import {EnergyT, SlotPos} from './cards'
+import {GameHook, WaterfallHook} from './hooks'
+import {ModalRequest, PickRequest} from './server-requests'
 
 export type PlayerId = string
 
