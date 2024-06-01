@@ -3,12 +3,10 @@ import {
 	AllowAttacks,
 	EffectDisplayInfo,
 	HasDescription,
-	IsAttachableToSingleUseSlots,
 	Card,
 	OverridesAttach,
 	OverridesDetach,
 	isCardDefaults,
-	isAttachableToEffectSlotsDefaults,
 	effectDisplayInfoDefaults,
 	hasDescriptionDefaults,
 	overridesAttachDefaults,
@@ -18,9 +16,9 @@ import {GameModel} from '../../models/game-model'
 import {CardPosModel} from '../../models/card-pos-model'
 import {TurnActions} from '../../types/game-state'
 import {FormattedTextNode, formatText} from '../../utils/formatting'
+import combinators from './attachable'
 
 export type SingleUseCard = Card &
-	IsAttachableToSingleUseSlots &
 	EffectDisplayInfo &
 	HasDescription &
 	OverridesAttach &
@@ -28,11 +26,11 @@ export type SingleUseCard = Card &
 
 export const defaultSingleUseInfo = {
 	...isCardDefaults,
-	...isAttachableToEffectSlotsDefaults,
 	...effectDisplayInfoDefaults,
 	...hasDescriptionDefaults,
 	...overridesAttachDefaults,
 	...overridesDetachDefaults,
+	canBeAttachedTo: combinators.every(combinators.player, combinators.singleUse),
 	category: 'single_use' as CardCategoryT,
 	expansion: 'default',
 	palette: 'default',

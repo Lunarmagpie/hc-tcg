@@ -27,10 +27,9 @@ import {HermitAttackType} from '../../types/attack'
 import {CardPosModel} from '../../models/card-pos-model'
 import {TurnActions} from '../../types/game-state'
 import {FormattedTextNode, formatText} from '../../utils/formatting'
-import { IsAttachable, combinators, isAttachableDefaults } from './attachable'
+import combinators from './attachable'
 
 export type HermitCard = Card &
-	IsAttachable &
 	HasHermitType &
 	HasHealth &
 	HermitDisplayInfo &
@@ -39,7 +38,6 @@ export type HermitCard = Card &
 
 export const hermitCardDefaults = {
 	...isCardDefaults,
-	...isAttachableDefaults,
 	...hasHermitTypeDefaults,
 	...hasHealthDefaults,
 	...hermitDisplayInfoDefaults,

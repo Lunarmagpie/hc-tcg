@@ -12,6 +12,7 @@ import {TurnActions} from '../../types/game-state'
 import {EmptyNode, FormattedTextNode, formatText} from '../../utils/formatting'
 import {HermitAttackType} from '../../types/attack'
 import {AttackModel} from '../../models/attack-model'
+import { AttachmentExpression } from './attachable'
 
 export interface Card {
 	__card: undefined
@@ -31,6 +32,8 @@ export interface Card {
 
 	sidebarDescriptions: Array<Record<string, string>>
 
+	canBeAttachedTo: AttachmentExpression,
+	
 	//@TODO remove this and make mixin
 	log: ((values: PlayCardLog) => string) | null
 }

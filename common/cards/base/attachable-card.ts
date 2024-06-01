@@ -10,7 +10,7 @@ import {
 	overridesAttachDefaults,
 	overridesDetachDefaults,
 } from './card'
-import { IsAttachable, isAttachableDefaults, combinators } from './attachable'
+import combinators from './attachable'
 import { CARDS } from '..'
 import { GameModel } from '../../models/game-model'
 import { PlayCardLog, CardRarityT, CardCategoryT } from '../../types/cards'
@@ -20,7 +20,6 @@ import { FormattedTextNode, formatText } from '../../utils/formatting'
 
 export type AttachableCard =
 	& Card
-	& IsAttachable
 	& EffectDisplayInfo
 	& HasDescription
 	& OverridesAttach
@@ -28,7 +27,6 @@ export type AttachableCard =
 
 export const attachableCardDefaults = {
 	...isCardDefaults,
-	...isAttachableDefaults,
 	...effectDisplayInfoDefaults,
 	...hasDescriptionDefaults,
 	...overridesAttachDefaults,

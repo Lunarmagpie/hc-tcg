@@ -2,11 +2,10 @@ import {CardPosModel} from '../../models/card-pos-model'
 import {GameModel} from '../../models/game-model'
 import {CardCategoryT, PlayCardLog} from '../../types/cards'
 import {formatText} from '../../utils/formatting'
+import combinators from './attachable'
 import {
-	IsAttachableToItemSlots,
 	Card,
 	isCardDefaults,
-	isAttachableToItemSlotsDefaults,
 	HasHermitType,
 	hasHermitTypeDefaults,
 	itemDisplayInfoDefaults,
@@ -15,17 +14,17 @@ import {
 	hasBattleLogDefaults,
 } from './card'
 
-export type ItemCard = Card & IsAttachableToItemSlots & HasHermitType & ItemDisplayInfo
+export type ItemCard = Card & HasHermitType & ItemDisplayInfo
 
 export const itemCardDefaults = {
 	...isCardDefaults,
-	...isAttachableToItemSlotsDefaults,
 	...hasHermitTypeDefaults,
 	...itemDisplayInfoDefaults,
 	...hasBattleLogDefaults,
 	category: 'item' as CardCategoryT,
 	expansion: 'default',
 	palette: 'default',
+	canBeAttachedTo: combinators.every(combinators.player, combinators.item),
 	getBackground(this: Card) {
 		return this.id.split('_')[0]
 	},
