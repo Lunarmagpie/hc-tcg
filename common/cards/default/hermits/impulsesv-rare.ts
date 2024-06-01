@@ -32,7 +32,7 @@ const ImpulseSVRareHermitCard = (): HermitCard & OverridesAttach & OverridesDeta
 			const {player} = pos
 
 			player.hooks.onAttack.add(this, (attack) => {
-				if (attack.getCreator() !== this.getInstanceKey(this) || attack.type !== 'secondary') return
+				if (attack.getCreator() !== this || attack.type !== 'secondary') return
 				const boomerAmount = player.board.rows.filter(
 					(row, index) =>
 						row.hermitCard &&

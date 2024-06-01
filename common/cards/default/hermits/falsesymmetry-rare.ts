@@ -43,10 +43,7 @@ const FalseSymmetryRareHermitCard = (): HermitCard & OverridesAttach & Overrides
 				const maxHealth = Math.max(attacker.row.health, attacker.row.hermitCard.health)
 				attacker.row.health = Math.min(attacker.row.health + 40, maxHealth)
 
-				game.battleLog.addCustomEntry(
-					player.id,
-					`$p${attacker.row.hermitCard.name}$ healed $g40hp$`
-				)
+				game.battleLog.addEntry(player.id, `$p${attacker.row.hermitCard.name}$ healed $g40hp$`)
 			})
 		},
 

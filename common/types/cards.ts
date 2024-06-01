@@ -1,3 +1,4 @@
+import {AttackLog} from './attack'
 import {PlayerState, RowState, RowStateWithHermit} from './game-state'
 
 export type CardRarityT = 'common' | 'rare' | 'ultra_rare'
@@ -37,6 +38,11 @@ export type HermitAttackInfo = {
 	damage: number
 	power: string | null
 	formattedPower?: Array<Node>
+}
+
+export type SingleUseAttackInfo = {
+	damage: number
+	log: (values: AttackLog) => string
 }
 
 export type Slot = {

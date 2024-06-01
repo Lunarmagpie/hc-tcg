@@ -3,11 +3,13 @@ import {AttackModel} from '../../../models/attack-model'
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {applySingleUse, getActiveRowPos} from '../../../utils/board'
-import {DamageSingleUseCard, defaultDamagingSingleUseInfo} from '../../base/single-use-card'
+import {SingleUseAttack, singleUseAttackDefaults} from '../../base/card'
+import {SingleUseCard, defaultDamagingSingleUseInfo} from '../../base/single-use-card'
 
-const DiamondSwordSingleUseCard = (): DamageSingleUseCard => {
+const DiamondSwordSingleUseCard = (): SingleUseCard & SingleUseAttack => {
 	return {
 		...defaultDamagingSingleUseInfo,
+		...singleUseAttackDefaults,
 		id: 'diamond_sword',
 		numericId: 14,
 		name: 'Diamond Sword',

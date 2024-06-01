@@ -1,8 +1,8 @@
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {
+	Card,
 	OverridesAttach,
 	OverridesDetach,
-	canAttackDefaults,
 	implementsCanAttack,
 	implementsCard,
 	implementsOverridesAttach,
@@ -10,13 +10,13 @@ import {
 } from '../../base/card'
 import {GameModel} from '../../../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../../../models/card-pos-model'
-import {AttackType, HermitAttackType} from '../../../types/attack'
+import {HermitAttackType} from '../../../types/attack'
 import {getNonEmptyRows} from '../../../utils/board'
 import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
 
 const RendogRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
-	let imitatingCard: HermitCard | null = null
-	let attackType: AttackType | null = null
+	let imitatingCard: Card | null = null
+	let attackType: HermitAttackType | null = null
 
 	return {
 		...hermitCardDefaults,
@@ -41,7 +41,6 @@ const RendogRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach 
 			power: "Use an attack from any of your opponent's Hermits.",
 		},
 		getAttack(game: GameModel, pos: CardPosModel, hermitAttackType: HermitAttackType) {
-			const {player} = pos
 			const attack = {
 				...this,
 				...hermitCardDefaults,
@@ -61,10 +60,13 @@ const RendogRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach 
 			// Return the attack we picked from the card we picked
 			const newAttack = imitatingCard.getAttack(game, pos, attackType)
 			if (!newAttack) return null
+
 			const attackName =
 				newAttack.type === 'primary' ? imitatingCard.primary.name : imitatingCard.secondary.name
 			newAttack.log = (values) => {
-				return `${values.attacker} attacked ${values.target} with $v${imitatingCard.name}'s ${attackName}$ for ${values.damage} damage`
+				return imitatingCard
+					? `${values.attacker} attacked ${values.target} with $v${imitatingCard.name}'s ${attackName}$ for ${values.damage} damage`
+					: ''
 			}
 
 			attackType === null
@@ -136,7 +138,7 @@ const RendogRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach 
 								}
 
 								// Add the attack requests of the chosen card
-								player.hooks.getAttackRequests.call(imitatingCardInstance, modalResult.pick)
+								player.hooks.getAttackRequests.call(imitatingCard, modalResult.pick)
 
 								return 'SUCCESS'
 							},
@@ -156,7 +158,7 @@ const RendogRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach 
 			player.hooks.onActiveRowChange.add(this, (oldRow, newRow) => {
 				if (pos.rowIndex === oldRow) {
 					// We switched away from ren, delete the imitating card
-					if (imitatingCard) {
+					if (implementsOverridesDetach(imitatingCard)) {
 						// Detach the old card
 						imitatingCard.onDetach(game, pos)
 					}
@@ -181,11 +183,9 @@ const RendogRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach 
 		},
 		onDetach(game: GameModel, pos: CardPosModel) {
 			const {player} = pos
-			const imitatingCardKey = this.getInstanceKey(this, 'imitatingCard')
-			const pickedAttackKey = this.getInstanceKey(this, 'pickedAttack')
 
 			// If the card we are imitating is still attached, detach it
-			if (imitatingCard) {
+			if (implementsOverridesDetach(imitatingCard)) {
 				imitatingCard.onDetach(game, pos)
 			}
 

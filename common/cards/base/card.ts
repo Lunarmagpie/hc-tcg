@@ -4,6 +4,7 @@ import {
 	CardCategoryT,
 	HermitTypeT,
 	HermitAttackInfo,
+	SingleUseAttackInfo,
 } from '../../types/cards'
 import {GameModel} from '../../models/game-model'
 import {CardPosModel} from '../../models/card-pos-model'
@@ -129,8 +130,12 @@ export function implementsIsAttachableToHermitSlots(obj: any): obj is IsAttachab
 }
 
 export interface IsAttachableToOpponentHermitSlots {}
-export const isAttachableToOpponentHermitSlotsDefaults = {__is_attachable_to_opponent_hermit_slots: undefined}
-export function implementsIsAttachableToOpponentHermitSlots(obj: any): obj is IsAttachableToOpponentHermitSlots {
+export const isAttachableToOpponentHermitSlotsDefaults = {
+	__is_attachable_to_opponent_hermit_slots: undefined,
+}
+export function implementsIsAttachableToOpponentHermitSlots(
+	obj: any
+): obj is IsAttachableToOpponentHermitSlots {
 	return '__is_attachable_to_opponent_hermit_slots' in obj
 }
 
@@ -141,8 +146,12 @@ export function implementsIsAttachableToItemSlots(obj: any): obj is IsAttachable
 }
 
 export interface IsAttachableToOpponentItemSlots {}
-export const isAttachableToOpponentItemSlotsDefaults = {__is_attachable_to_opponent_item_slots: undefined}
-export function implementsIsAttachableToOpponentItemSlots(obj: any): obj is IsAttachableToOpponentItemSlots {
+export const isAttachableToOpponentItemSlotsDefaults = {
+	__is_attachable_to_opponent_item_slots: undefined,
+}
+export function implementsIsAttachableToOpponentItemSlots(
+	obj: any
+): obj is IsAttachableToOpponentItemSlots {
 	return '__is_attachable_to_opponent_item_slots' in obj
 }
 
@@ -153,8 +162,12 @@ export function implementsIsAttachableToEffectSlots(obj: any): obj is IsAttachab
 }
 
 export interface IsAttachableToOpponentEffectSlots {}
-export const isAttachableToOpponentEffectSlotsDefaults = {__is_attachable_to_opponent_effect_slots: undefined}
-export function implementsIsAttachableToOpponentEffectSlots(obj: any): obj is IsAttachableToOpponentEffectSlots {
+export const isAttachableToOpponentEffectSlotsDefaults = {
+	__is_attachable_to_opponent_effect_slots: undefined,
+}
+export function implementsIsAttachableToOpponentEffectSlots(
+	obj: any
+): obj is IsAttachableToOpponentEffectSlots {
 	return '__is_attachable_to_opponent_effect_slots' in obj
 }
 
@@ -167,7 +180,9 @@ export function implementsIsAttachableToSingleUseSlots(
 }
 
 export interface IsAttachableToOpponentSingleUseSlots {}
-export const isAttachableToOpponentSingleUseSlotsDefaults = {__is_attachable_to_opponent_single_use_slots: undefined}
+export const isAttachableToOpponentSingleUseSlotsDefaults = {
+	__is_attachable_to_opponent_single_use_slots: undefined,
+}
 export function implementsIsAttachableToOpponentSingleUseSlots(
 	obj: any
 ): obj is IsAttachableToOpponentSingleUseSlots {
@@ -202,7 +217,11 @@ export interface CanAttack {
 	__can_attack: undefined
 	primary: HermitAttackInfo
 	secondary: HermitAttackInfo
-	getAttack: (game: GameModel, pos:CardPosModel, hermitAttackType: HermitAttackType) => AttackModel | null
+	getAttack: (
+		game: GameModel,
+		pos: CardPosModel,
+		hermitAttackType: HermitAttackType
+	) => AttackModel | null
 }
 export const canAttackDefaults = {
 	__can_attack: undefined,
@@ -254,6 +273,17 @@ export const canAttackDefaults = {
 }
 export function implementsCanAttack(obj: any): obj is CanAttack {
 	return '__can_attack' in obj
+}
+
+export interface SingleUseAttack {
+	__single_use_attack: undefined
+}
+export const singleUseAttackDefaults = {
+	__single_use_attack: undefined,
+	// Default is to return
+}
+export function implementsUseAttackDefaults(obj: any): obj is CanAttack {
+	return '__single_use_attack' in obj
 }
 
 export interface AllowAttacks {
