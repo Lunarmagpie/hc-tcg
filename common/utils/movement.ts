@@ -1,5 +1,5 @@
 import {GameModel} from '../models/game-model'
-import {GameState, PlayerState} from '../types/game-state'
+import {PlayerState} from '../types/game-state'
 import {Card, implementsHasAttach} from '../cards/base/card'
 import {CARDS} from '../cards'
 import {BasicCardPos, CardPosModel, getCardPos} from '../models/card-pos-model'
@@ -84,7 +84,7 @@ export function discardSingleUse(game: GameModel, playerState: PlayerState) {
 	const pos = getCardPos(game, singleUseCard)
 	if (!pos) return
 
-	if (implementsOverridesDetach(singleUseCard)) {
+	if (implementsHasAttach(singleUseCard)) {
 		singleUseCard.onDetach(game, pos)
 	}
 

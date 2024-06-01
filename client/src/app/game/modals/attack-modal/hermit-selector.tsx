@@ -6,6 +6,8 @@ import css from '../game-modals.module.scss'
 import {getPlayerId} from 'logic/session/session-selectors'
 import {getPlayerStateById} from 'logic/game/game-selectors'
 import Attack from './attack'
+import {CARDS} from 'common/cards'
+import {implementsCanAttack} from 'common/cards/base/card'
 
 type HermitExtra = {
 	hermitId: string
@@ -29,14 +31,12 @@ function HermitSelector({extraAttacks, handleExtraAttack}: Props) {
 	if (!activeRow || !playerState || !activeRow.hermitCard) return null
 	if (!opponentRow || !opponentRow.hermitCard) return null
 
-	const playerHermitInfo = HERMIT_CARDS[activeRow.hermitCard.id]
-
-	const hermitFullName = playerHermitInfo.id.split('_')[0]
+	const hermitFullName = activeRow.hermitCard.id.split('_')[0]
 
 	const eaResult = extraAttacks.reduce((agg, extra) => {
 		const [hermitId, action] = extra.split(':')
-		const hermitInfo = HERMIT_CARDS[hermitId]
-		if (!hermitInfo) throw new Error('Invalid extra attack')
+		const hermitInfo = CARDS.find((card) => card.id === hermitId)
+		if (!implementsCanAttack(hermitInfo)) throw new Error('Invalid extra attack')
 		const type = action === 'PRIMARY_ATTACK' ? 'primary' : 'secondary'
 		const hermitFullName = hermitInfo.id.split('_')[0]
 		agg[hermitId] = agg[hermitId] || {}
@@ -54,7 +54,8 @@ function HermitSelector({extraAttacks, handleExtraAttack}: Props) {
 	}, {} as Record<string, any>)
 
 	const hermitOptions = Object.keys(eaResult).map((hermitId) => {
-		const hermitInfo = HERMIT_CARDS[hermitId]
+		const hermitInfo = CARDS.find((card) => card.id === hermitId)
+		if (!hermitInfo) return <div></div>
 		const hermitFullName = hermitInfo.id.split('_')[0]
 		return (
 			<img
@@ -78,7 +79,7 @@ function HermitSelector({extraAttacks, handleExtraAttack}: Props) {
 				</div>
 				<div className={css.info}>
 					<div className={css.name}>
-						{playerHermitInfo.secondary.name}
+						{activeRow.hermitCard.secondary.name}
 						<span className={css.select}> Select a hermit...</span>
 					</div>
 					<button className={css.hermitOptions}>{hermitOptions}</button>

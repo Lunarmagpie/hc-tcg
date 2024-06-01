@@ -72,7 +72,23 @@ const GrianRareHermitCard = (): HermitCard & HasAttach => {
 
 				game.addModalRequest({
 					playerId: player.id,
-					data: {modalId: this.id},
+					data: {
+						modalId: 'selectCards',
+						payload: {
+							modalName: 'Grian - Borrow',
+							modalDescription: `Would you like to attach or discard your opponent's ${opponentEffectCard.name} card?`,
+							cards: [player.pile[0]],
+							selectionSize: 0,
+							primaryButton: {
+								text: 'Attach',
+								variant: 'default',
+							},
+							secondaryButton: {
+								text: 'Discard',
+								variant: 'default',
+							},
+						},
+					},
 					onResult(modalResult) {
 						if (!modalResult || modalResult.attach === undefined) return 'FAILURE_INVALID_DATA'
 
