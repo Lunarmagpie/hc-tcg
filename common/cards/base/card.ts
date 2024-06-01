@@ -122,56 +122,10 @@ export function implementsOverridesDetach(obj: any): obj is OverridesDetach {
 	return '__overrides_detach' in obj
 }
 
-export interface IsAttachableToHermitSlots {}
+export interface IsAttachable {}
 export const isAttachableToHermitSlotsDefaults = {__is_attachable_to_hermit_slots: undefined}
-export function implementsIsAttachableToHermitSlots(obj: any): obj is IsAttachableToHermitSlots {
-	return '__is_attachable_to_hermit_slots' in obj
-}
-
-export interface IsAttachableToOpponentHermitSlots {}
-export const isAttachableToOpponentHermitSlotsDefaults = {__is_attachable_to_opponent_hermit_slots: undefined}
-export function implementsIsAttachableToOpponentHermitSlots(obj: any): obj is IsAttachableToOpponentHermitSlots {
-	return '__is_attachable_to_opponent_hermit_slots' in obj
-}
-
-export interface IsAttachableToItemSlots {}
-export const isAttachableToItemSlotsDefaults = {__is_attachable_to_item_slots: undefined}
-export function implementsIsAttachableToItemSlots(obj: any): obj is IsAttachableToItemSlots {
-	return '__is_attachable_to_item_slots' in obj
-}
-
-export interface IsAttachableToOpponentItemSlots {}
-export const isAttachableToOpponentItemSlotsDefaults = {__is_attachable_to_opponent_item_slots: undefined}
-export function implementsIsAttachableToOpponentItemSlots(obj: any): obj is IsAttachableToOpponentItemSlots {
-	return '__is_attachable_to_opponent_item_slots' in obj
-}
-
-export interface IsAttachableToEffectSlots {}
-export const isAttachableToEffectSlotsDefaults = {__is_attachable_to_effect_slots: undefined}
-export function implementsIsAttachableToEffectSlots(obj: any): obj is IsAttachableToEffectSlots {
-	return '__is_attachable_to_effect_slots' in obj
-}
-
-export interface IsAttachableToOpponentEffectSlots {}
-export const isAttachableToOpponentEffectSlotsDefaults = {__is_attachable_to_opponent_effect_slots: undefined}
-export function implementsIsAttachableToOpponentEffectSlots(obj: any): obj is IsAttachableToOpponentEffectSlots {
-	return '__is_attachable_to_opponent_effect_slots' in obj
-}
-
-export interface IsAttachableToSingleUseSlots {}
-export const isAttachableToSingleUseSlotsDefaults = {__is_attachable_to_single_use_slots: undefined}
-export function implementsIsAttachableToSingleUseSlots(
-	obj: any
-): obj is IsAttachableToSingleUseSlots {
-	return '__is_attachable_to_single_use_slots' in obj
-}
-
-export interface IsAttachableToOpponentSingleUseSlots {}
-export const isAttachableToOpponentSingleUseSlotsDefaults = {__is_attachable_to_opponent_single_use_slots: undefined}
-export function implementsIsAttachableToOpponentSingleUseSlots(
-	obj: any
-): obj is IsAttachableToOpponentSingleUseSlots {
-	return '__is_attachable_to_opponent_single_use_slots' in obj
+export function implementsIsAttachableToHermitSlots(obj: any): obj is IsAttachable {
+	return '__is_attachable' in obj
 }
 
 export interface GivesPointOnKnockout {}
