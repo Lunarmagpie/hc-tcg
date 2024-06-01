@@ -17,8 +17,7 @@ const BedAttachableCard = (): AttachableCard => {
 		description:
 			'Attach to your active Hermit. This Hermit restores all HP, then sleeps for the rest of this turn, and the following two turns, before waking up. Discard after your Hermit wakes up.',
 		log: null,
-		canBeAttachedTo: combinators.and()
-
+		canBeAttachedTo: combinators.every(combinators.player, combinators.effect, combinators.activeRow),
 		onAttach(game: GameModel, pos: CardPosModel) {
 			// Give the current row sleeping for 3 turns
 			const { player, row } = pos

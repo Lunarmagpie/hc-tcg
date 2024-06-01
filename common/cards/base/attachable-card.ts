@@ -33,7 +33,7 @@ export const attachableCardDefaults = {
 	...hasDescriptionDefaults,
 	...overridesAttachDefaults,
 	...overridesDetachDefaults,
-	canBeAttchedTo: combinators.effect,
+	canBeAttchedTo: combinators.every(combinators.player, combinators.effect),
 	category: 'attachable' as CardCategoryT,
 	expansion: 'default',
 	palette: 'default',

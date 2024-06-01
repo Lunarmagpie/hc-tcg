@@ -2,7 +2,6 @@ import {AttackModel} from '../../models/attack-model'
 import {GameModel} from '../../models/game-model'
 import {
 	Card,
-	IsAttachableToHermitSlots,
 	OverridesDetach,
 	HasHermitType,
 	HasHealth,
@@ -10,13 +9,11 @@ import {
 	HermitDisplayInfo,
 	GivesPointOnKnockout,
 	isCardDefaults,
-	isAttachableToEffectSlotsDefaults,
 	hasHermitTypeDefaults,
 	canAttackDefaults,
 	hermitDisplayInfoDefaults,
 	givesPointOnKnockoutDefaults,
 	hasHealthDefaults,
-	isAttachableToHermitSlotsDefaults,
 	CanAttack,
 } from './card'
 import {
@@ -30,9 +27,10 @@ import {HermitAttackType} from '../../types/attack'
 import {CardPosModel} from '../../models/card-pos-model'
 import {TurnActions} from '../../types/game-state'
 import {FormattedTextNode, formatText} from '../../utils/formatting'
+import { IsAttachable, combinators, isAttachableDefaults } from './attachable'
 
 export type HermitCard = Card &
-	IsAttachableToHermitSlots &
+	IsAttachable &
 	HasHermitType &
 	HasHealth &
 	HermitDisplayInfo &
@@ -41,7 +39,7 @@ export type HermitCard = Card &
 
 export const hermitCardDefaults = {
 	...isCardDefaults,
-	...isAttachableToHermitSlotsDefaults,
+	...isAttachableDefaults,
 	...hasHermitTypeDefaults,
 	...hasHealthDefaults,
 	...hermitDisplayInfoDefaults,
@@ -50,13 +48,14 @@ export const hermitCardDefaults = {
 	category: 'hermit' as CardCategoryT,
 	expansion: 'default',
 	palette: 'default',
+	canBeAttachedTo: combinators.every(combinators.player, combinators.hermit),
 	getBackground(this: Card) {
 		return this.id.split('_')[0]
 	},
 	getShortName(this: Card) {
 		return null
 	},
-	getDescription(this: Card & CanAttack) {
+	getDescription(this: Card & HermitAttack) {
 		return formatText(
 			(this.primary.power ? `**${this.primary.name}**\n*${this.primary.power}*` : '') +
 				(this.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
