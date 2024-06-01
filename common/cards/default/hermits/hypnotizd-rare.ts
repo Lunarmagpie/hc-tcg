@@ -5,7 +5,7 @@ import {PickRequest} from '../../../types/server-requests'
 import {getActiveRow, getNonEmptyRows} from '../../../utils/board'
 import {discardCard} from '../../../utils/movement'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {OverridesAttach, OverridesDetach, implementsIsAttachableToItemSlots} from '../../base/card'
+import {OverridesAttach, OverridesDetach} from '../../base/card'
 import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
 
 /*
@@ -85,7 +85,7 @@ const HypnotizdRareHermitCard = (): HermitCard & OverridesAttach & OverridesDeta
 						if (pickResult.slot.type !== 'item') return 'FAILURE_INVALID_SLOT'
 						if (!pickResult.card) return 'FAILURE_INVALID_SLOT'
 
-						if (!implementsIsAttachableToItemSlots(pickResult.card)) return 'FAILURE_INVALID_SLOT'
+						if (pickResult.card.category !== 'item') return 'FAILURE_INVALID_SLOT'
 
 						discardCard(game, pickResult.card)
 
