@@ -9,6 +9,7 @@ import {GLOSSARY} from 'common/glossary'
 import {useSelector} from 'react-redux'
 import {getSettings} from 'logic/local-settings/local-settings-selectors'
 import {FormattedText} from 'components/formatting/formatting'
+import {Card} from 'common/cards/base/card'
 
 const HERMIT_TYPES: Record<string, string> = {
 	balanced: 'Balanced',
@@ -28,7 +29,7 @@ type Props = {
 }
 
 const getDescription = (card: Card): React.ReactNode => {
-	return FormattedText(card.getFormattedDescription())
+	return FormattedText(card.getDescription())
 }
 
 const joinJsx = (array: Array<React.ReactNode>) => {
@@ -38,7 +39,7 @@ const joinJsx = (array: Array<React.ReactNode>) => {
 }
 
 const getStrengthsAndWeaknesses = (card: Card): React.ReactNode => {
-	if (!(card instanceof HermitCard)) return null
+	if (card.category !== 'hermit') return null
 
 	const strengths = STRENGTHS[card.hermitType]
 	const weaknesses = Object.entries(STRENGTHS)
@@ -126,7 +127,7 @@ const getHermitType = (card: Card): React.ReactNode => {
 }
 
 const getSidebarDescriptions = (card: Card): React.ReactNode => {
-	return card.sidebarDescriptions().map((description, i) => {
+	return card.sidebarDescriptions.map((description, i) => {
 		if (description.type === 'statusEffect') {
 			const statusEffect = description.name
 			return (

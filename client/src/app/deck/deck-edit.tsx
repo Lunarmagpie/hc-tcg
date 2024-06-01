@@ -14,7 +14,6 @@ import Dropdown from 'components/dropdown'
 import AlertModal from 'components/alert-modal'
 import {CONFIG, RANKS, EXPANSIONS} from '../../../../common/config'
 import {deleteDeck, getSavedDeckNames} from 'logic/saved-decks/saved-decks'
-import {getCardExpansion} from 'common/utils/cards'
 import {getCardRank, getDeckCost} from 'common/utils/ranks'
 import {validateDeck} from 'common/utils/validation'
 import {getSettings} from 'logic/local-settings/local-settings-selectors'
@@ -129,7 +128,8 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 
 	//MISC
 	const initialDeckState = deck
-	const filteredCards = Object.values(CARDS).filter(
+
+	const filteredCards = CARDS.filter(
 		(card) =>
 			// Card Name Filter
 			card.name.toLowerCase().includes(deferredTextQuery.toLowerCase()) &&
@@ -138,10 +138,11 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 			// Card Rarity Filter
 			(rankQuery === '' || getCardRank(card.id).name === rankQuery) &&
 			// Card Expansion Filter
-			(expansionQuery === '' || getCardExpansion(card.id) === expansionQuery) &&
+			(expansionQuery === '' || card.expansion === expansionQuery) &&
 			// Don't show disabled cards
-			!EXPANSIONS.disabled.includes(getCardExpansion(card.id))
+			!EXPANSIONS.disabled.includes(card.expansion)
 	)
+
 	const selectedCards = {
 		hermits: loadedDeck.cards.filter((card) => card.category === 'hermit'),
 		items: loadedDeck.cards.filter((card) => card.category === 'item'),

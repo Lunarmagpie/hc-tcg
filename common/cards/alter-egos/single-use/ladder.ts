@@ -1,7 +1,6 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {applySingleUse, getSlotPos} from '../../../utils/board'
-import {isCardType} from '../../../utils/cards'
 import {canAttachToSlot, getSlotCard, swapSlots} from '../../../utils/movement'
 import {CanAttachResult} from '../../base/card'
 import SingleUseCard from '../../base/single-use-card'
@@ -59,7 +58,7 @@ class LadderSingleUseCard extends SingleUseCard {
 
 				if (pickResult.slot.type !== 'hermit') return 'FAILURE_INVALID_SLOT'
 				if (!pickResult.card) return 'FAILURE_INVALID_SLOT'
-				if (!isCardType(pickResult.card, 'hermit')) return 'FAILURE_CANNOT_COMPLETE'
+				if (pickResult.card.category !== 'hermit') return 'FAILURE_CANNOT_COMPLETE'
 
 				// Row picked must be an adjacent one
 				const pickedIndex = pickResult.rowIndex

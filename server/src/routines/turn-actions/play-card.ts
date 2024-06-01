@@ -1,6 +1,5 @@
 import {CARDS} from 'common/cards'
 import {GameModel} from 'common/models/game-model'
-import {equalCard} from 'common/utils/cards'
 import {PlayCardActionData} from 'common/types/action-data'
 import {BasicCardPos, CardPosModel} from 'common/models/card-pos-model'
 import {ActionResult} from 'common/types/game-state'

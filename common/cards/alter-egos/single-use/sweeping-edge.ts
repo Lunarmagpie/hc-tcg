@@ -1,6 +1,5 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
-import {isRemovable} from '../../../utils/cards'
 import {discardCard} from '../../../utils/movement'
 import SingleUseCard from '../../base/single-use-card'
 
