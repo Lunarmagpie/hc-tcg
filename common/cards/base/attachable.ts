@@ -3,7 +3,7 @@ import {GameModel} from '../../models/game-model'
 
 export type AttachmentExpression = (game: GameModel, pos: CardPosModel) => boolean
 
-export namespace combinators {
+export namespace attachableTo {
 	/*
 	* Return true if the card is attachable to all of the parameters.
 	*
@@ -76,4 +76,4 @@ export namespace combinators {
 	}
 }
 
-export default combinators
+export default attachableTo

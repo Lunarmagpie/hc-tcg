@@ -27,7 +27,7 @@ import {HermitAttackType} from '../../types/attack'
 import {CardPosModel} from '../../models/card-pos-model'
 import {TurnActions} from '../../types/game-state'
 import {FormattedTextNode, formatText} from '../../utils/formatting'
-import combinators from './attachable'
+import attachableTo from './attachable'
 
 export type HermitCard = Card &
 	HasHermitType &
@@ -46,7 +46,7 @@ export const hermitCardDefaults = {
 	category: 'hermit' as CardCategoryT,
 	expansion: 'default',
 	palette: 'default',
-	canBeAttachedTo: combinators.every(combinators.player, combinators.hermit),
+	canBeAttachedTo: attachableTo.every(attachableTo.player, attachableTo.hermit),
 	getBackground(this: Card) {
 		return this.id.split('_')[0]
 	},

@@ -18,7 +18,7 @@ import {
 } from '../../base/card'
 import {attachableCardDefaults} from '../../base/attachable-card'
 import {PlayCardLog} from '../../../types/cards'
-import combinators from '../../base/attachable'
+import attachableTo from '../../base/attachable'
 
 const ArmorStandEffectCard = (): Card &
 	EffectDisplayInfo &
@@ -41,7 +41,7 @@ const ArmorStandEffectCard = (): Card &
 		rarity: 'ultra_rare',
 		description:
 			'Use like a Hermit card with a maximum 50hp.\nYou can not attach any cards to this card. While this card is active, you can not attack, or use damaging effect cards.\nIf this card is knocked out, it does not count as a knockout.',
-		canBeAttachedTo: combinators.every(combinators.player, combinators.hermit),
+		canBeAttachedTo: attachableTo.every(attachableTo.player, attachableTo.hermit),
 		log: (values: PlayCardLog) => `$p{You|${values.player}}$ placed $p${values.pos.name}$`,
 		onAttach(game: GameModel, pos: CardPosModel) {
 			const {player, opponentPlayer, row} = pos

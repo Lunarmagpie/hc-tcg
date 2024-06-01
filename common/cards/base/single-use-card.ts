@@ -14,7 +14,7 @@ import {GameModel} from '../../models/game-model'
 import {CardPosModel} from '../../models/card-pos-model'
 import {TurnActions} from '../../types/game-state'
 import {FormattedTextNode, formatText} from '../../utils/formatting'
-import combinators from './attachable'
+import attachableTo from './attachable'
 
 export type SingleUseCard = Card & EffectDisplayInfo & HasDescription & HasAttach
 
@@ -23,7 +23,7 @@ export const defaultSingleUseInfo = {
 	...effectDisplayInfoDefaults,
 	...hasDescriptionDefaults,
 	...overridesAttachDefaults,
-	canBeAttachedTo: combinators.every(combinators.player, combinators.singleUse),
+	canBeAttachedTo: attachableTo.every(attachableTo.player, attachableTo.singleUse),
 	category: 'single_use' as CardCategoryT,
 	expansion: 'default',
 	palette: 'default',

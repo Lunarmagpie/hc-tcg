@@ -2,7 +2,7 @@ import { AttackModel } from '../../../models/attack-model'
 import { CardPosModel } from '../../../models/card-pos-model'
 import { GameModel } from '../../../models/game-model'
 import { getActiveRowPos, getRowPos } from '../../../utils/board'
-import combinators from '../../base/attachable'
+import attachableTo from '../../base/attachable'
 import { AttachableCard, attachableCardDefaults } from '../../base/attachable-card'
 
 const WolfEffectCard = (): AttachableCard => {
@@ -14,7 +14,7 @@ const WolfEffectCard = (): AttachableCard => {
 		rarity: 'rare',
 		description:
 			"Attach to your active Hermit.\nIf any of your Hermits take damage on your opponent's turn, your opponent's active Hermit takes 20hp damage for each Wolf card you have on the game board.",
-		canBeAttachedTo: combinators.every(combinators.player, combinators.effect, combinators.activeRow),
+		canBeAttachedTo: attachableTo.every(attachableTo.player, attachableTo.effect, attachableTo.activeRow),
 		onAttach(game: GameModel, pos: CardPosModel) {
 			const { player, opponentPlayer } = pos
 			let activated = false

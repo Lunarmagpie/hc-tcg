@@ -2,7 +2,7 @@ import {CardPosModel} from '../../models/card-pos-model'
 import {GameModel} from '../../models/game-model'
 import {CardCategoryT, PlayCardLog} from '../../types/cards'
 import {formatText} from '../../utils/formatting'
-import combinators from './attachable'
+import attachableTo from './attachable'
 import {
 	Card,
 	isCardDefaults,
@@ -24,7 +24,7 @@ export const itemCardDefaults = {
 	category: 'item' as CardCategoryT,
 	expansion: 'default',
 	palette: 'default',
-	canBeAttachedTo: combinators.every(combinators.player, combinators.item),
+	canBeAttachedTo: attachableTo.every(attachableTo.player, attachableTo.item),
 	getBackground(this: Card) {
 		return this.id.split('_')[0]
 	},
