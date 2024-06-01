@@ -22,7 +22,7 @@ export namespace combinators {
 	* Return true if the card is attachable to any of the parameters.
 	*
 	* ```js
-	* every(opponent, every(effect, item))
+	* every(opponent, some(effect, item))
 	* ``` 
 	*
 	*/
