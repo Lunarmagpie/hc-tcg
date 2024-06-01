@@ -1,48 +1,47 @@
 import classnames from 'classnames'
-import {CARDS} from 'common/cards'
-import Card from 'components/card'
-import {CardT, RowState} from 'common/types/game-state'
+import {RowState} from 'common/types/game-state'
 import css from './board.module.scss'
-import HermitCard from 'common/cards/base/hermit-card'
-import EffectCard from 'common/cards/base/effect-card'
-import SingleUseCard from 'common/cards/base/single-use-card'
-import ItemCard from 'common/cards/base/item-card'
-import HealthCard from 'common/cards/base/health-card'
-import {StatusEffect} from 'common/types/game-state'
-import StatusEffect from 'components/status-effects/status-effect'
-import {STATUS_EFFECT_CLASSES} from 'common/status-effects'
 import {SlotTypeT} from 'common/types/cards'
+import {HealthIndicator} from 'common/cards/base/health-card'
+import {Card, implementsHasHealth} from 'common/cards/base/card'
+import StatusEffect from 'common/status-effects/status-effect'
+import StatusEffectComponent from 'components/status-effects/status-effect'
+import CardComponent from 'components/card'
 
 export type SlotProps = {
 	type: SlotTypeT
 	onClick?: () => void
-	card: CardT | null
+	card: Card | null
 	rowState?: RowState
 	active?: boolean
 	cssId?: string
 	statusEffects: Array<StatusEffect>
 }
-const Slot = ({type, onClick, card, rowState, active, cssId, statusEffects}: SlotProps) => {
-	let cardInfo = card?.cardId
-		? (CARDS[card.id] as HermitCard | EffectCard | SingleUseCard | ItemCard | HealthCard)
-		: null
+const SlotComponent = ({
+	type,
+	onClick,
+	card,
+	rowState,
+	active,
+	cssId,
+	statusEffects,
+}: SlotProps) => {
+	let cardInfo: Card | null = card
 	if (type === 'health' && rowState?.health) {
-		cardInfo = new HealthCard({
-			id: 'health',
-			name: 'Health Card',
-			rarity: 'common',
-			health: rowState.health,
-		})
+		cardInfo = HealthIndicator()
+		if (!implementsHasHealth(cardInfo)) return null
+		cardInfo.health = rowState.health
 	}
 
 	const renderStatusEffects = (cleanedStatusEffects: StatusEffect[]) => {
 		return (
 			<div className={css.statusEffectContainer}>
-				{cleanedStatusEffects.map((a) => {
-					const statusEffect = STATUS_EFFECT_CLASSES[a.statusEffectId]
-					if (!statusEffect || !statusEffect.visible) return null
+				{cleanedStatusEffects.map((statusEffect) => {
+					if (!statusEffect) return null
 					if (statusEffect.damageEffect == true) return null
-					return <StatusEffect statusEffect={statusEffect} duration={a.duration} />
+					return (
+						<StatusEffectComponent statusEffect={statusEffect} duration={statusEffect.duration} />
+					)
 				})}
 			</div>
 		)
@@ -51,11 +50,10 @@ const Slot = ({type, onClick, card, rowState, active, cssId, statusEffects}: Slo
 		return (
 			<div className={css.damageStatusEffectContainer}>
 				{cleanedStatusEffects
-					? cleanedStatusEffects.map((a) => {
-							const statusEffect = STATUS_EFFECT_CLASSES[a.statusEffectId]
-							if (!statusEffect || !statusEffect.visible) return null
+					? cleanedStatusEffects.map((statusEffect) => {
+							if (!statusEffect) return null
 							if (statusEffect.damageEffect == false) return null
-							return <StatusEffect statusEffect={statusEffect} />
+							return <StatusEffectComponent statusEffect={statusEffect} />
 					  })
 					: null}
 			</div>
@@ -65,15 +63,13 @@ const Slot = ({type, onClick, card, rowState, active, cssId, statusEffects}: Slo
 	const hermitStatusEffects = Array.from(
 		new Set(
 			statusEffects
-				.filter((a) => rowState?.hermitCard && a.targetInstance == rowState.hermitCard.cardInstance)
+				.filter((a) => rowState?.hermitCard && a.target == rowState.hermitCard)
 				.map((a) => a) || []
 		)
 	)
 	const effectStatusEffects = Array.from(
 		new Set(
-			statusEffects.filter(
-				(a) => rowState?.effectCard && a.targetInstance == rowState.effectCard.cardInstance
-			) || []
+			statusEffects.filter((a) => rowState?.effectCard && a.target == rowState.effectCard) || []
 		)
 	)
 	const frameImg = type === 'hermit' ? '/images/game/frame_glow.png' : '/images/game/frame.png'
@@ -93,7 +89,7 @@ const Slot = ({type, onClick, card, rowState, active, cssId, statusEffects}: Slo
 		>
 			{cardInfo ? (
 				<div className={css.cardWrapper}>
-					<Card card={cardInfo} />
+					<CardComponent card={cardInfo} />
 					{type === 'health'
 						? renderStatusEffects(hermitStatusEffects)
 						: type === 'effect'
@@ -112,4 +108,4 @@ const Slot = ({type, onClick, card, rowState, active, cssId, statusEffects}: Slo
 	)
 }
 
-export default Slot
+export default SlotComponent

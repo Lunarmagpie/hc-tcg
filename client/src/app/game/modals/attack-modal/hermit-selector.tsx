@@ -1,7 +1,6 @@
 import {useSelector} from 'react-redux'
 import {useState} from 'react'
 import classnames from 'classnames'
-import {HERMIT_CARDS} from 'common/cards'
 import {getPlayerActiveRow, getOpponentActiveRow} from '../../game-selectors'
 import css from '../game-modals.module.scss'
 import {getPlayerId} from 'logic/session/session-selectors'

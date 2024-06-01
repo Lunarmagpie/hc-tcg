@@ -1,6 +1,6 @@
 import css from './actions.module.scss'
 import cn from 'classnames'
-import Slot from '../board/board-slot'
+import SlotComponent from '../board/board-slot'
 import {useSelector, useDispatch} from 'react-redux'
 import {endTurn, setOpenedModal} from 'logic/game/game-actions'
 import {
@@ -15,7 +15,6 @@ import {LocalGameState} from 'common/types/game-state'
 import {getPlayerId} from 'logic/session/session-selectors'
 import CoinFlip from 'components/coin-flip'
 import Button from 'components/button'
-import {SINGLE_USE_CARDS} from 'common/cards'
 import {getSettings} from 'logic/local-settings/local-settings-selectors'
 import {PickInfo} from 'common/types/server-requests'
 
@@ -105,7 +104,7 @@ const MobileActions = ({onClick, localGameState, mobile, id}: Props) => {
 
 		return (
 			<div className={cn(css.slot, {[css.used]: singleUseCardUsed})}>
-				<Slot
+				<SlotComponent
 					card={singleUseCard}
 					type={'single_use'}
 					onClick={handleClick}

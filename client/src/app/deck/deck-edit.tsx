@@ -19,7 +19,7 @@ import {getCardRank, getDeckCost} from 'common/utils/ranks'
 import {validateDeck} from 'common/utils/validation'
 import {getSettings} from 'logic/local-settings/local-settings-selectors'
 import {setSetting} from 'logic/local-settings/local-settings-actions'
-import {Card} from 'common/cards/base/card'
+import {Card, implementsHasHermitType} from 'common/cards/base/card'
 
 const RANK_NAMES = ['any', ...Object.keys(RANKS.ranks)]
 const DECK_ICONS = [
@@ -40,7 +40,7 @@ const EXPANSION_NAMES = [
 	'any',
 	...Object.keys(EXPANSIONS.expansions).filter((expansion) => {
 		return Object.values(CARDS).some(
-			(card) => card.getExpansion() === expansion && !EXPANSIONS.disabled.includes(expansion)
+			(card) => card.expansion === expansion && !EXPANSIONS.disabled.includes(expansion)
 		)
 	}),
 ]
@@ -134,7 +134,7 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 			// Card Name Filter
 			card.name.toLowerCase().includes(deferredTextQuery.toLowerCase()) &&
 			// Card Type Filter
-			(card.hermitType === undefined ? card : card.hermitType.includes(typeQuery)) &&
+			(implementsHasHermitType(card) ? card.hermitType.includes(typeQuery) : card) &&
 			// Card Rarity Filter
 			(rankQuery === '' || getCardRank(card.id).name === rankQuery) &&
 			// Card Expansion Filter
@@ -331,28 +331,28 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 				>
 					<Accordion header={'Hermits'}>
 						<CardList
-							cards={sortCards(filteredCards).filter((card) => card.type === 'hermit')}
+							cards={sortCards(filteredCards).filter((card) => card.category === 'hermit')}
 							wrap={true}
 							onClick={addCard}
 						/>
 					</Accordion>
 					<Accordion header={'Attachable Effects'}>
 						<CardList
-							cards={sortCards(filteredCards).filter((card) => card.type === 'effect')}
+							cards={sortCards(filteredCards).filter((card) => card.category === 'attachable')}
 							wrap={true}
 							onClick={addCard}
 						/>
 					</Accordion>
 					<Accordion header={'Single Use Effects'}>
 						<CardList
-							cards={sortCards(filteredCards).filter((card) => card.type === 'single_use')}
+							cards={sortCards(filteredCards).filter((card) => card.category === 'single_use')}
 							wrap={true}
 							onClick={addCard}
 						/>
 					</Accordion>
 					<Accordion header={'Items'}>
 						<CardList
-							cards={sortCards(filteredCards).filter((card) => card.type === 'item')}
+							cards={sortCards(filteredCards).filter((card) => card.category === 'item')}
 							wrap={true}
 							onClick={addCard}
 						/>

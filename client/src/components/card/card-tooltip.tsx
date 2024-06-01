@@ -1,16 +1,10 @@
 import React from 'react'
 import {HermitTypeT} from 'common/types/cards'
-import Card from 'common/cards/base/card'
 import css from './card-tooltip.module.scss'
-import formattingCss from '../formatting/formatting.module.scss'
-import HermitCard from 'common/cards/base/hermit-card'
-import ItemCard from 'common/cards/base/item-card'
-import HealthCard from 'common/cards/base/health-card'
 import {STRENGTHS} from 'common/const/strengths'
 import {getCardRank} from 'common/utils/ranks'
 import {EXPANSIONS} from 'common/config'
 import classNames from 'classnames'
-import {STATUS_EFFECT_CLASSES} from 'common/status-effects'
 import {GLOSSARY} from 'common/glossary'
 import {useSelector} from 'react-redux'
 import {getSettings} from 'logic/local-settings/local-settings-selectors'
@@ -138,9 +132,9 @@ const getSidebarDescriptions = (card: Card): React.ReactNode => {
 			return (
 				<div key={i} className={classNames(css.cardTooltip, css.small)}>
 					<b>
-						<u>{STATUS_EFFECT_CLASSES[statusEffect].name}</u>
+						<u>{statusEffect.name}</u>
 					</b>
-					<p>{STATUS_EFFECT_CLASSES[statusEffect].description}</p>
+					<p>{statusEffect.description}</p>
 				</div>
 			)
 		}

@@ -30,9 +30,10 @@ function ConfirmModal({closeModal}: Props) {
 
 		if (!singleUseCard) return null
 		const cardId = singleUseCard.id
-		const cardName = CARDS[cardId].name
+		const card = CARDS.find((card) => card.id === cardId)
+		if (!card) return null
 
-		return cardName
+		return card.name
 	}
 
 	return (

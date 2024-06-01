@@ -1,7 +1,6 @@
 import classNames from 'classnames'
 import {useState, ReactNode} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
-import {CardT} from 'common/types/game-state'
 import CardList from 'components/card-list'
 import {CARDS} from 'common/cards'
 import {validateDeck} from 'common/utils/validation'
@@ -28,64 +27,57 @@ import {
 	saveDeck,
 	setActiveDeck,
 } from 'logic/saved-decks/saved-decks'
-import HermitCard from '../../../../common/cards/base/hermit-card'
-import ItemCard from 'common/cards/base/item-card'
 import {playSound} from 'logic/sound/sound-actions'
 import {MassExportModal} from 'components/import-export/mass-export-modal'
+import {Card, implementsHasHermitType} from 'common/cards/base/card'
+import {CardCategoryT} from 'common/types/cards'
 
-const TYPE_ORDER = {
+const TYPE_ORDER: Record<CardCategoryT, number> = {
 	hermit: 0,
-	effect: 1,
+	attachable: 1,
 	single_use: 2,
 	item: 3,
 	health: 4,
 }
 
-export const sortCards = (cards: Array<CardT>): Array<CardT> => {
-	return cards.slice().sort((a: CardT, b: CardT) => {
-		const cardCostA = getCardCost(a)
-		const cardCostB = getCardCost(b)
+export const sortCards = (cards: Array<Card>): Array<Card> => {
+	return cards.slice().sort((cardA: Card, cardB: Card) => {
+		const cardCostA = getCardCost(cardA)
+		const cardCostB = getCardCost(cardB)
 
-		if (cardInfoA.type !== cardInfoB.type) {
+		if (cardA.category !== cardB.category) {
 			// seperate by types first
-			return TYPE_ORDER[cardInfoA.type] - TYPE_ORDER[cardInfoB.type]
+			return TYPE_ORDER[cardA.category] - TYPE_ORDER[cardB.category]
 		} else if (
 			// then by hermit types
-			cardInfoA instanceof HermitCard &&
-			cardInfoB instanceof HermitCard &&
-			cardInfoA.hermitType !== cardInfoB.hermitType
+			implementsHasHermitType(cardA) &&
+			implementsHasHermitType(cardB) &&
+			cardA.hermitType !== cardB.hermitType
 		) {
-			return cardInfoA.hermitType.localeCompare(cardInfoB.hermitType)
+			return cardA.hermitType.localeCompare(cardB.hermitType)
 		} else if (
-			// then by item types
-			cardInfoA instanceof ItemCard &&
-			cardInfoB instanceof ItemCard &&
-			cardInfoA.hermitType !== cardInfoB.hermitType
-		) {
-			return cardInfoA.hermitType.localeCompare(cardInfoB.hermitType)
-		} else if (
-			cardInfoA instanceof HermitCard &&
-			cardInfoB instanceof HermitCard &&
-			cardInfoA.getExpansion() !== cardInfoB.getExpansion()
+			cardA.category === 'hermit' &&
+			cardB.category === 'hermit' &&
+			cardA.expansion !== cardB.expansion
 		) {
 			// then by expansion if they are both hermits
-			return cardInfoA.getExpansion().localeCompare(cardInfoA.getExpansion())
+			return cardA.expansion.localeCompare(cardA.expansion)
 		} else if (cardCostA !== cardCostB) {
 			// order by ranks
 			return cardCostA - cardCostB
-		} else if (cardInfoA.name !== cardInfoB.name) {
-			return cardInfoA.name.localeCompare(cardInfoB.name)
+		} else if (cardA.name !== cardB.name) {
+			return cardA.name.localeCompare(cardB.name)
 		}
 
 		// rarity is our last hope
 		const rarities = ['common', 'rare', 'ultra_rare']
-		const rarityValueA = rarities.findIndex((s) => s === cardInfoA.rarity) + 1
-		const rarityValueB = rarities.findIndex((s) => s === cardInfoB.rarity) + 1
+		const rarityValueA = rarities.findIndex((s) => s === cardB.rarity) + 1
+		const rarityValueB = rarities.findIndex((s) => s === cardB.rarity) + 1
 		return rarityValueA - rarityValueB
 	})
 }
 
-export const cardGroupHeader = (title: string, cards: CardT[]) => (
+export const cardGroupHeader = (title: string, cards: Card[]) => (
 	<p className={css.cardGroupHeader}>
 		{`${title} `}
 		<span style={{fontSize: '0.9rem'}}>{`(${cards.length}) `}</span>
@@ -181,7 +173,7 @@ const Deck = ({setMenuSection}: Props) => {
 		const deck = getSavedDeck(deckName)
 		if (!deck) return console.log(`[LoadDeck]: Could not load the ${deckName} deck.`)
 
-		const deckIds = deck.cards?.filter((card: CardT) => CARDS[card.id])
+		const deckIds = deck.cards
 
 		setLoadedDeck({
 			...deck,
@@ -257,10 +249,10 @@ const Deck = ({setMenuSection}: Props) => {
 	})
 	const validationMessage = validateDeck(loadedDeck.cards.map((card) => card.id))
 	const selectedCards = {
-		hermits: loadedDeck.cards.filter((card) => CARDS[card.id]?.type === 'hermit'),
-		items: loadedDeck.cards.filter((card) => CARDS[card.id]?.type === 'item'),
-		attachableEffects: loadedDeck.cards.filter((card) => CARDS[card.id]?.type === 'effect'),
-		singleUseEffects: loadedDeck.cards.filter((card) => CARDS[card.id]?.type === 'single_use'),
+		hermits: loadedDeck.cards.filter((card) => card.category === 'hermit'),
+		items: loadedDeck.cards.filter((card) => card.category === 'item'),
+		attachableEffects: loadedDeck.cards.filter((card) => card.category === 'attachable'),
+		singleUseEffects: loadedDeck.cards.filter((card) => card.category === 'single_use'),
 	}
 
 	//MISC

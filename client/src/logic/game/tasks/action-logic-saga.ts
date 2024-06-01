@@ -2,11 +2,9 @@ import {select, take} from 'typed-redux-saga'
 import {call, put, fork} from 'redux-saga/effects'
 import {SagaIterator} from 'redux-saga'
 import {LocalGameState} from 'common/types/game-state'
-import {CardT} from 'common/types/game-state'
 import {CARDS} from 'common/cards'
 import {getPlayerId} from 'logic/session/session-selectors'
 import {setOpenedModal, applyEffect, modalRequest} from 'logic/game/game-actions'
-import SingleUseCard from 'common/cards/base/single-use-card'
 
 function* borrowSaga(): SagaIterator {
 	yield put(setOpenedModal('borrow'))
@@ -24,7 +22,7 @@ function* singleUseSaga(card: CardT): SagaIterator {
 	const cardInfo = CARDS[card.id]
 	if (!cardInfo) return
 
-	if (cardInfo instanceof SingleUseCard && cardInfo.canApply()) {
+	if (cardInfo.category === 'single_use' && cardInfo.canApply()) {
 		yield put(setOpenedModal('confirm'))
 	}
 }

@@ -11,7 +11,7 @@ import connectionStatusSaga from './background/connection-status'
 import {CONFIG, DEBUG_CONFIG} from 'common/config'
 import pickRequestSaga from './turn-actions/pick-request'
 import modalRequestSaga from './turn-actions/modal-request'
-import {TurnActions, CardT, PlayerState, ActionResult, TurnAction} from 'common/types/game-state'
+import {TurnActions, PlayerState, ActionResult, TurnAction} from 'common/types/game-state'
 import {GameModel} from 'common/models/game-model'
 import {EnergyT} from 'common/types/cards'
 import {hasEnoughEnergy} from 'common/utils/attacks'
@@ -20,7 +20,7 @@ import {getCardPos} from 'common/models/card-pos-model'
 import {printHooksState} from '../utils'
 import {buffers} from 'redux-saga'
 import {AttackActionData, PickCardActionData, attackToAttackAction} from 'common/types/action-data'
-import {implementsHasTurnActions} from 'common/cards/base/card'
+import {implementsHasTurnActions, implementsOverridesGetEnergy} from 'common/cards/base/card'
 
 ////////////////////////////////////////
 // @TODO sort this whole thing out properly
@@ -41,12 +41,10 @@ function getAvailableEnergy(game: GameModel) {
 		for (let i = 0; i < activeRow.itemCards.length; i++) {
 			const card = activeRow.itemCards[i]
 			if (!card) continue
-			const pos = getCardPos(game, card.cardInstance)
+			const pos = getCardPos(game, card)
 			if (!pos) continue
-			const itemInfo = ITEM_CARDS[card.id]
-			if (!itemInfo) continue
-
-			availableEnergy.push(...itemInfo.getEnergy(game, card.cardInstance, pos))
+			if (!implementsOverridesGetEnergy(card)) continue
+			availableEnergy.push(...card.energy(game, card, pos))
 		}
 
 		// Modify available energy
