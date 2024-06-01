@@ -1,27 +1,26 @@
 import {
 	EffectDisplayInfo,
 	HasDescription,
-	IsAttachableToEffectSlots,
 	Card,
 	OverridesAttach,
 	OverridesDetach,
-    effectDisplayInfoDefaults,
-    hasDescriptionDefaults,
-    isAttachableToEffectSlotsDefaults,
-    isCardDefaults,
-    overridesAttachDefaults,
-    overridesDetachDefaults,
+	effectDisplayInfoDefaults,
+	hasDescriptionDefaults,
+	isCardDefaults,
+	overridesAttachDefaults,
+	overridesDetachDefaults,
 } from './card'
-import {CARDS} from '..'
-import {GameModel} from '../../models/game-model'
-import {PlayCardLog, CardRarityT, CardCategoryT} from '../../types/cards'
-import {CardPosModel} from '../../models/card-pos-model'
-import {TurnActions} from '../../types/game-state'
-import {FormattedTextNode, formatText} from '../../utils/formatting'
+import { IsAttachable, isAttachableDefaults, combinators } from './attachable'
+import { CARDS } from '..'
+import { GameModel } from '../../models/game-model'
+import { PlayCardLog, CardRarityT, CardCategoryT } from '../../types/cards'
+import { CardPosModel } from '../../models/card-pos-model'
+import { TurnActions } from '../../types/game-state'
+import { FormattedTextNode, formatText } from '../../utils/formatting'
 
 export type AttachableCard =
 	& Card
-	& IsAttachableToEffectSlots
+	& IsAttachable
 	& EffectDisplayInfo
 	& HasDescription
 	& OverridesAttach
@@ -29,11 +28,12 @@ export type AttachableCard =
 
 export const attachableCardDefaults = {
 	...isCardDefaults,
-	...isAttachableToEffectSlotsDefaults,
+	...isAttachableDefaults,
 	...effectDisplayInfoDefaults,
 	...hasDescriptionDefaults,
 	...overridesAttachDefaults,
 	...overridesDetachDefaults,
+	canBeAttchedTo: combinators.effect,
 	category: 'attachable' as CardCategoryT,
 	expansion: 'default',
 	palette: 'default',

@@ -5,6 +5,7 @@ import { CardPosModel } from '../../../models/card-pos-model'
 import { applyStatusEffect } from '../../../utils/board'
 import { HermitCard } from '../../base/hermit-card'
 import SleepingStatusEffect from '../../../status-effects/sleeping'
+import { combinators } from '../../base/attachable'
 
 const BedAttachableCard = (): AttachableCard => {
 	return {
@@ -16,6 +17,8 @@ const BedAttachableCard = (): AttachableCard => {
 		description:
 			'Attach to your active Hermit. This Hermit restores all HP, then sleeps for the rest of this turn, and the following two turns, before waking up. Discard after your Hermit wakes up.',
 		log: null,
+		canBeAttachedTo: combinators.and()
+
 		onAttach(game: GameModel, pos: CardPosModel) {
 			// Give the current row sleeping for 3 turns
 			const { player, row } = pos

@@ -30,10 +30,10 @@ export namespace combinators {
 
   }
   export const hermit: attachmentCombinator = (game, pos) {
-    
+
   }
   export const effect: attachmentCombinator = (game, pos) {
-    
+
   }
 
 }
@@ -43,8 +43,8 @@ export interface IsAttachable {
   __is_attachable: undefined,
   canBeAttachedTo: attachmentCombinator;
 }
-export const isAttachableToHermitSlotsDefaults = { __is_attachable_to_hermit_slots: undefined }
-export function implementsIsAttachableToHermitSlots(obj: any): obj is IsAttachable {
+export const isAttachableDefaults = { __is_attachable_to_hermit_slots: undefined }
+export function implementsIsAttachable(obj: any): obj is IsAttachable {
   return '__is_attachable' in obj
 }
 
