@@ -10,21 +10,22 @@ import ThornsEffectCard from './thorns'
 import LoyaltyEffectCard from './loyalty'
 import WaterBucketEffectCard from './water-bucket'
 import MilkBucketEffectCard from './milk-bucket'
-import EffectCard from '../../base/attachable-card'
+import { AttachableCard } from '../../base/attachable-card'
+import { Card } from '../../base/card'
 
-const effectCardClasses: Array<EffectCard> = [
-	new BedEffectCard(),
-	new WolfEffectCard(),
-	new GoldArmorEffectCard(),
-	new IronArmorEffectCard(),
-	new ShieldEffectCard(),
-	new DiamondArmorEffectCard(),
-	new NetheriteArmorEffectCard(),
-	new TotemEffectCard(),
-	new ThornsEffectCard(),
-	new LoyaltyEffectCard(),
-	new WaterBucketEffectCard(),
-	new MilkBucketEffectCard(),
+const effectCardClasses: Array<() => Card> = [
+	BedEffectCard,
+	WolfEffectCard,
+	GoldArmorEffectCard,
+	IronArmorEffectCard,
+	ShieldEffectCard,
+	DiamondArmorEffectCard,
+	NetheriteArmorEffectCard,
+	TotemEffectCard,
+	ThornsEffectCard,
+	LoyaltyEffectCard,
+	WaterBucketEffectCard,
+	MilkBucketEffectCard,
 ]
 
 export default effectCardClasses

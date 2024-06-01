@@ -29,7 +29,6 @@ const Iskall85RareHermitCard = (): HermitCard & OverridesAttach & OverridesDetac
 			power: 'Attack damage doubles versus Builder types.',
 		},
 		onAttach(game: GameModel, pos: CardPosModel) {
-			console.log(this)
 			const {player} = pos
 
 			player.hooks.beforeAttack.add(this, (attack) => {
