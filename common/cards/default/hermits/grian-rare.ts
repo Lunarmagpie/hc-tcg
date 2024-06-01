@@ -49,9 +49,13 @@ const GrianRareHermitCard = (): HermitCard & HasAttach => {
 
 				const opponentRowPos = getActiveRowPos(opponentPlayer)
 				if (rowIndex === null || !row || !opponentRowPos) return
-
 				const opponentEffectCard = opponentRowPos.row.effectCard
-				if (!opponentEffectCard || !isRemovable(opponentEffectCard)) return
+				if (!opponentEffectCard) return
+
+				const results = opponentPlayer.hooks.onSlotChange.call(
+					getSlotPos(opponentPlayer, opponentRowPos.rowIndex, 'effect')
+				)
+				if (results.includes(false)) return
 
 				const coinFlip = flipCoin(player, attacker.row.hermitCard)
 

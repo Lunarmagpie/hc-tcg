@@ -1,5 +1,6 @@
 import {HasHealth, Card, hasHealthDefaults, isCardDefaults} from './card'
 import {TextNode} from '../../utils/formatting'
+import attachableTo from './attachable'
 
 export type HealthCard = Card & HasHealth
 
@@ -7,6 +8,7 @@ export const HealthIndicator = (): HealthCard => {
 	return {
 		...isCardDefaults,
 		...hasHealthDefaults,
+		canBeAttachedTo: attachableTo.nothing,
 		category: 'health',
 		health: 300,
 		id: 'health',
@@ -14,7 +16,7 @@ export const HealthIndicator = (): HealthCard => {
 		name: 'Health Card',
 		rarity: 'common',
 		getDescription() {
-			return new TextNode('')
+			return TextNode('')
 		},
 		expansion: 'default',
 		palette: 'default',

@@ -1,11 +1,8 @@
-import {AttackModel} from '../../models/attack-model'
 import {GameModel} from '../../models/game-model'
 import {
 	Card,
-	OverridesDetach,
 	HasHermitType,
 	HasHealth,
-	HasAttach,
 	HermitDisplayInfo,
 	GivesPointOnKnockout,
 	isCardDefaults,
@@ -16,17 +13,9 @@ import {
 	hasHealthDefaults,
 	CanAttack,
 } from './card'
-import {
-	CardCategoryT,
-	CardRarityT,
-	HermitAttackInfo,
-	HermitTypeT,
-	PlayCardLog,
-} from '../../types/cards'
-import {HermitAttackType} from '../../types/attack'
-import {CardPosModel} from '../../models/card-pos-model'
+import {CardCategoryT, PlayCardLog} from '../../types/cards'
 import {TurnActions} from '../../types/game-state'
-import {FormattedTextNode, formatText} from '../../utils/formatting'
+import {formatText} from '../../utils/formatting'
 import attachableTo from './attachable'
 
 export type HermitCard = Card &
@@ -53,7 +42,7 @@ export const hermitCardDefaults = {
 	getShortName(this: Card) {
 		return null
 	},
-	getDescription(this: Card & HermitAttack) {
+	getDescription(this: Card & CanAttack) {
 		return formatText(
 			(this.primary.power ? `**${this.primary.name}**\n*${this.primary.power}*` : '') +
 				(this.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')

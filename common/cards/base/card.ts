@@ -4,14 +4,14 @@ import {
 	CardCategoryT,
 	HermitTypeT,
 	HermitAttackInfo,
-	SingleUseAttackInfo,
 } from '../../types/cards'
 import {GameModel} from '../../models/game-model'
 import {CardPosModel} from '../../models/card-pos-model'
 import {TurnActions} from '../../types/game-state'
-import {EmptyNode, FormattedTextNode, formatText} from '../../utils/formatting'
+import {FormattedTextNode, formatText} from '../../utils/formatting'
 import {HermitAttackType} from '../../types/attack'
 import {AttackModel} from '../../models/attack-model'
+import {AttachmentExpression} from './attachable'
 
 export interface Card {
 	__card: undefined

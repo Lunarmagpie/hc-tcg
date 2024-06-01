@@ -5,6 +5,7 @@ import {discardCard} from '../../../utils/movement'
 import {Card} from '../../base/card'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {HasAttach, overridesAttachDefaults} from '../../base/card'
+import {getActiveRow, getSlotPos} from '../../../utils/board'
 
 const TinFoilChefUltraRareHermitCard = (): HermitCard & HasAttach => {
 	let limit: Array<Card> = []
@@ -38,9 +39,13 @@ const TinFoilChefUltraRareHermitCard = (): HermitCard & HasAttach => {
 				const attacker = attack.getAttacker()
 				if (attack.getCreator() !== this || attack.type !== 'secondary' || !attacker) return
 
-				if (opponentPlayer.board.activeRow === null) return 'NO'
-				const opponentActiveRow = opponentPlayer.board.rows[opponentPlayer.board.activeRow]
-				if (!opponentActiveRow.effectCard || !isRemovable(opponentActiveRow.effectCard)) return
+				if (opponentPlayer.board.activeRow === null) return
+				const opponentActiveRow = getActiveRow(opponentPlayer)
+				if (!opponentActiveRow) return
+				const results = opponentPlayer.hooks.onSlotChange.call(
+					getSlotPos(opponentPlayer, opponentPlayer.board.activeRow, 'effect')
+				)
+				if (results.includes(false)) return
 
 				// Can't discard two items on the same hermit
 				if (limit.includes(opponentActiveRow.hermitCard)) return
