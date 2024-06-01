@@ -4,6 +4,7 @@ import {
 	CardCategoryT,
 	HermitTypeT,
 	HermitAttackInfo,
+	SingleUseAttackInfo,
 } from '../../types/cards'
 import {GameModel} from '../../models/game-model'
 import {CardPosModel} from '../../models/card-pos-model'
@@ -122,12 +123,6 @@ export function implementsOverridesDetach(obj: any): obj is OverridesDetach {
 	return '__overrides_detach' in obj
 }
 
-export interface IsAttachable {}
-export const isAttachableToHermitSlotsDefaults = {__is_attachable_to_hermit_slots: undefined}
-export function implementsIsAttachableToHermitSlots(obj: any): obj is IsAttachable {
-	return '__is_attachable' in obj
-}
-
 export interface GivesPointOnKnockout {}
 export const givesPointOnKnockoutDefaults = {__gives_point_on_knockout: undefined}
 export function implementsGivesPointOnKnockout(obj: any): obj is GivesPointOnKnockout {
@@ -156,7 +151,11 @@ export interface CanAttack {
 	__can_attack: undefined
 	primary: HermitAttackInfo
 	secondary: HermitAttackInfo
-	getAttack: (game: GameModel, pos:CardPosModel, hermitAttackType: HermitAttackType) => AttackModel | null
+	getAttack: (
+		game: GameModel,
+		pos: CardPosModel,
+		hermitAttackType: HermitAttackType
+	) => AttackModel | null
 }
 export const canAttackDefaults = {
 	__can_attack: undefined,
@@ -208,6 +207,17 @@ export const canAttackDefaults = {
 }
 export function implementsCanAttack(obj: any): obj is CanAttack {
 	return '__can_attack' in obj
+}
+
+export interface SingleUseAttack {
+	__single_use_attack: undefined
+}
+export const singleUseAttackDefaults = {
+	__single_use_attack: undefined,
+	// Default is to return
+}
+export function implementsUseAttackDefaults(obj: any): obj is CanAttack {
+	return '__single_use_attack' in obj
 }
 
 export interface AllowAttacks {

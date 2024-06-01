@@ -3,10 +3,16 @@ import {
 	AllowAttacks,
 	EffectDisplayInfo,
 	HasDescription,
-	IsAttachableToSingleUseSlot,
+	IsAttachableToSingleUseSlots,
 	Card,
 	OverridesAttach,
 	OverridesDetach,
+	isCardDefaults,
+	isAttachableToEffectSlotsDefaults,
+	effectDisplayInfoDefaults,
+	hasDescriptionDefaults,
+	overridesAttachDefaults,
+	overridesDetachDefaults,
 } from './card'
 import {GameModel} from '../../models/game-model'
 import {CardPosModel} from '../../models/card-pos-model'
@@ -14,15 +20,19 @@ import {TurnActions} from '../../types/game-state'
 import {FormattedTextNode, formatText} from '../../utils/formatting'
 
 export type SingleUseCard = Card &
-	IsAttachableToSingleUseSlot &
+	IsAttachableToSingleUseSlots &
 	EffectDisplayInfo &
 	HasDescription &
 	OverridesAttach &
 	OverridesDetach
 
-export type DamageSingleUseCard = SingleUseCard & AllowAttacks
-
 export const defaultSingleUseInfo = {
+	...isCardDefaults,
+	...isAttachableToEffectSlotsDefaults,
+	...effectDisplayInfoDefaults,
+	...hasDescriptionDefaults,
+	...overridesAttachDefaults,
+	...overridesDetachDefaults,
 	category: 'single_use' as CardCategoryT,
 	expansion: 'default',
 	palette: 'default',

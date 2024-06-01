@@ -13,6 +13,8 @@ const JoeHillsRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetac
 
 	return {
 		...hermitCardDefaults,
+		...overridesAttachDefaults,
+		...overridesDetachDefaults,
 		id: 'joehills_rare',
 		numericId: 70,
 		name: 'Joe',
@@ -35,7 +37,6 @@ const JoeHillsRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetac
 		onAttach(game: GameModel, pos: CardPosModel) {
 			const {player, opponentPlayer} = pos
 			// null | card instance
-			const skippedKey = this.getInstanceKey(this, 'skipped')
 			skipped = null
 
 			player.hooks.onAttack.add(this, (attack) => {
@@ -78,7 +79,7 @@ const JoeHillsRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetac
 
 			// Block secondary attack if we skipped
 			player.hooks.onTurnStart.add(this, () => {
-				const sameActive = game.activeRow?.hermitCard?.cardInstance === skipped
+				const sameActive = game.activeRow?.hermitCard === skipped
 				if (skipped && sameActive) {
 					// We skipped last turn and we are still the active hermit, block secondary attacks
 					game.addBlockedActions(this.id, 'SECONDARY_ATTACK')

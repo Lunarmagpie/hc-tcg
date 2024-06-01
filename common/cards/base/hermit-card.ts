@@ -56,7 +56,7 @@ export const hermitCardDefaults = {
 	getShortName(this: Card) {
 		return null
 	},
-	getDescription(this: Card & HermitAttack) {
+	getDescription(this: Card & CanAttack) {
 		return formatText(
 			(this.primary.power ? `**${this.primary.name}**\n*${this.primary.power}*` : '') +
 				(this.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
