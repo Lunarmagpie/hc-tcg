@@ -56,7 +56,6 @@ const WolfEffectCard = (): AttachableCard => {
 				attack.addNewAttack(backlashAttack)
 			})
 		},
-
 		onDetach(game: GameModel, pos: CardPosModel) {
 			const { player, opponentPlayer } = pos
 
