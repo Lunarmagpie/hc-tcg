@@ -5,7 +5,7 @@ import {
 	OverridesDetach,
 	HasHermitType,
 	HasHealth,
-	OverridesAttach,
+	HasAttach,
 	HermitDisplayInfo,
 	GivesPointOnKnockout,
 	isCardDefaults,

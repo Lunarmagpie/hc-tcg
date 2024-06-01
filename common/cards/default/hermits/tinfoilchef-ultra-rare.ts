@@ -3,64 +3,62 @@ import {GameModel} from '../../../models/game-model'
 import {isRemovable} from '../../../utils/cards'
 import {flipCoin} from '../../../utils/coinFlips'
 import {discardCard} from '../../../utils/movement'
-import HermitCard from '../../base/hermit-card'
+import {Card} from '../../base/card'
+import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
+import {HasAttach, overridesAttachDefaults} from '../../base/card'
 
-class TinFoilChefUltraRareHermitCard extends HermitCard {
-	constructor() {
-		super({
-			id: 'tinfoilchef_ultra_rare',
-			numericId: 99,
-			name: 'TFC',
-			rarity: 'ultra_rare',
-			hermitType: 'miner',
-			health: 300,
-			primary: {
-				name: 'Phone Call',
-				cost: ['miner'],
-				damage: 60,
-				power: null,
-			},
-			secondary: {
-				name: 'Take It Easy',
-				cost: ['miner', 'miner', 'miner'],
-				damage: 100,
-				power:
-					'Flip a coin.\nIf heads, your opponent must discard any effect card attached to their active Hermit.\nOnly one effect card per Hermit can be discarded using this ability.',
-			},
-		})
-	}
+const TinFoilChefUltraRareHermitCard = (): HermitCard & HasAttach => {
+	let limit: Array<Card> = []
 
-	override onAttach(game: GameModel, pos: CardPosModel) {
-		const {player, opponentPlayer} = pos
+	return {
+		...hermitCardDefaults,
+		...overridesAttachDefaults,
+		id: 'tinfoilchef_ultra_rare',
+		numericId: 99,
+		name: 'TFC',
+		rarity: 'ultra_rare',
+		hermitType: 'miner',
+		health: 300,
+		primary: {
+			name: 'Phone Call',
+			cost: ['miner'],
+			damage: 60,
+			power: null,
+		},
+		secondary: {
+			name: 'Take It Easy',
+			cost: ['miner', 'miner', 'miner'],
+			damage: 100,
+			power:
+				'Flip a coin.\nIf heads, your opponent must discard any effect card attached to their active Hermit.\nOnly one effect card per Hermit can be discarded using this ability.',
+		},
+		onAttach(game: GameModel, pos: CardPosModel) {
+			const {player, opponentPlayer} = pos
 
-		player.hooks.beforeAttack.add(instance, (attack) => {
-			const attackId = this.getInstanceKey(instance)
-			const attacker = attack.getAttacker()
-			if (attack.id !== attackId || attack.type !== 'secondary' || !attacker) return
+			player.hooks.beforeAttack.add(this, (attack) => {
+				const attacker = attack.getAttacker()
+				if (attack.getCreator() !== this || attack.type !== 'secondary' || !attacker) return
 
-			if (opponentPlayer.board.activeRow === null) return 'NO'
-			const opponentActiveRow = opponentPlayer.board.rows[opponentPlayer.board.activeRow]
-			if (!opponentActiveRow.effectCard || !isRemovable(opponentActiveRow.effectCard)) return
+				if (opponentPlayer.board.activeRow === null) return 'NO'
+				const opponentActiveRow = opponentPlayer.board.rows[opponentPlayer.board.activeRow]
+				if (!opponentActiveRow.effectCard || !isRemovable(opponentActiveRow.effectCard)) return
 
-			// Can't discard two items on the same hermit
-			const limit = player.custom[this.getInstanceKey(instance)] || {}
-			if (limit[opponentActiveRow.hermitCard.cardInstance]) return
+				// Can't discard two items on the same hermit
+				if (limit.includes(opponentActiveRow.hermitCard)) return
 
-			const coinFlip = flipCoin(player, attacker.row.hermitCard)
-			if (coinFlip[0] === 'tails') return
+				const coinFlip = flipCoin(player, attacker.row.hermitCard)
+				if (coinFlip[0] === 'tails') return
 
-			limit[opponentActiveRow.hermitCard.cardInstance] = true
-			player.custom[this.getInstanceKey(instance)] = limit
+				limit.push(opponentActiveRow.hermitCard)
 
-			discardCard(game, opponentActiveRow.effectCard)
-		})
-	}
+				discardCard(game, opponentActiveRow.effectCard)
+			})
+		},
 
-	override onDetach(game: GameModel, pos: CardPosModel) {
-		const {player} = pos
-
-		player.hooks.beforeAttack.remove(instance)
-		delete player.custom[this.getInstanceKey(instance)]
+		onDetach(game: GameModel, pos: CardPosModel) {
+			const {player} = pos
+			player.hooks.beforeAttack.remove(this)
+		},
 	}
 }
 

@@ -1,13 +1,13 @@
-import { isTargetingPos } from '../../../utils/attacks'
-import { GameModel } from '../../../models/game-model'
-import { discardCard } from '../../../utils/movement'
-import { CardPosModel } from '../../../models/card-pos-model'
+import {isTargetingPos} from '../../../utils/attacks'
+import {GameModel} from '../../../models/game-model'
+import {discardCard} from '../../../utils/movement'
+import {CardPosModel} from '../../../models/card-pos-model'
 import {
 	EffectDisplayInfo,
 	HasDescription,
 	HasHealth,
 	Card,
-	OverridesAttach,
+	HasAttach,
 	OverridesDetach,
 	effectDisplayInfoDefaults,
 	hasDescriptionDefaults,
@@ -16,15 +16,15 @@ import {
 	overridesAttachDefaults,
 	overridesDetachDefaults,
 } from '../../base/card'
-import { attachableCardDefaults } from '../../base/attachable-card'
-import { PlayCardLog } from '../../../types/cards'
+import {attachableCardDefaults} from '../../base/attachable-card'
+import {PlayCardLog} from '../../../types/cards'
 import combinators from '../../base/attachable'
 
 const ArmorStandEffectCard = (): Card &
 	EffectDisplayInfo &
 	HasDescription &
 	HasHealth &
-	OverridesAttach &
+	HasAttach &
 	OverridesDetach => {
 	return {
 		...isCardDefaults,
@@ -44,7 +44,7 @@ const ArmorStandEffectCard = (): Card &
 		canBeAttachedTo: combinators.every(combinators.player, combinators.hermit),
 		log: (values: PlayCardLog) => `$p{You|${values.player}}$ placed $p${values.pos.name}$`,
 		onAttach(game: GameModel, pos: CardPosModel) {
-			const { player, opponentPlayer, row } = pos
+			const {player, opponentPlayer, row} = pos
 			if (!row) return
 
 			if (player.board.activeRow === null) {
@@ -92,7 +92,7 @@ const ArmorStandEffectCard = (): Card &
 		},
 
 		onDetach(game: GameModel, pos: CardPosModel) {
-			const { player, opponentPlayer, slot, row } = pos
+			const {player, opponentPlayer, slot, row} = pos
 			if (slot && slot.type === 'hermit' && row) {
 				row.health = null
 				row.effectCard = null

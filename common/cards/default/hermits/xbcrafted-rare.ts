@@ -1,93 +1,80 @@
-import {CardPosModel, getCardPos} from '../../../models/card-pos-model'
+import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
-import {HermitAttackType} from '../../../types/attack'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {OverridesAttach, OverridesDetach} from '../../base/card'
-import {isTargetingPos} from '../../../utils/attacks'
+import {HasAttach, overridesAttachDefaults} from '../../base/card'
 import {getActiveRowPos} from '../../../utils/board'
-class XBCraftedRareHermitCard  = (): HermitCard & OverridesAttach & OverridesDetach =>  {
-	constructor() {
-		super({		...hermitCardDefaults,
+const XBCraftedRareHermitCard = (): HermitCard & HasAttach => {
+	let ignore: boolean = false
 
-			id: 'xbcrafted_rare',
-			numericId: 110,
-			name: 'xB',
-			rarity: 'rare',
-			hermitType: 'explorer',
-			health: 270,
-			primary: {
-				name: 'Giggle',
-				cost: ['explorer'],
-				damage: 50,
-				power: null,
-			},
-			secondary: {
-				name: 'Noice!',
-				cost: ['explorer', 'any'],
-				damage: 70,
-				power:
-					"Any effect card attached to your opponent's active Hermit is ignored during this turn.",
-			},
-		})
-	}
+	return {
+		...hermitCardDefaults,
+		...overridesAttachDefaults,
+		id: 'xbcrafted_rare',
+		numericId: 110,
+		name: 'xB',
+		rarity: 'rare',
+		hermitType: 'explorer',
+		health: 270,
+		primary: {
+			name: 'Giggle',
+			cost: ['explorer'],
+			damage: 50,
+			power: null,
+		},
+		secondary: {
+			name: 'Noice!',
+			cost: ['explorer', 'any'],
+			damage: 70,
+			power:
+				"Any effect card attached to your opponent's active Hermit is ignored during this turn.",
+		},
+		getAttack(game, pos, hermitAttackType) {
+			const attack = {...this, ...hermitCardDefaults}.getAttack(game, pos, hermitAttackType)
+			if (!attack) return null
 
-	override getAttack(
-		game: GameModel,
-		instance: string,
-		pos: CardPosModel,
-		hermitAttackType: HermitAttackType
-	) {
-		const attack = super.getAttack(game, instance, pos, hermitAttackType)
-		if (!attack) return null
-
-		if (attack.type === 'secondary') {
-			// Noice attack, set flag to ignore target effect card
-			pos.player.custom[this.getInstanceKey(instance, 'ignore')] = true
-		}
-
-		return attack
-	}
-
-	override onAttach(game: GameModel, pos: CardPosModel) {
-		const {player, opponentPlayer} = pos
-		const ignoreKey = this.getInstanceKey(instance, 'ignore')
-
-		player.hooks.beforeAttack.addBefore(instance, (attack) => {
-			if (!player.custom[ignoreKey]) return
-			const opponentActivePos = getActiveRowPos(opponentPlayer)
-			if (!opponentActivePos) return
-
-			// All attacks from our side should ignore opponent attached effect card this turn
-			attack.shouldIgnoreCards.push((instance) => {
-				if (!pos || !pos.row || !pos.row.effectCard) return false
-
-				// It's not the targets effect card, do not ignore it
-				if (pos.slot.type !== 'effect') return false
-
-				// Not attached to the same row as the opponent's active Hermit, do not ignore it
-				if (pos.rowIndex !== opponentActivePos.rowIndex) return false
-
-				// Do not ignore the player's effect.
-				if (pos.player === player) return false
-
-				return true
-			})
-		})
-
-		player.hooks.onTurnEnd.add(instance, () => {
-			// Remove ignore flag
-			if (player.custom[ignoreKey]) {
-				delete player.custom[ignoreKey]
+			if (attack.type === 'secondary') {
+				// Noice attack, set flag to ignore target effect card
+				ignore = true
 			}
-		})
-	}
 
-	override onDetach(game: GameModel, pos: CardPosModel) {
-		const {player} = pos
+			return attack
+		},
+		onAttach(game: GameModel, pos: CardPosModel) {
+			const {player, opponentPlayer} = pos
 
-		// Remove hooks
-		player.hooks.beforeAttack.remove(instance)
-		player.hooks.afterAttack.remove(instance)
+			player.hooks.beforeAttack.addBefore(this, (attack) => {
+				if (!ignore) return
+				const opponentActivePos = getActiveRowPos(opponentPlayer)
+				if (!opponentActivePos) return
+
+				// All attacks from our side should ignore opponent attached effect card this turn
+				attack.shouldIgnoreCards.push((instance) => {
+					if (!pos || !pos.row || !pos.row.effectCard) return false
+
+					// It's not the targets effect card, do not ignore it
+					if (pos.slot.type !== 'effect') return false
+
+					// Not attached to the same row as the opponent's active Hermit, do not ignore it
+					if (pos.rowIndex !== opponentActivePos.rowIndex) return false
+
+					// Do not ignore the player's effect.
+					if (pos.player === player) return false
+
+					return true
+				})
+			})
+
+			player.hooks.onTurnEnd.add(this, () => {
+				// Remove ignore flag
+				ignore = false
+			})
+		},
+		onDetach(game: GameModel, pos: CardPosModel) {
+			const {player} = pos
+			// Remove hooks
+			player.hooks.beforeAttack.remove(this)
+			player.hooks.afterAttack.remove(this)
+		},
 	}
 }
 

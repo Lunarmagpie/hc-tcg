@@ -1,9 +1,9 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
-import {OverridesAttach, OverridesDetach} from '../../base/card'
+import {HasAttach, OverridesDetach} from '../../base/card'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 
-const OverseerRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
+const OverseerRareHermitCard = (): HermitCard & HasAttach & OverridesDetach => {
 	return {
 		...hermitCardDefaults,
 		id: 'overseer_rare',

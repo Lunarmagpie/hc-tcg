@@ -1,20 +1,17 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
-import {TurnActions} from '../../../types/game-state'
-import {applyStatusEffect, getActiveRow} from '../../../utils/board'
+import {applyStatusEffect} from '../../../utils/board'
 import {flipCoin} from '../../../utils/coinFlips'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {Card, OverridesAttach, OverridesDetach} from '../../base/card'
+import {Card, HasAttach, overridesAttachDefaults} from '../../base/card'
 import UsedClockStatusEffect from '../../../status-effects/used-clock'
-import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
 
-const JoeHillsRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
+const JoeHillsRareHermitCard = (): HermitCard & HasAttach => {
 	let skipped: Card | null = null
 
 	return {
 		...hermitCardDefaults,
 		...overridesAttachDefaults,
-		...overridesDetachDefaults,
 		id: 'joehills_rare',
 		numericId: 70,
 		name: 'Joe',

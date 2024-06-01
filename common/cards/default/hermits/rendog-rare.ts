@@ -1,27 +1,24 @@
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {
 	Card,
-	OverridesAttach,
-	OverridesDetach,
+	HasAttach,
 	implementsCanAttack,
 	implementsCard,
-	implementsOverridesAttach,
-	implementsOverridesDetach,
+	implementsHasAttach,
+	overridesAttachDefaults,
 } from '../../base/card'
 import {GameModel} from '../../../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../../../models/card-pos-model'
 import {HermitAttackType} from '../../../types/attack'
 import {getNonEmptyRows} from '../../../utils/board'
-import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
 
-const RendogRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
+const RendogRareHermitCard = (): HermitCard & HasAttach => {
 	let imitatingCard: Card | null = null
 	let attackType: HermitAttackType | null = null
 
 	return {
 		...hermitCardDefaults,
 		...overridesAttachDefaults,
-		...overridesDetachDefaults,
 		id: 'rendog_rare',
 		numericId: 87,
 		name: 'Rendog',
@@ -126,12 +123,12 @@ const RendogRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach 
 
 								// Replace the hooks of the card we're imitating only if it changed
 								if (!imitatingCard || pickedCard.id !== imitatingCard.id) {
-									if (imitatingCard && implementsOverridesDetach(imitatingCard)) {
+									if (imitatingCard && implementsHasAttach(imitatingCard)) {
 										imitatingCard.onDetach(game, pos)
 									}
 
 									// Attach the new card
-									if (implementsOverridesAttach(pickedCard)) pickedCard.onAttach(game, pos)
+									if (implementsHasAttach(pickedCard)) pickedCard.onAttach(game, pos)
 
 									// Store which card we are imitating with our own instance
 									imitatingCard = pickedCard
@@ -158,7 +155,7 @@ const RendogRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach 
 			player.hooks.onActiveRowChange.add(this, (oldRow, newRow) => {
 				if (pos.rowIndex === oldRow) {
 					// We switched away from ren, delete the imitating card
-					if (implementsOverridesDetach(imitatingCard)) {
+					if (implementsHasAttach(imitatingCard)) {
 						// Detach the old card
 						imitatingCard.onDetach(game, pos)
 					}
@@ -185,7 +182,7 @@ const RendogRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach 
 			const {player} = pos
 
 			// If the card we are imitating is still attached, detach it
-			if (implementsOverridesDetach(imitatingCard)) {
+			if (implementsHasAttach(imitatingCard)) {
 				imitatingCard.onDetach(game, pos)
 			}
 

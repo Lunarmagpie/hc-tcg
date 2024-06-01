@@ -1,14 +1,13 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {OverridesAttach, OverridesDetach} from '../../base/card'
-import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
+import {HasAttach} from '../../base/card'
+import {overridesAttachDefaults} from '../../base/card'
 
-const Cubfan135RareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
+const Cubfan135RareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
 		...overridesAttachDefaults,
-		...overridesDetachDefaults,
 		id: 'cubfan135_rare',
 		numericId: 10,
 		name: 'Cub',

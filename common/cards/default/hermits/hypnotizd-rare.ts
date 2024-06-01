@@ -5,21 +5,20 @@ import {PickRequest} from '../../../types/server-requests'
 import {getActiveRow, getNonEmptyRows} from '../../../utils/board'
 import {discardCard} from '../../../utils/movement'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {OverridesAttach, OverridesDetach} from '../../base/card'
-import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
+import {HasAttach} from '../../base/card'
+import {overridesAttachDefaults} from '../../base/card'
 
 /*
 - Has to support having two different afk targets (one for hypno, one for su effect like bow)
 - If the afk target for Hypno's ability & e.g. bow are the same, don't apply weakness twice
 - TODO - Can't use Got 'Em to attack AFK hermits even with Efficiency if Hypno has no item cards to discard
 */
-const HypnotizdRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
+const HypnotizdRareHermitCard = (): HermitCard & HasAttach => {
 	let targetIndex: number | null = null
 
 	return {
 		...hermitCardDefaults,
 		...overridesAttachDefaults,
-		...overridesDetachDefaults,
 		id: 'hypnotizd_rare',
 		numericId: 37,
 		name: 'Hypno',
@@ -40,8 +39,8 @@ const HypnotizdRareHermitCard = (): HermitCard & OverridesAttach & OverridesDeta
 				"You can choose to attack one of your opponent's AFK Hermits. If you do this, you must discard one item card attached to your active Hermit.",
 		},
 		getAttack(game: GameModel, pos: CardPosModel, hermitAttackType: HermitAttackType) {
-			const {player, opponentPlayer} = pos
-			const attack = super.getAttacks(game, pos, hermitAttackType)
+			const {opponentPlayer} = pos
+			const attack = {...this, ...hermitCardDefaults}.getAttack(game, pos, hermitAttackType)
 
 			if (!attack || attack.type !== 'secondary') return attack
 

@@ -6,8 +6,7 @@ import {isRemovable} from '../../../utils/cards'
 import {flipCoin} from '../../../utils/coinFlips'
 import {canAttachToSlot, discardCard, swapSlots} from '../../../utils/movement'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {OverridesAttach, OverridesDetach, implementsOverridesAttach} from '../../base/card'
-import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
+import {HasAttach, overridesAttachDefaults, implementsHasAttach} from '../../base/card'
 
 // The tricky part about this one are destroyable items (shield, totem, loyalty) since they are available at the moment of attack, but not after
 
@@ -19,11 +18,10 @@ Some assumptions that make sense to me:
 - If you choose to discard the card it gets discarded to your discard pile
 */
 
-const GrianRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
+const GrianRareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
 		...overridesAttachDefaults,
-		...overridesDetachDefaults,
 		id: 'grian_rare',
 		numericId: 35,
 		name: 'Grian',
@@ -91,7 +89,7 @@ const GrianRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach =
 
 							if (newPos) {
 								// Call onAttach
-								if (!implementsOverridesAttach(opponentEffectCard)) return 'FAILURE_INVALID_DATA'
+								if (!implementsHasAttach(opponentEffectCard)) return 'FAILURE_INVALID_DATA'
 								opponentEffectCard.onAttach(game, newPos)
 								player.hooks.onAttach.call(opponentEffectCard)
 							}

@@ -1,4 +1,4 @@
-import {Card, OverridesAttach, OverridesDetach} from '../cards/base/card'
+import {Card, HasAttach, OverridesDetach} from '../cards/base/card'
 import {HermitCard} from '../cards/base/hermit-card'
 import {AttackModel} from '../models/attack-model'
 import {BattleLogModel} from '../models/battle-log-model'

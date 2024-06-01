@@ -1,14 +1,12 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {OverridesAttach, OverridesDetach} from '../../base/card'
-import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
+import {HasAttach, overridesAttachDefaults} from '../../base/card'
 
-const ImpulseSVRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
+const ImpulseSVRareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
 		...overridesAttachDefaults,
-		...overridesDetachDefaults,
 		id: 'impulsesv_rare',
 		numericId: 41,
 		name: 'Impulse',

@@ -2,14 +2,12 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {OverridesAttach, OverridesDetach} from '../../base/card'
-import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
+import {HasAttach, overridesAttachDefaults} from '../../base/card'
 
-const EthosLabUltraRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
+const EthosLabUltraRareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
 		...overridesAttachDefaults,
-		...overridesDetachDefaults,
 		id: 'ethoslab_ultra_rare',
 		numericId: 21,
 		name: 'Etho',

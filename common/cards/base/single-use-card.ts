@@ -4,7 +4,7 @@ import {
 	EffectDisplayInfo,
 	HasDescription,
 	Card,
-	OverridesAttach,
+	HasAttach,
 	OverridesDetach,
 	isCardDefaults,
 	effectDisplayInfoDefaults,
@@ -18,11 +18,7 @@ import {TurnActions} from '../../types/game-state'
 import {FormattedTextNode, formatText} from '../../utils/formatting'
 import combinators from './attachable'
 
-export type SingleUseCard = Card &
-	EffectDisplayInfo &
-	HasDescription &
-	OverridesAttach &
-	OverridesDetach
+export type SingleUseCard = Card & EffectDisplayInfo & HasDescription & HasAttach & OverridesDetach
 
 export const defaultSingleUseInfo = {
 	...isCardDefaults,

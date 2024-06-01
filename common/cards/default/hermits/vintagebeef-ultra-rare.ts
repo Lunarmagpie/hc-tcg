@@ -1,56 +1,50 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {OverridesAttach, OverridesDetach} from '../../base/card'
+import {HasAttach, overridesAttachDefaults} from '../../base/card'
 
-class VintageBeefUltraRareHermitCard  = (): HermitCard & OverridesAttach & OverridesDetach =>  {
-	constructor() {
-		super({		...hermitCardDefaults,
+const VintageBeefUltraRareHermitCard = (): HermitCard & HasAttach => {
+	return {
+		...hermitCardDefaults,
+		...overridesAttachDefaults,
+		id: 'vintagebeef_ultra_rare',
+		numericId: 104,
+		name: 'Beef',
+		rarity: 'ultra_rare',
+		hermitType: 'explorer',
+		health: 280,
+		primary: {
+			name: 'Back in Action',
+			cost: ['any'],
+			damage: 40,
+			power: null,
+		},
+		secondary: {
+			name: 'N.H.O',
+			cost: ['explorer', 'explorer', 'explorer'],
+			damage: 100,
+			power: 'If you have AFK Docm77, Bdubs AND Etho on the game board, attack damage doubles.',
+		},
+		onAttach(game: GameModel, pos: CardPosModel) {
+			const {player} = pos
 
-			id: 'vintagebeef_ultra_rare',
-			numericId: 104,
-			name: 'Beef',
-			rarity: 'ultra_rare',
-			hermitType: 'explorer',
-			health: 280,
-			primary: {
-				name: 'Back in Action',
-				cost: ['any'],
-				damage: 40,
-				power: null,
-			},
-			secondary: {
-				name: 'N.H.O',
-				cost: ['explorer', 'explorer', 'explorer'],
-				damage: 100,
-				power: 'If you have AFK Docm77, Bdubs AND Etho on the game board, attack damage doubles.',
-			},
-		})
-	}
+			player.hooks.onAttack.add(this, (attack) => {
+				if (attack.getCreator() !== this || attack.type !== 'secondary') return
 
-	override onAttach(game: GameModel, pos: CardPosModel) {
-		const {player} = pos
+				const hasBdubs = player.board.rows.some((row) =>
+					row.hermitCard?.id.startsWith('bdoubleo100')
+				)
+				const hasDoc = player.board.rows.some((row) => row.hermitCard?.id.startsWith('docm77'))
+				const hasEtho = player.board.rows.some((row) => row.hermitCard?.id.startsWith('ethoslab'))
 
-		player.hooks.onAttack.add(instance, (attack) => {
-			const attackId = this.getInstanceKey(instance)
-			if (attack.id !== attackId || attack.type !== 'secondary') return
-
-			const hasBdubs = player.board.rows.some((row) =>
-				row.hermitCard?.cardId?.startsWith('bdoubleo100')
-			)
-			const hasDoc = player.board.rows.some((row) => row.hermitCard?.cardId?.startsWith('docm77'))
-			const hasEtho = player.board.rows.some((row) =>
-				row.hermitCard?.cardId?.startsWith('ethoslab')
-			)
-
-			if (hasBdubs && hasDoc && hasEtho) attack.addDamage(this.id, attack.getDamage())
-		})
-	}
-
-	override onDetach(game: GameModel, pos: CardPosModel) {
-		const {player} = pos
-		// Remove hooks
-		player.hooks.onAttack.remove(instance)
+				if (hasBdubs && hasDoc && hasEtho) attack.addDamage(this.id, attack.getDamage())
+			})
+		},
+		onDetach(game: GameModel, pos: CardPosModel) {
+			const {player} = pos
+			// Remove hooks
+			player.hooks.onAttack.remove(this)
+		},
 	}
 }
 

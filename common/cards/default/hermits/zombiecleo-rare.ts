@@ -1,27 +1,24 @@
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {
 	Card,
-	OverridesAttach,
-	OverridesDetach,
+	HasAttach,
 	implementsCanAttack,
 	implementsCard,
-	implementsOverridesAttach,
-	implementsOverridesDetach,
+	implementsHasAttach,
 } from '../../base/card'
 import {GameModel} from '../../../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../../../models/card-pos-model'
 import {HermitAttackType} from '../../../types/attack'
 import {getNonEmptyRows} from '../../../utils/board'
-import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
+import {overridesAttachDefaults} from '../../base/card'
 
-const ZombieCleoRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
+const ZombieCleoRareHermitCard = (): HermitCard & HasAttach => {
 	let imitatingCard: Card | null = null
 	let attackType: HermitAttackType | null = null
 
 	return {
 		...hermitCardDefaults,
 		...overridesAttachDefaults,
-		...overridesDetachDefaults,
 		id: 'zombiecleo_rare',
 		numericId: 116,
 		name: 'Cleo',
@@ -168,7 +165,7 @@ const ZombieCleoRareHermitCard = (): HermitCard & OverridesAttach & OverridesDet
 			player.hooks.onActiveRowChange.add(this, (oldRow, newRow) => {
 				if (pos.rowIndex === oldRow) {
 					// We switched away from ren, delete the imitating card
-					if (implementsOverridesDetach(imitatingCard)) {
+					if (implementsHasAttach(imitatingCard)) {
 						// Detach the old card
 						imitatingCard.onDetach(game, pos)
 					}
@@ -195,7 +192,7 @@ const ZombieCleoRareHermitCard = (): HermitCard & OverridesAttach & OverridesDet
 			const {player} = pos
 
 			// If the card we are imitating is still attached, detach it
-			if (implementsOverridesDetach(imitatingCard)) {
+			if (implementsHasAttach(imitatingCard)) {
 				imitatingCard.onDetach(game, pos)
 			}
 

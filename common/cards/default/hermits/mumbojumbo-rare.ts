@@ -2,63 +2,59 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {OverridesAttach, OverridesDetach} from '../../base/card'
-
+import {HasAttach, overridesAttachDefaults} from '../../base/card'
 /*
 - Beef confirmed that double damage condition includes other rare mumbos.
 */
-class MumboJumboRareHermitCard  = (): HermitCard & OverridesAttach & OverridesDetach =>  {
-	constructor() {
-		super({		...hermitCardDefaults,
+const MumboJumboRareHermitCard = (): HermitCard & HasAttach => {
+	return {
+		...hermitCardDefaults,
+		...overridesAttachDefaults,
+		id: 'mumbojumbo_rare',
+		numericId: 81,
+		name: 'Mumbo',
+		rarity: 'rare',
+		hermitType: 'prankster',
+		health: 290,
+		primary: {
+			name: 'Moustache',
+			cost: ['prankster'],
+			damage: 60,
+			power: null,
+		},
+		secondary: {
+			name: 'Quite Simple',
+			cost: ['prankster', 'prankster'],
+			damage: 40,
+			power:
+				'Flip a coin twice. Do an additional 20hp damage for every heads. Total attack damage doubles if you have at least one other AFK Prankster.',
+		},
+		onAttach(game: GameModel, pos: CardPosModel) {
+			const {player} = pos
 
-			id: 'mumbojumbo_rare',
-			numericId: 81,
-			name: 'Mumbo',
-			rarity: 'rare',
-			hermitType: 'prankster',
-			health: 290,
-			primary: {
-				name: 'Moustache',
-				cost: ['prankster'],
-				damage: 60,
-				power: null,
-			},
-			secondary: {
-				name: 'Quite Simple',
-				cost: ['prankster', 'prankster'],
-				damage: 40,
-				power:
-					'Flip a coin twice. Do an additional 20hp damage for every heads. Total attack damage doubles if you have at least one other AFK Prankster.',
-			},
-		})
-	}
+			player.hooks.onAttack.add(this, (attack) => {
+				const attacker = attack.getAttacker()
+				if (attack.getCreator() !== this || attack.type !== 'secondary' || !attacker) return
 
-	override onAttach(game: GameModel, pos: CardPosModel) {
-		const {player} = pos
+				const coinFlip = flipCoin(player, attacker.row.hermitCard, 2)
+				const headsAmount = coinFlip.filter((flip) => flip === 'heads').length
+				const pranksterAmount = player.board.rows.filter(
+					(row, index) =>
+						row.hermitCard &&
+						index !== player.board.activeRow &&
+						row.hermitCard.hermitType === 'prankster'
+				).length
 
-		player.hooks.onAttack.add(instance, (attack) => {
-			const attacker = attack.getAttacker()
-			if (attack.id !== this.getInstanceKey(instance) || attack.type !== 'secondary' || !attacker)
-				return
+				attack.addDamage(this.id, headsAmount * 20)
+				if (pranksterAmount > 0) attack.multiplyDamage(this.id, 2)
+			})
+		},
 
-			const coinFlip = flipCoin(player, attacker.row.hermitCard, 2)
-			const headsAmount = coinFlip.filter((flip) => flip === 'heads').length
-			const pranksterAmount = player.board.rows.filter(
-				(row, index) =>
-					row.hermitCard &&
-					index !== player.board.activeRow &&
-					HERMIT_CARDS[row.hermitCard.id]?.hermitType === 'prankster'
-			).length
-
-			attack.addDamage(this.id, headsAmount * 20)
-			if (pranksterAmount > 0) attack.multiplyDamage(this.id, 2)
-		})
-	}
-
-	override onDetach(game: GameModel, pos: CardPosModel) {
-		const {player} = pos
-		// Remove hooks
-		player.hooks.onAttack.remove(instance)
+		onDetach(game: GameModel, pos: CardPosModel) {
+			const {player} = pos
+			// Remove hooks
+			player.hooks.onAttack.remove(this)
+		},
 	}
 }
 

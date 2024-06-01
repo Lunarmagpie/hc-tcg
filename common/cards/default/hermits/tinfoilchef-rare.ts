@@ -2,53 +2,49 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {OverridesAttach, OverridesDetach} from '../../base/card'
+import {HasAttach, overridesAttachDefaults} from '../../base/card'
 
-class TinFoilChefRareHermitCard  = (): HermitCard & OverridesAttach & OverridesDetach =>  {
-	constructor() {
-		super({		...hermitCardDefaults,
+const TinFoilChefRareHermitCard = (): HermitCard & HasAttach => {
+	return {
+		...hermitCardDefaults,
+		...overridesAttachDefaults,
+		id: 'tinfoilchef_rare',
+		numericId: 98,
+		name: 'TFC',
+		rarity: 'rare',
+		hermitType: 'miner',
+		health: 300,
+		primary: {
+			name: 'True Hermit',
+			cost: ['any'],
+			damage: 40,
+			power: null,
+		},
+		secondary: {
+			name: 'Branch Mine',
+			cost: ['miner', 'miner'],
+			damage: 80,
+			power: 'Flip a coin.\nIf heads, you draw an extra card at the end of your turn.',
+		},
+		onAttach(game: GameModel, pos: CardPosModel) {
+			const {player} = pos
 
-			id: 'tinfoilchef_rare',
-			numericId: 98,
-			name: 'TFC',
-			rarity: 'rare',
-			hermitType: 'miner',
-			health: 300,
-			primary: {
-				name: 'True Hermit',
-				cost: ['any'],
-				damage: 40,
-				power: null,
-			},
-			secondary: {
-				name: 'Branch Mine',
-				cost: ['miner', 'miner'],
-				damage: 80,
-				power: 'Flip a coin.\nIf heads, you draw an extra card at the end of your turn.',
-			},
-		})
-	}
+			player.hooks.onAttack.add(this, (attack) => {
+				const attacker = attack.getAttacker()
+				if (attack.getCreator() !== this || attack.type !== 'secondary' || !attacker) return
 
-	override onAttach(game: GameModel, pos: CardPosModel) {
-		const {player} = pos
+				const coinFlip = flipCoin(player, attacker.row.hermitCard)
+				if (coinFlip[0] === 'tails') return
 
-		player.hooks.onAttack.add(instance, (attack) => {
-			const attackId = this.getInstanceKey(instance)
-			const attacker = attack.getAttacker()
-			if (attack.id !== attackId || attack.type !== 'secondary' || !attacker) return
-
-			const coinFlip = flipCoin(player, attacker.row.hermitCard)
-			if (coinFlip[0] === 'tails') return
-
-			const drawCard = player.pile.shift()
-			if (drawCard) player.hand.push(drawCard)
-		})
-	}
-
-	override onDetach(game: GameModel, pos: CardPosModel) {
-		const {player} = pos
-		// Remove hooks
-		player.hooks.onAttack.remove(instance)
+				const drawCard = player.pile.shift()
+				if (drawCard) player.hand.push(drawCard)
+			})
+		},
+		onDetach(game: GameModel, pos: CardPosModel) {
+			const {player} = pos
+			// Remove hooks
+			player.hooks.onAttack.remove(this)
+		},
 	}
 }
 

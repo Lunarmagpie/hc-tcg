@@ -12,7 +12,6 @@ import {TurnActions} from '../../types/game-state'
 import {EmptyNode, FormattedTextNode, formatText} from '../../utils/formatting'
 import {HermitAttackType} from '../../types/attack'
 import {AttackModel} from '../../models/attack-model'
-import { AttachmentExpression } from './attachable'
 
 export interface Card {
 	__card: undefined
@@ -32,8 +31,8 @@ export interface Card {
 
 	sidebarDescriptions: Array<Record<string, string>>
 
-	canBeAttachedTo: AttachmentExpression,
-	
+	canBeAttachedTo: AttachmentExpression
+
 	//@TODO remove this and make mixin
 	log: ((values: PlayCardLog) => string) | null
 }
@@ -105,25 +104,14 @@ export function implementsHasTurnActions(obj: any): obj is HasTurnActions {
 	return '__has_turn_actions' in obj
 }
 
-export interface OverridesAttach {
-	__overrides_attach: undefined
+export interface HasAttach {
+	__has_attach: undefined
 	onAttach(game: GameModel, pos: CardPosModel): void
-}
-export const overridesAttachDefaults = {__overrides_attach: undefined}
-export function implementsOverridesAttach(obj: any): obj is OverridesAttach {
-	return '__overrides_attach' in obj
-}
-
-export interface OverridesDetach {
-	__overrides_detach: undefined
-	/**
-	 * Called when an instance of this card is removed from the board
-	 */
 	onDetach(game: GameModel, pos: CardPosModel): void
 }
-export const overridesDetachDefaults = {__overrides_detach: undefined}
-export function implementsOverridesDetach(obj: any): obj is OverridesDetach {
-	return '__overrides_detach' in obj
+export const overridesAttachDefaults = {__has_attach: undefined}
+export function implementsHasAttach(obj: any): obj is HasAttach {
+	return '__has_attach' in obj
 }
 
 export interface GivesPointOnKnockout {}
@@ -238,6 +226,6 @@ export function implementsHasDescription(obj: any): obj is HasDescription {
 
 export interface OverridesGetEnergy {}
 export const overridesGetEnergy = {__overrides_get_energy: undefined}
-export function implementsOverridesGetEnergy(obj: any): obj is IsAttachableToEffectSlots {
+export function implementsOverridesGetEnergy(obj: any): obj is OverridesGetEnergy {
 	return '__overrides_get_energy' in obj
 }

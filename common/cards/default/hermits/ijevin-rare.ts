@@ -2,14 +2,12 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {getNonEmptyRows} from '../../../utils/board'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {OverridesAttach, OverridesDetach} from '../../base/card'
-import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
+import {HasAttach, overridesAttachDefaults} from '../../base/card'
 
-const IJevinRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
+const IJevinRareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
 		...overridesAttachDefaults,
-		...overridesDetachDefaults,
 		id: 'ijevin_rare',
 		numericId: 39,
 		name: 'Jevin',

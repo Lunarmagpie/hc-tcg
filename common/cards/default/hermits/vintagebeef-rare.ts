@@ -2,64 +2,60 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {OverridesAttach, OverridesDetach} from '../../base/card'
+import {HasAttach, overridesAttachDefaults} from '../../base/card'
 import {removeStatusEffect} from '../../../utils/board'
 
-class VintageBeefRareHermitCard  = (): HermitCard & OverridesAttach & OverridesDetach =>  {
-	constructor() {
-		super({		...hermitCardDefaults,
+const VintageBeefRareHermitCard = (): HermitCard & HasAttach => {
+	return {
+		...hermitCardDefaults,
+		...overridesAttachDefaults,
+		id: 'vintagebeef_rare',
+		numericId: 103,
+		name: 'Beef',
+		rarity: 'rare',
+		hermitType: 'builder',
+		health: 290,
+		primary: {
+			name: 'Pojk',
+			cost: ['any'],
+			damage: 40,
+			power: null,
+		},
+		secondary: {
+			name: 'Beefy Tunes',
+			cost: ['builder', 'builder'],
+			damage: 80,
+			power:
+				'Flip a coin.\nIf heads, all status effects are removed from your active and AFK Hermits.',
+		},
+		onAttach(game: GameModel, pos: CardPosModel) {
+			const {player} = pos
 
-			id: 'vintagebeef_rare',
-			numericId: 103,
-			name: 'Beef',
-			rarity: 'rare',
-			hermitType: 'builder',
-			health: 290,
-			primary: {
-				name: 'Pojk',
-				cost: ['any'],
-				damage: 40,
-				power: null,
-			},
-			secondary: {
-				name: 'Beefy Tunes',
-				cost: ['builder', 'builder'],
-				damage: 80,
-				power:
-					'Flip a coin.\nIf heads, all status effects are removed from your active and AFK Hermits.',
-			},
-		})
-	}
+			player.hooks.onAttack.add(this, (attack) => {
+				const attacker = attack.getAttacker()
+				if (attack.getCreator() !== this || attack.type !== 'secondary' || !attacker) return
 
-	override onAttach(game: GameModel, pos: CardPosModel) {
-		const {player} = pos
+				const coinFlip = flipCoin(player, attacker.row.hermitCard)
+				if (coinFlip[0] !== 'heads') return
 
-		player.hooks.onAttack.add(instance, (attack) => {
-			const attacker = attack.getAttacker()
-			if (attack.id !== this.getInstanceKey(instance) || attack.type !== 'secondary' || !attacker)
-				return
+				player.board.rows.forEach((row) => {
+					if (!row.hermitCard) return
 
-			const coinFlip = flipCoin(player, attacker.row.hermitCard)
-			if (coinFlip[0] !== 'heads') return
+					const statusEffectsToRemove = game.state.statusEffects.filter((ail) => {
+						return ail.target === row.hermitCard
+					})
 
-			player.board.rows.forEach((row) => {
-				if (!row.hermitCard) return
-
-				const statusEffectsToRemove = game.state.statusEffects.filter((ail) => {
-					return ail.targetInstance === row.hermitCard.cardInstance
-				})
-
-				statusEffectsToRemove.forEach((ail) => {
-					removeStatusEffect(game, pos, ail.statusEffectInstance)
+					statusEffectsToRemove.forEach((ail) => {
+						removeStatusEffect(game, pos, ail)
+					})
 				})
 			})
-		})
-	}
-
-	override onDetach(game: GameModel, pos: CardPosModel) {
-		const {player} = pos
-		// Remove hooks
-		player.hooks.onAttack.remove(instance)
+		},
+		onDetach(game: GameModel, pos: CardPosModel) {
+			const {player} = pos
+			// Remove hooks
+			player.hooks.onAttack.remove(this)
+		},
 	}
 }
 

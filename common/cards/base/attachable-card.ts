@@ -2,13 +2,11 @@ import {
 	EffectDisplayInfo,
 	HasDescription,
 	Card,
-	OverridesAttach,
-	OverridesDetach,
+	HasAttach,
 	effectDisplayInfoDefaults,
 	hasDescriptionDefaults,
 	isCardDefaults,
 	overridesAttachDefaults,
-	overridesDetachDefaults,
 } from './card'
 import combinators from './attachable'
 import {CARDS} from '..'
@@ -18,11 +16,7 @@ import {CardPosModel} from '../../models/card-pos-model'
 import {TurnActions} from '../../types/game-state'
 import {FormattedTextNode, formatText} from '../../utils/formatting'
 
-export type AttachableCard = Card &
-	EffectDisplayInfo &
-	HasDescription &
-	OverridesAttach &
-	OverridesDetach
+export type AttachableCard = Card & EffectDisplayInfo & HasDescription & HasAttach & OverridesDetach
 
 export const attachableCardDefaults = {
 	...isCardDefaults,

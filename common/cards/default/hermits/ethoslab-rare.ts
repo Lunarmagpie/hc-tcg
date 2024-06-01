@@ -2,16 +2,15 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
 import {applyStatusEffect, getActiveRow} from '../../../utils/board'
-import {OverridesAttach, OverridesDetach} from '../../base/card'
+import {HasAttach} from '../../base/card'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import FireStatusEffect from '../../../status-effects/fire'
-import {overridesAttachDefaults, overridesDetachDefaults} from '../../base/card'
+import {overridesAttachDefaults} from '../../base/card'
 
-const EthosLabRareHermitCard = (): HermitCard & OverridesAttach & OverridesDetach => {
+const EthosLabRareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
 		...overridesAttachDefaults,
-		...overridesDetachDefaults,
 		id: 'ethoslab_rare',
 		numericId: 20,
 		name: 'Etho',
