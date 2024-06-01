@@ -1,15 +1,14 @@
-import { GameModel } from '../models/game-model'
-import { GameState, PlayerState } from '../types/game-state'
-import { Card, implementsOverridesDetach } from '../cards/base/card'
-import { CARDS } from '../cards'
-import { BasicCardPos, CardPosModel, getCardPos } from '../models/card-pos-model'
-import { equalCard } from './cards'
-import { SlotPos } from '../types/cards'
-import { getSlotPos } from './board'
-import { CanAttachResult } from '../cards/base/card'
+import {GameModel} from '../models/game-model'
+import {GameState, PlayerState} from '../types/game-state'
+import {Card, implementsHasAttach} from '../cards/base/card'
+import {CARDS} from '../cards'
+import {BasicCardPos, CardPosModel, getCardPos} from '../models/card-pos-model'
+import {equalCard} from './cards'
+import {SlotPos} from '../types/cards'
+import {getSlotPos} from './board'
 
 function discardAtPos(pos: CardPosModel) {
-	const { player, row, slot } = pos
+	const {player, row, slot} = pos
 
 	if (slot.type === 'single_use') {
 		player.board.singleUseCard = null
@@ -52,8 +51,7 @@ export function discardCard(
 	}
 
 	// Call `onDetach`
-	const cardInfo = CARDS[card.id]
-	cardInfo.onDetach(game, card, pos)
+	if (implementsHasAttach(card)) card.onDetach(game, pos)
 	pos.player.hooks.onDetach.call(card)
 
 	// Remove the card
@@ -146,8 +144,8 @@ export function moveCardToHand(game: GameModel, card: Card, playerDiscard?: Play
 
 /**Returns whether the slot is empty or not. */
 export function isSlotEmpty(slotPos: SlotPos): boolean {
-	const { row, slot } = slotPos
-	const { index, type } = slot
+	const {row, slot} = slotPos
+	const {index, type} = slot
 	if (type === 'hermit') {
 		if (!row.hermitCard) return true
 	} else if (type === 'effect') {
@@ -161,8 +159,8 @@ export function isSlotEmpty(slotPos: SlotPos): boolean {
 
 /**Returns the card in the slot, or `null` if it's empty. */
 export function getSlotCard(slotPos: SlotPos): Card | null {
-	const { row, slot } = slotPos
-	const { index, type } = slot
+	const {row, slot} = slotPos
+	const {index, type} = slot
 
 	if (type === 'hermit') {
 		return row.hermitCard
@@ -186,7 +184,7 @@ export function canAttachToSlot(
 	card: Card,
 	excludeInvalidPlayer = false
 ): CanAttachResult {
-	const { player, rowIndex, row, slot } = slotPos
+	const {player, rowIndex, row, slot} = slotPos
 	const opponentPlayerId = game.getPlayerIds().find((id) => id !== slotPos.player.id)
 	if (!opponentPlayerId) return ['UNKNOWN_ERROR']
 
@@ -218,8 +216,8 @@ export function swapSlots(
 	slotBPos: SlotPos,
 	withoutDetach: boolean = false
 ): boolean {
-	const { slot: slotA, row: rowA } = slotAPos
-	const { slot: slotB, row: rowB } = slotBPos
+	const {slot: slotA, row: rowA} = slotAPos
+	const {slot: slotB, row: rowB} = slotBPos
 	if (slotA.type !== slotB.type) return false
 
 	// Info about non-empty slots
@@ -263,7 +261,7 @@ export function swapSlots(
 			cardPos.player.hooks.onDetach.call(card)
 		}
 
-		cardsInfo.push({ cardInfo, card })
+		cardsInfo.push({cardInfo, card})
 	}
 
 	// Swap
@@ -283,7 +281,7 @@ export function swapSlots(
 
 	if (!withoutDetach) {
 		// onAttach
-		for (let { cardInfo, card } of cardsInfo) {
+		for (let {cardInfo, card} of cardsInfo) {
 			// New card position after swap
 			const cardPos = getCardPos(game, card)
 			if (!cardPos) continue

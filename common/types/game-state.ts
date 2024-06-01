@@ -1,4 +1,4 @@
-import {Card, HasAttach, OverridesDetach} from '../cards/base/card'
+import {Card, HasAttach} from '../cards/base/card'
 import {HermitCard} from '../cards/base/hermit-card'
 import {AttackModel} from '../models/attack-model'
 import {BattleLogModel} from '../models/battle-log-model'
@@ -249,7 +249,6 @@ export type LocalPlayerState = {
 	minecraftName: string
 	censoredPlayerName: string
 	coinFlips: Array<CurrentCoinFlipT>
-	custom: Record<string, any>
 	lives: number
 	board: {
 		activeRow: number | null

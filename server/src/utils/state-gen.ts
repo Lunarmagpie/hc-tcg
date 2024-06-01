@@ -15,7 +15,7 @@ import {PlayerModel} from 'common/models/player-model'
 import {EnergyT, SlotPos} from 'common/types/cards'
 import {AttackModel} from 'common/models/attack-model'
 import {GameHook, WaterfallHook} from 'common/types/hooks'
-import Card, {CanAttachResult} from 'common/cards/base/card'
+import Card, {CanAttachResult, implementsHasHermitType} from 'common/cards/base/card'
 import HermitCard from 'common/cards/base/hermit-card'
 import ItemCard from 'common/cards/base/item-card'
 import EffectCard from 'common/cards/base/effect-card'
@@ -42,6 +42,8 @@ const isEffect: (cardInfo: Card) => cardInfo is EffectCard = (cardInfo): cardInf
 	['effect', 'single_use'].includes(cardInfo.type)
 
 export function getStarterPack() {
+	return []
+
 	const limits = CONFIG.limits
 
 	// only allow some starting types
@@ -54,8 +56,7 @@ export function getStarterPack() {
 
 	const cards = Object.values(CARDS).filter(
 		(cardInfo) =>
-			(!isHermitOrItem(cardInfo) || hermitTypes.includes(cardInfo.hermitType)) &&
-			!EXPANSIONS.disabled.includes(cardInfo.getExpansion())
+			implementsHasHermitType(cardInfo) && !EXPANSIONS.disabled.includes(cardInfo.expansion)
 	)
 
 	const effectCards = cards.filter(isEffect)
@@ -173,7 +174,7 @@ export function getPlayerState(player: PlayerModel): PlayerState {
 
 	// ensure a hermit in first 5 cards
 	const hermitIndex = pack.findIndex((card) => {
-		return CARDS[card.id].type === 'hermit'
+		return card.category === 'hermit'
 	})
 	if (hermitIndex > 5) {
 		;[pack[0], pack[hermitIndex]] = [pack[hermitIndex], pack[0]]
@@ -211,7 +212,6 @@ export function getPlayerState(player: PlayerModel): PlayerState {
 		hand,
 		discarded: [],
 		pile: DEBUG_CONFIG.startWithAllCards || DEBUG_CONFIG.unlimitedCards ? [] : pack.slice(7),
-		custom: {},
 		board: {
 			activeRow: null,
 			singleUseCard: null,
@@ -224,13 +224,13 @@ export function getPlayerState(player: PlayerModel): PlayerState {
 			blockedActions: new WaterfallHook<(blockedActions: TurnActions) => TurnActions>(),
 
 			canAttach: new GameHook<(canAttach: CanAttachResult, pos: CardPosModel) => void>(),
-			onAttach: new GameHook<(instance: string) => void>(),
-			onDetach: new GameHook<(instance: string) => void>(),
+			onAttach: new GameHook<(instance: Card) => void>(),
+			onDetach: new GameHook<(instance: Card) => void>(),
 			beforeApply: new GameHook<() => void>(),
 			onApply: new GameHook<() => void>(),
 			afterApply: new GameHook<() => void>(),
 			getAttackRequests: new GameHook<
-				(activeInstance: string, hermitAttackType: HermitAttackType) => void
+				(activeInstance: Card, hermitAttackType: HermitAttackType) => void
 			>(),
 			getAttack: new GameHook<() => AttackModel | null>(),
 			beforeAttack: new GameHook<(attack: AttackModel) => void>(),
@@ -258,7 +258,6 @@ export function getLocalPlayerState(playerState: PlayerState): LocalPlayerState 
 		minecraftName: playerState.minecraftName,
 		censoredPlayerName: playerState.censoredPlayerName,
 		coinFlips: playerState.coinFlips,
-		custom: playerState.custom,
 		lives: playerState.lives,
 		board: playerState.board,
 	}

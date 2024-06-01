@@ -43,10 +43,8 @@ const TYPE_ORDER = {
 
 export const sortCards = (cards: Array<CardT>): Array<CardT> => {
 	return cards.slice().sort((a: CardT, b: CardT) => {
-		const cardInfoA = CARDS[a.cardId]
-		const cardInfoB = CARDS[b.cardId]
-		const cardCostA = getCardCost(cardInfoA)
-		const cardCostB = getCardCost(cardInfoB)
+		const cardCostA = getCardCost(a)
+		const cardCostB = getCardCost(b)
 
 		if (cardInfoA.type !== cardInfoB.type) {
 			// seperate by types first

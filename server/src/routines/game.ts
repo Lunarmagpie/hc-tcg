@@ -20,6 +20,7 @@ import {getCardPos} from 'common/models/card-pos-model'
 import {printHooksState} from '../utils'
 import {buffers} from 'redux-saga'
 import {AttackActionData, PickCardActionData, attackToAttackAction} from 'common/types/action-data'
+import {implementsHasTurnActions} from 'common/cards/base/card'
 
 ////////////////////////////////////////
 // @TODO sort this whole thing out properly
@@ -116,20 +117,19 @@ function getAvailableActions(game: GameModel, availableEnergy: Array<EnergyT>): 
 
 		// Attack actions
 		if (activeRow !== null && turnState.turnNumber > 1) {
-			const hermitId = rows[activeRow]?.hermitCard?.cardId
-			const hermitInfo = hermitId ? HERMIT_CARDS[hermitId] : null
+			const activeHermit = rows[activeRow]?.hermitCard
 
 			// only add attack options if not sleeping
-			if (hermitInfo) {
-				if (hasEnoughEnergy(availableEnergy, hermitInfo.primary.cost)) {
+			if (activeHermit) {
+				if (hasEnoughEnergy(availableEnergy, activeHermit.primary.cost)) {
 					actions.push('PRIMARY_ATTACK')
 				}
-				if (hasEnoughEnergy(availableEnergy, hermitInfo.secondary.cost)) {
+				if (hasEnoughEnergy(availableEnergy, activeHermit.secondary.cost)) {
 					actions.push('SECONDARY_ATTACK')
 				}
 				if (su && !suUsed) {
-					const suInfo = SINGLE_USE_CARDS[su.cardId]
-					if (suInfo && suInfo.canAttack()) {
+					//@TODO sort out Single use and fix
+					if (su) {
 						actions.push('SINGLE_USE_ATTACK')
 					}
 				}
@@ -142,10 +142,11 @@ function getAvailableActions(game: GameModel, availableEnergy: Array<EnergyT>): 
 
 	// Play card actions require an active row unless it's the players first turn
 	if (activeRow !== null || turnState.turnNumber <= 2) {
-		const handCards = currentPlayer.hand.map((card) => CARDS[card.id])
+		const handCards = currentPlayer.hand
 		const allDesiredActions: TurnActions = []
 		for (let x = 0; x < handCards.length; x++) {
 			const card = handCards[x]
+			if (!implementsHasTurnActions(card)) continue
 			const desiredActions: TurnActions = card.getActions(game)
 			for (let i = 0; i < desiredActions.length; i++) {
 				const desiredAction = desiredActions[i]

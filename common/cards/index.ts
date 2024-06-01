@@ -16,15 +16,15 @@ import adventOfTcgSingleUseCards from './advent-of-tcg/single-use'
 import {Card} from './base/card'
 
 export const CARDS: Array<Card> = [
-	...defaultAttachableCards,
+	// ...defaultAttachableCards,
 	...defaultHermitCards,
 	...defaultItemCards,
-	...defaultSingleUseCards,
-	...alterEgosAttachableCards,
-	...alterEgosHermitCards,
-	...alterEgosSingleUseCards,
-	...alterEgosIIHermitCards,
-	...adventOfTcgAttachableCards,
-	...adventOfTcgHermitCards,
-	...adventOfTcgSingleUseCards,
+	// ...defaultSingleUseCards,
+	// ...alterEgosAttachableCards,
+	// ...alterEgosHermitCards,
+	// ...alterEgosSingleUseCards,
+	// ...alterEgosIIHermitCards,
+	// ...adventOfTcgAttachableCards,
+	// ...adventOfTcgHermitCards,
+	// ...adventOfTcgSingleUseCards,
 ]
