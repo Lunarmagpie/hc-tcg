@@ -13,7 +13,15 @@ import {HermitAttackType} from '../../types/attack'
 import {AttackModel} from '../../models/attack-model'
 import {AttachmentExpression} from './attachable'
 
-export interface Card {
+export class Card<T extends {}> {
+	props: T | null = null
+
+	hasAttach(this: any): this is HasAttach {
+		return "onAttach" in this && "onDetach" in this
+	}
+}
+
+export interface CardProps {
 	__card: undefined
 
 	category: CardCategoryT
@@ -105,13 +113,8 @@ export function implementsHasTurnActions(obj: any): obj is HasTurnActions {
 }
 
 export interface HasAttach {
-	__has_attach: undefined
 	onAttach(game: GameModel, pos: CardPosModel): void
 	onDetach(game: GameModel, pos: CardPosModel): void
-}
-export const overridesAttachDefaults = {__has_attach: undefined}
-export function implementsHasAttach(obj: any): obj is HasAttach {
-	return '__has_attach' in obj
 }
 
 export interface GivesPointOnKnockout {}

@@ -12,13 +12,14 @@ import {
 	givesPointOnKnockoutDefaults,
 	hasHealthDefaults,
 	CanAttack,
+    CardProps,
 } from './card'
 import {CardCategoryT, PlayCardLog} from '../../types/cards'
 import {TurnActions} from '../../types/game-state'
 import {formatText} from '../../utils/formatting'
 import attachableTo from './attachable'
 
-export type HermitCard = Card &
+export type HermitCard = CardProps &
 	HasHermitType &
 	HasHealth &
 	HermitDisplayInfo &
