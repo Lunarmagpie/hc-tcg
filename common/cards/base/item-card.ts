@@ -4,7 +4,6 @@ import {CardCategoryT, PlayCardLog} from '../../types/cards'
 import {formatText} from '../../utils/formatting'
 import attachableTo from './attachable'
 import {
-	Card,
 	isCardDefaults,
 	HasHermitType,
 	hasHermitTypeDefaults,
@@ -12,9 +11,10 @@ import {
 	ItemDisplayInfo,
 	HasBattleLog,
 	hasBattleLogDefaults,
+  CardProps,
 } from './card'
 
-export type ItemCard = Card & HasHermitType & ItemDisplayInfo
+export type ItemCard = CardProps & HasHermitType & ItemDisplayInfo
 
 export const itemCardDefaults = {
 	...isCardDefaults,
@@ -25,16 +25,16 @@ export const itemCardDefaults = {
 	expansion: 'default',
 	palette: 'default',
 	canBeAttachedTo: attachableTo.every(attachableTo.player, attachableTo.item),
-	getBackground(this: Card) {
+	getBackground(this: CardProps) {
 		return this.id.split('_')[0]
 	},
-	getDescription(this: Card) {
+	getDescription(this: CardProps) {
 		return formatText('')
 	},
 	log: (values: PlayCardLog) =>
 		`$p{You|${values.player}}$ attached $m${values.pos.name}$ to $p${values.pos.hermitCard}$`,
 	sidebarDescriptions: [],
-	getEnergy(this: Card & HasHermitType, game: GameModel, pos: CardPosModel) {
+	getEnergy(this: CardProps & HasHermitType, game: GameModel, pos: CardPosModel) {
 		if (this.rarity === 'rare') return [this.hermitType, this.hermitType]
 		return [this.hermitType]
 	},

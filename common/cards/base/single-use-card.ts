@@ -1,34 +1,32 @@
-import {PlayCardLog, CardRarityT, CardCategoryT} from '../../types/cards'
+import { PlayCardLog, CardRarityT, CardCategoryT } from '../../types/cards'
 import {
 	AllowAttacks,
 	EffectDisplayInfo,
 	HasDescription,
-	Card,
 	HasAttach,
 	isCardDefaults,
 	effectDisplayInfoDefaults,
 	hasDescriptionDefaults,
-	overridesAttachDefaults,
+	CardProps,
 } from './card'
-import {GameModel} from '../../models/game-model'
-import {CardPosModel} from '../../models/card-pos-model'
-import {TurnActions} from '../../types/game-state'
-import {FormattedTextNode, formatText} from '../../utils/formatting'
+import { GameModel } from '../../models/game-model'
+import { CardPosModel } from '../../models/card-pos-model'
+import { TurnActions } from '../../types/game-state'
+import { FormattedTextNode, formatText } from '../../utils/formatting'
 import attachableTo from './attachable'
 
-export type SingleUseCard = Card & EffectDisplayInfo & HasDescription & HasAttach
+export type SingleUseCard = CardProps & EffectDisplayInfo & HasDescription & HasAttach
 
 export const defaultSingleUseInfo = {
 	...isCardDefaults,
 	...effectDisplayInfoDefaults,
 	...hasDescriptionDefaults,
-	...overridesAttachDefaults,
 	canBeAttachedTo: attachableTo.every(attachableTo.player, attachableTo.singleUse),
 	category: 'single_use' as CardCategoryT,
 	expansion: 'default',
 	palette: 'default',
 	sidebarDescriptions: [],
-	getDescription(this: Card & HasDescription) {
+	getDescription(this: CardProps & HasDescription) {
 		return formatText(this.description)
 	},
 }
@@ -38,7 +36,7 @@ export const defaultDamagingSingleUseInfo = {
 	expansion: 'default',
 	palette: 'default',
 	sidebarDescriptions: [],
-	getDescription(this: Card & HasDescription) {
+	getDescription(this: CardProps & HasDescription) {
 		return formatText(this.description)
 	},
 	log: null,
