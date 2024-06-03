@@ -1,11 +1,10 @@
-import {CARDS} from '../..'
 import {CardPosModel, getCardPos} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {getActiveRowPos, getSlotPos} from '../../../utils/board'
 import {flipCoin} from '../../../utils/coinFlips'
 import {canAttachToSlot, discardCard, swapSlots} from '../../../utils/movement'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {HasAttach, overridesAttachDefaults, implementsHasAttach} from '../../base/card'
+import {Card, HasAttach} from '../../base/card'
 
 // The tricky part about this one are destroyable items (shield, totem, loyalty) since they are available at the moment of attack, but not after
 
@@ -17,10 +16,9 @@ Some assumptions that make sense to me:
 - If you choose to discard the card it gets discarded to your discard pile
 */
 
-const GrianRareHermitCard = (): HermitCard & HasAttach => {
-	return {
+class GrianRareHermitCard extends Card<HermitCard> implements HasAttach {
+	override props: HermitCard = {
 		...hermitCardDefaults,
-		...overridesAttachDefaults,
 		id: 'grian_rare',
 		numericId: 35,
 		name: 'Grian',
@@ -39,97 +37,99 @@ const GrianRareHermitCard = (): HermitCard & HasAttach => {
 			cost: ['prankster', 'prankster', 'prankster'],
 			damage: 100,
 			power: null,
-		},
-		onAttach(game: GameModel, pos: CardPosModel) {
-			const {player, opponentPlayer, rowIndex, row} = pos
+		}
+	}
 
-			player.hooks.afterAttack.add(this, (attack) => {
-				const attacker = attack.getAttacker()
-				if (attack.type !== 'primary' || !attacker) return
+	onAttach(game: GameModel, pos: CardPosModel) {
+		const {player, opponentPlayer, rowIndex, row} = pos
 
-				const opponentRowPos = getActiveRowPos(opponentPlayer)
-				if (rowIndex === null || !row || !opponentRowPos) return
-				const opponentEffectCard = opponentRowPos.row.effectCard
-				if (!opponentEffectCard) return
+		player.hooks.afterAttack.add(this, (attack) => {
+			const attacker = attack.getAttacker()
+			if (attack.type !== 'primary' || !attacker) return
 
-				const results = opponentPlayer.hooks.onSlotChange.call(
-					getSlotPos(opponentPlayer, opponentRowPos.rowIndex, 'effect')
-				)
-				if (results.includes(false)) return
+			const opponentRowPos = getActiveRowPos(opponentPlayer)
+			if (rowIndex === null || !row || !opponentRowPos) return
+			const opponentEffectCard = opponentRowPos.row.effectCard
+			if (!opponentEffectCard) return
 
-				const coinFlip = flipCoin(player, attacker.row.hermitCard)
+			const results = opponentPlayer.hooks.onSlotChange.call(
+				getSlotPos(opponentPlayer, opponentRowPos.rowIndex, 'effect')
+			)
+			if (results.includes(false)) return
 
-				if (coinFlip[0] === 'tails') return
+			const coinFlip = flipCoin(player, attacker.row.hermitCard)
 
-				const effectSlot = getSlotPos(player, rowIndex, 'effect')
-				const canAttachResult = canAttachToSlot(game, effectSlot, opponentEffectCard, true)
+			if (coinFlip[0] === 'tails') return
 
-				if (canAttachResult.length > 0) {
-					// We can't attach the new card, don't bother showing a modal
-					discardCard(game, opponentEffectCard, player)
-					return
-				}
+			const effectSlot = getSlotPos(player, rowIndex, 'effect')
+			const canAttachResult = canAttachToSlot(game, effectSlot, opponentEffectCard, true)
 
-				game.addModalRequest({
-					playerId: player.id,
-					data: {
-						modalId: 'selectCards',
-						payload: {
-							modalName: 'Grian - Borrow',
-							modalDescription: `Would you like to attach or discard your opponent's ${opponentEffectCard.name} card?`,
-							cards: [player.pile[0]],
-							selectionSize: 0,
-							primaryButton: {
-								text: 'Attach',
-								variant: 'default',
-							},
-							secondaryButton: {
-								text: 'Discard',
-								variant: 'default',
-							},
+			if (canAttachResult.length > 0) {
+				// We can't attach the new card, don't bother showing a modal
+				discardCard(game, opponentEffectCard, player)
+				return
+			}
+
+			game.addModalRequest({
+				playerId: player.id,
+				data: {
+					modalId: 'selectCards',
+					payload: {
+						modalName: 'Grian - Borrow',
+						modalDescription: `Would you like to attach or discard your opponent's ${opponentEffectCard.name} card?`,
+						cards: [player.pile[0]],
+						selectionSize: 0,
+						primaryButton: {
+							text: 'Attach',
+							variant: 'default',
+						},
+						secondaryButton: {
+							text: 'Discard',
+							variant: 'default',
 						},
 					},
-					onResult(modalResult) {
-						if (!modalResult || modalResult.attach === undefined) return 'FAILURE_INVALID_DATA'
+				},
+				onResult(modalResult) {
+					if (!modalResult || modalResult.attach === undefined) return 'FAILURE_INVALID_DATA'
 
-						if (modalResult.attach) {
-							// Discard our current attached card if there is one
-							discardCard(game, row.effectCard)
+					if (modalResult.attach) {
+						// Discard our current attached card if there is one
+						discardCard(game, row.effectCard)
 
-							// Move their effect card over
-							const opponentEffectSlot = getSlotPos(
-								opponentPlayer,
-								opponentRowPos.rowIndex,
-								'effect'
-							)
-							swapSlots(game, effectSlot, opponentEffectSlot)
+						// Move their effect card over
+						const opponentEffectSlot = getSlotPos(
+							opponentPlayer,
+							opponentRowPos.rowIndex,
+							'effect'
+						)
+						swapSlots(game, effectSlot, opponentEffectSlot)
 
-							const newPos = getCardPos(game, opponentEffectCard)
+						const newPos = getCardPos(game, opponentEffectCard)
 
-							if (newPos) {
-								// Call onAttach
-								if (!implementsHasAttach(opponentEffectCard)) return 'FAILURE_INVALID_DATA'
-								opponentEffectCard.onAttach(game, newPos)
-								player.hooks.onAttach.call(opponentEffectCard)
-							}
-						} else {
-							// Discard
-							discardCard(game, opponentEffectCard, player)
+						if (newPos) {
+							// Call onAttach
+							if (!opponentEffectCard.hasAttach()) return 'FAILURE_INVALID_DATA'
+							opponentEffectCard.onAttach(game, newPos)
+							player.hooks.onAttach.call(opponentEffectCard)
 						}
-
-						return 'SUCCESS'
-					},
-					onTimeout() {
+					} else {
 						// Discard
 						discardCard(game, opponentEffectCard, player)
-					},
-				})
+					}
+
+					return 'SUCCESS'
+				},
+				onTimeout() {
+					// Discard
+					discardCard(game, opponentEffectCard, player)
+				},
 			})
-		},
-		onDetach(game: GameModel, pos: CardPosModel) {
-			const {player} = pos
-			player.hooks.afterAttack.remove(this)
-		},
+		})
+	}
+
+	onDetach(game: GameModel, pos: CardPosModel) {
+		const {player} = pos
+		player.hooks.afterAttack.remove(this)
 	}
 }
 
