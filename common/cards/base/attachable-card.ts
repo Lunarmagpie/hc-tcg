@@ -16,7 +16,7 @@ import {CardPosModel} from '../../models/card-pos-model'
 import {TurnActions} from '../../types/game-state'
 import {FormattedTextNode, formatText} from '../../utils/formatting'
 
-export type AttachableCard = CardProps & EffectDisplayInfo & HasDescription & HasAttach
+export type AttachableCard = CardProps & EffectDisplayInfo & HasDescription
 
 export const attachableCardDefaults = {
 	...isCardDefaults,
