@@ -2,38 +2,15 @@ import {isTargetingPos} from '../../../utils/attacks'
 import {GameModel} from '../../../models/game-model'
 import {discardCard} from '../../../utils/movement'
 import {CardPosModel} from '../../../models/card-pos-model'
-import {
-	EffectDisplayInfo,
-	HasDescription,
-	HasHealth,
-	Card,
-	HasAttach,
-	OverridesDetach,
-	effectDisplayInfoDefaults,
-	hasDescriptionDefaults,
-	hasHealthDefaults,
-	isCardDefaults,
-	overridesAttachDefaults,
-	overridesDetachDefaults,
-} from '../../base/card'
-import {attachableCardDefaults} from '../../base/attachable-card'
+import {HasHealth, Card, hasHealthDefaults} from '../../base/card'
+import {AttachableCard, attachableCardDefaults} from '../../base/attachable-card'
 import {PlayCardLog} from '../../../types/cards'
 import attachableTo from '../../base/attachable'
 
-const ArmorStandEffectCard = (): Card &
-	EffectDisplayInfo &
-	HasDescription &
-	HasHealth &
-	HasAttach &
-	OverridesDetach => {
-	return {
-		...isCardDefaults,
-		...effectDisplayInfoDefaults,
-		...hasDescriptionDefaults,
-		...hasHealthDefaults,
-		...overridesAttachDefaults,
-		...overridesDetachDefaults,
+class ArmorStandEffectCard extends Card<AttachableCard & HasHealth> {
+	override props: AttachableCard & HasHealth =  {
 		...attachableCardDefaults,
+		...hasHealthDefaults,
 		health: 50,
 		id: 'armor_stand',
 		numericId: 118,

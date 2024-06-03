@@ -76,7 +76,7 @@ class GrianRareHermitCard extends Card<HermitCard> implements HasAttach {
 					modalId: 'selectCards',
 					payload: {
 						modalName: 'Grian - Borrow',
-						modalDescription: `Would you like to attach or discard your opponent's ${opponentEffectCard.name} card?`,
+						modalDescription: `Would you like to attach or discard your opponent's ${opponentEffectCard.props.name} card?`,
 						cards: [player.pile[0]],
 						selectionSize: 0,
 						primaryButton: {
@@ -106,9 +106,9 @@ class GrianRareHermitCard extends Card<HermitCard> implements HasAttach {
 
 						const newPos = getCardPos(game, opponentEffectCard)
 
-						if (newPos) {
+				if (newPos) {
 							// Call onAttach
-							if (!opponentEffectCard.hasAttach()) return 'FAILURE_INVALID_DATA'
+							if (!opponentEffectCard.implementsAttach()) return 'FAILURE_INVALID_DATA'
 							opponentEffectCard.onAttach(game, newPos)
 							player.hooks.onAttach.call(opponentEffectCard)
 						}
