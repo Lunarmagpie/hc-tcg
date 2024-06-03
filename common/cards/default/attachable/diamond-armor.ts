@@ -1,57 +1,49 @@
-import {CardPosModel} from '../../../models/card-pos-model'
-import {GameModel} from '../../../models/game-model'
-import {isTargetingPos} from '../../../utils/attacks'
-import EffectCard from '../../base/attachable-card'
+import { CardPosModel } from '../../../models/card-pos-model'
+import { GameModel } from '../../../models/game-model'
+import { isTargetingPos } from '../../../utils/attacks'
+import { AttachableCard, attachableCardDefaults } from '../../base/attachable-card'
+import { Card, HasAttach } from '../../base/card'
 
-class DiamondArmorEffectCard extends EffectCard {
-	constructor() {
-		super({
-			id: 'diamond_armor',
-			numericId: 13,
-			name: 'Diamond Armour',
-			rarity: 'rare',
-			description:
-				'When the Hermit this card is attached to takes damage, that damage is reduced by up to 30hp each turn.',
-		})
+class DiamondArmorEffectCard extends Card<AttachableCard> implements HasAttach {
+	override props: AttachableCard = {
+		...attachableCardDefaults,
+		id: 'diamond_armor',
+		numericId: 13,
+		name: 'Diamond Armour',
+		rarity: 'rare',
+		description:
+			'When the Hermit this card is attached to takes damage, that damage is reduced by up to 30hp each turn.',
 	}
 
-	override onAttach(game: GameModel, pos: CardPosModel) {
-		const {player, opponentPlayer} = pos
-		const instanceKey = this.getInstanceKey(instance)
+	private totalReduction = 0
 
-		player.hooks.onDefence.add(instance, (attack) => {
+	onAttach(game: GameModel, pos: CardPosModel) {
+		const { player, opponentPlayer } = pos
+
+		player.hooks.onDefence.add(this, (attack) => {
 			if (!isTargetingPos(attack, pos) || attack.isType('status-effect')) return
 
-			if (player.custom[instanceKey] === undefined) {
-				player.custom[instanceKey] = 0
-			}
-
-			const totalReduction = player.custom[instanceKey]
-
-			if (totalReduction < 30) {
-				const damageReduction = Math.min(attack.calculateDamage(), 30 - totalReduction)
-				player.custom[instanceKey] += damageReduction
-				attack.reduceDamage(this.id, damageReduction)
+			if (this.totalReduction < 30) {
+				const damageReduction = Math.min(attack.calculateDamage(), 30 - this.totalReduction)
+				this.totalReduction += damageReduction
+				attack.reduceDamage(this.props.id, damageReduction)
 			}
 		})
 
 		const resetCounter = () => {
-			if (player.custom[instanceKey] !== undefined) {
-				delete player.custom[instanceKey]
-			}
+			this.totalReduction = 0
 		}
 
 		// Reset counter at the start of every turn
-		player.hooks.onTurnStart.add(instance, resetCounter)
-		opponentPlayer.hooks.onTurnStart.add(instance, resetCounter)
+		player.hooks.onTurnStart.add(this, resetCounter)
+		opponentPlayer.hooks.onTurnStart.add(this, resetCounter)
 	}
 
-	override onDetach(game: GameModel, pos: CardPosModel) {
-		const {player, opponentPlayer} = pos
-		player.hooks.onDefence.remove(instance)
-		player.hooks.onTurnStart.remove(instance)
-		opponentPlayer.hooks.onTurnStart.remove(instance)
-		delete player.custom[this.getInstanceKey(instance)]
+	onDetach(game: GameModel, pos: CardPosModel) {
+		const { player, opponentPlayer } = pos
+		player.hooks.onDefence.remove(this)
+		player.hooks.onTurnStart.remove(this)
+		opponentPlayer.hooks.onTurnStart.remove(this)
 	}
 }
 

@@ -1,59 +1,49 @@
-import {AttackModel} from '../../../models/attack-model'
-import {CardPosModel, getCardPos} from '../../../models/card-pos-model'
-import {GameModel} from '../../../models/game-model'
-import {isTargetingPos} from '../../../utils/attacks'
-import EffectCard from '../../base/attachable-card'
+import { AttackModel } from '../../../models/attack-model'
+import { CardPosModel, getCardPos } from '../../../models/card-pos-model'
+import { GameModel } from '../../../models/game-model'
+import { isTargetingPos } from '../../../utils/attacks'
+import { AttachableCard, attachableCardDefaults } from '../../base/attachable-card'
+import { Card, HasAttach } from '../../base/card'
 
-class ThornsEffectCard extends EffectCard {
-	constructor() {
-		super({
-			id: 'thorns',
-			numericId: 96,
-			name: 'Thorns',
-			rarity: 'common',
-			description:
-				"When the Hermit this card is attached to takes damage, your opponent's active Hermit takes 20hp damage.\nIgnores armour.",
-		})
+class ThornsEffectCard extends Card<AttachableCard> implements HasAttach {
+	override props: AttachableCard = {
+		...attachableCardDefaults,
+		id: 'thorns',
+		numericId: 96,
+		name: 'Thorns',
+		rarity: 'common',
+		description:
+			"When the Hermit this card is attached to takes damage, your opponent's active Hermit takes 20hp damage.\nIgnores armour.",
 	}
-	override onAttach(game: GameModel, pos: CardPosModel) {
-		const {player, opponentPlayer} = pos
-		const triggeredKey = this.getInstanceKey(instance, 'triggered')
+
+	private triggered = false;
+
+	onAttach(game: GameModel, pos: CardPosModel) {
+		const { player, opponentPlayer } = pos
 
 		// Only when the opponent attacks us
-		opponentPlayer.hooks.afterAttack.add(instance, (attack) => {
+		opponentPlayer.hooks.afterAttack.add(this, (attack) => {
 			// If we have already triggered once this turn do not do so again
-			if (player.custom[triggeredKey]) return
+			if (this.triggered) return
 
 			if (!attack.isType('primary', 'secondary', 'effect') || attack.isBacklash) return
 			// Only return a backlash attack if the attack did damage
 			if (attack.calculateDamage() <= 0) return
 
 			if (attack.getAttacker() && isTargetingPos(attack, pos)) {
-				player.custom[triggeredKey] = true
+				this.triggered = true
 
 				const backlashAttack = new AttackModel({
-					id: this.getInstanceKey(instance, 'backlash'),
+					creator: this,
 					attacker: attack.getTarget(),
 					target: attack.getAttacker(),
 					type: 'effect',
 					isBacklash: true,
 					log: (values) => `${values.target} took ${values.damage} damage from $eThorns$`,
-				}).addDamage(this.id, 20)
+				}).addDamage(this.props.id, 20)
 
-				backlashAttack.shouldIgnoreCards.push((instance) => {
-					const pos = getCardPos(game, instance)
-					if (!pos || !pos.row || !pos.row.effectCard) return false
-
-					if (
-						['gold_armor', 'iron_armor', 'diamond_armor', 'netherite_armor'].includes(
-							pos.row.effectCard.id
-						)
-					) {
-						// It's an armor card, ignore it
-						return true
-					}
-
-					return false
+				backlashAttack.shouldIgnoreCards.push((target) => {
+					return ['gold_armor', 'iron_armor', 'diamond_armor', 'netherite_armor'].includes(target.props.id)
 				})
 
 				attack.addNewAttack(backlashAttack)
@@ -62,17 +52,15 @@ class ThornsEffectCard extends EffectCard {
 			return attack
 		})
 
-		opponentPlayer.hooks.onTurnEnd.add(instance, () => {
-			delete player.custom[triggeredKey]
+		opponentPlayer.hooks.onTurnEnd.add(this, () => {
+			this.triggered = false;
 		})
 	}
 
-	override onDetach(game: GameModel, pos: CardPosModel) {
-		const {player, opponentPlayer} = pos
-		const triggeredKey = this.getInstanceKey(instance, 'triggered')
-		opponentPlayer.hooks.afterAttack.remove(instance)
-		opponentPlayer.hooks.onTurnEnd.remove(instance)
-		delete player.custom[triggeredKey]
+	onDetach(game: GameModel, pos: CardPosModel) {
+		const { player, opponentPlayer } = pos
+		opponentPlayer.hooks.afterAttack.remove(this)
+		opponentPlayer.hooks.onTurnEnd.remove(this)
 	}
 }
 

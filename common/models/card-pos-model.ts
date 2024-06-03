@@ -77,7 +77,7 @@ export function getBasicCardPos(game: GameModel, card: Card): BasicCardPos | nul
 	return null
 }
 
-export function getCardPos(game: GameModel, card: Card) {
+export function getCardPos(game: GameModel, card: Card<any>) {
 	const basicPos = getBasicCardPos(game, card)
 
 	if (basicPos) {
