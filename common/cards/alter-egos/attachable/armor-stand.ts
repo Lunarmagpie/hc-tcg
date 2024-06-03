@@ -2,12 +2,12 @@ import {isTargetingPos} from '../../../utils/attacks'
 import {GameModel} from '../../../models/game-model'
 import {discardCard} from '../../../utils/movement'
 import {CardPosModel} from '../../../models/card-pos-model'
-import {HasHealth, Card, hasHealthDefaults} from '../../base/card'
+import {HasHealth, Card, hasHealthDefaults, HasAttach} from '../../base/card'
 import {AttachableCard, attachableCardDefaults} from '../../base/attachable-card'
 import {PlayCardLog} from '../../../types/cards'
 import attachableTo from '../../base/attachable'
 
-class ArmorStandEffectCard extends Card<AttachableCard & HasHealth> {
+class ArmorStandEffectCard extends Card<AttachableCard & HasHealth> implements HasAttach {
 	override props: AttachableCard & HasHealth =  {
 		...attachableCardDefaults,
 		...hasHealthDefaults,
