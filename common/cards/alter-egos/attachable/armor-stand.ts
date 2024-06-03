@@ -20,67 +20,6 @@ class ArmorStandEffectCard extends Card<AttachableCard & HasHealth> {
 			'Use like a Hermit card with a maximum 50hp.\nYou can not attach any cards to this card. While this card is active, you can not attack, or use damaging effect cards.\nIf this card is knocked out, it does not count as a knockout.',
 		canBeAttachedTo: attachableTo.every(attachableTo.player, attachableTo.hermit),
 		log: (values: PlayCardLog) => `$p{You|${values.player}}$ placed $p${values.pos.name}$`,
-		onAttach(game: GameModel, pos: CardPosModel) {
-			const {player, opponentPlayer, row} = pos
-			if (!row) return
-
-			if (player.board.activeRow === null) {
-				game.changeActiveRow(player, pos.rowIndex)
-			}
-
-			// The menu won't show up but just in case someone tries to cheat
-			player.hooks.blockedActions.add(this, (blockedActions) => {
-				if (player.board.activeRow === pos.rowIndex) {
-					blockedActions.push('PRIMARY_ATTACK')
-					blockedActions.push('SECONDARY_ATTACK')
-					blockedActions.push('SINGLE_USE_ATTACK')
-				}
-
-				return blockedActions
-			})
-
-			player.hooks.afterAttack.add(this, (attack) => {
-				const attacker = attack.getAttacker()
-				if (!row.health && attacker && isTargetingPos(attack, pos)) {
-					// Discard to prevent losing a life
-					discardCard(game, row.hermitCard)
-
-					const activeRow = player.board.activeRow
-					const isActive = activeRow !== null && activeRow == pos.rowIndex
-					if (isActive && attacker.player.id !== player.id) {
-						// Reset the active row so the player can switch
-						game.changeActiveRow(player, null)
-					}
-				}
-			})
-
-			opponentPlayer.hooks.afterAttack.add(this, (attack) => {
-				const attacker = attack.getAttacker()
-				if (!row.health && attacker && isTargetingPos(attack, pos)) {
-					// Discard to prevent losing a life
-					const activeRow = player.board.activeRow
-					const isActive = activeRow !== null && activeRow == pos.rowIndex
-					if (isActive && attacker.player.id !== player.id) {
-						// Reset the active row so the player can switch
-						game.changeActiveRow(player, null)
-					}
-				}
-			})
-		},
-
-		onDetach(game: GameModel, pos: CardPosModel) {
-			const {player, opponentPlayer, slot, row} = pos
-			if (slot && slot.type === 'hermit' && row) {
-				row.health = null
-				row.effectCard = null
-				row.itemCards = []
-			}
-
-			player.hooks.blockedActions.remove(this)
-			player.hooks.afterAttack.remove(this)
-			player.hooks.canAttach.remove(this)
-			opponentPlayer.hooks.afterAttack.remove(this)
-		},
 		expansion: 'alter_egos',
 		sidebarDescriptions: [
 			{
@@ -89,6 +28,69 @@ class ArmorStandEffectCard extends Card<AttachableCard & HasHealth> {
 			},
 		],
 	}
+
+	onAttach(game: GameModel, pos: CardPosModel) {
+		const {player, opponentPlayer, row} = pos
+		if (!row) return
+
+		if (player.board.activeRow === null) {
+			game.changeActiveRow(player, pos.rowIndex)
+		}
+
+		// The menu won't show up but just in case someone tries to cheat
+		player.hooks.blockedActions.add(this, (blockedActions) => {
+			if (player.board.activeRow === pos.rowIndex) {
+				blockedActions.push('PRIMARY_ATTACK')
+				blockedActions.push('SECONDARY_ATTACK')
+				blockedActions.push('SINGLE_USE_ATTACK')
+			}
+
+			return blockedActions
+		})
+
+		player.hooks.afterAttack.add(this, (attack) => {
+			const attacker = attack.getAttacker()
+			if (!row.health && attacker && isTargetingPos(attack, pos)) {
+				// Discard to prevent losing a life
+				discardCard(game, row.hermitCard)
+
+				const activeRow = player.board.activeRow
+				const isActive = activeRow !== null && activeRow == pos.rowIndex
+				if (isActive && attacker.player.id !== player.id) {
+					// Reset the active row so the player can switch
+					game.changeActiveRow(player, null)
+				}
+			}
+		})
+
+		opponentPlayer.hooks.afterAttack.add(this, (attack) => {
+			const attacker = attack.getAttacker()
+			if (!row.health && attacker && isTargetingPos(attack, pos)) {
+				// Discard to prevent losing a life
+				const activeRow = player.board.activeRow
+				const isActive = activeRow !== null && activeRow == pos.rowIndex
+				if (isActive && attacker.player.id !== player.id) {
+					// Reset the active row so the player can switch
+					game.changeActiveRow(player, null)
+				}
+			}
+		})
+	}
+
+	onDetach(game: GameModel, pos: CardPosModel) {
+		const {player, opponentPlayer, slot, row} = pos
+		if (slot && slot.type === 'hermit' && row) {
+			row.health = null
+			row.effectCard = null
+			row.itemCards = []
+		}
+
+		player.hooks.blockedActions.remove(this)
+		player.hooks.afterAttack.remove(this)
+		player.hooks.canAttach.remove(this)
+		opponentPlayer.hooks.afterAttack.remove(this)
+	}
+
 }
 
 export default ArmorStandEffectCard
