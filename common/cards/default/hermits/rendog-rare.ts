@@ -1,24 +1,13 @@
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {
-	Card,
-	HasAttach,
-	implementsCanAttack,
-	implementsCard,
-	implementsHasAttach,
-	overridesAttachDefaults,
-} from '../../base/card'
+import {Card, CardProps, HasAttach, HasCustom} from '../../base/card'
 import {GameModel} from '../../../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../../../models/card-pos-model'
 import {HermitAttackType} from '../../../types/attack'
 import {getNonEmptyRows} from '../../../utils/board'
 
-const RendogRareHermitCard = (): HermitCard & HasAttach => {
-	let imitatingCard: Card | null = null
-	let attackType: HermitAttackType | null = null
-
-	return {
+class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, HasCustom {
+	override props: HermitCard = {
 		...hermitCardDefaults,
-		...overridesAttachDefaults,
 		id: 'rendog_rare',
 		numericId: 87,
 		name: 'Rendog',
@@ -37,160 +26,174 @@ const RendogRareHermitCard = (): HermitCard & HasAttach => {
 			damage: 0,
 			power: "Use an attack from any of your opponent's Hermits.",
 		},
-		getAttack(game: GameModel, pos: CardPosModel, hermitAttackType: HermitAttackType) {
-			const attack = {
-				...this,
-				...hermitCardDefaults,
-			}.getAttack(game, pos, hermitAttackType)
+	}
 
-			if (!attack || attack.type !== 'secondary') return attack
-			if (attack.getCreator() !== this) return attack
+	custom = {
+		imitatingCard: null as Card<CardProps> | null,
+		attackType: null as HermitAttackType | null,
+	}
 
-			if (!imitatingCard) return null
-			if (!implementsCard(imitatingCard) || !implementsCanAttack(imitatingCard)) return null
+	getAttack(game: GameModel, pos: CardPosModel, hermitAttackType: HermitAttackType) {
+		const attack = super.getAttack(game, pos, hermitAttackType)
 
-			// No loops please
-			if (imitatingCard.id === this.id) return null
+		if (!attack || attack.type !== 'secondary') return attack
+		if (attack.getCreator() !== this) return attack
 
-			if (!attackType) return null
+		if (!this.custom.imitatingCard) return null
+		if (!this.custom.imitatingCard.implementsCanAttack()) return null
 
-			// Return the attack we picked from the card we picked
-			const newAttack = imitatingCard.getAttack(game, pos, attackType)
-			if (!newAttack) return null
+		// No loops please
+		if (this.custom.imitatingCard.props.id === this.props.id) return null
 
-			const attackName =
-				newAttack.type === 'primary' ? imitatingCard.primary.name : imitatingCard.secondary.name
-			newAttack.log = (values) => {
-				return imitatingCard
-					? `${values.attacker} attacked ${values.target} with $v${imitatingCard.name}'s ${attackName}$ for ${values.damage} damage`
-					: ''
-			}
+		if (!this.custom.attackType) return null
 
-			attackType === null
+		// Return the attack we picked from the card we picked
+		const newAttack = this.custom.imitatingCard.getAttack(game, pos, this.custom.attackType)
+		if (!newAttack) return null
 
-			return newAttack
-		},
-		onAttach(game: GameModel, pos: CardPosModel) {
-			const {player, opponentPlayer} = pos
-			const imitatingCardInstance = Math.random().toString()
+		const attackName =
+			newAttack.type === 'primary'
+				? this.custom.imitatingCard.primary.name
+				: this.custom.imitatingCard.secondary.name
+		newAttack.log = (values) => {
+			return this.custom.imitatingCard
+				? `${values.attacker} attacked ${values.target} with $v${this.custom.imitatingCard.props.name}'s ${attackName}$ for ${values.damage} damage`
+				: ''
+		}
 
-			player.hooks.getAttackRequests.add(this, (activeInstance, hermitAttackType) => {
-				// Make sure we are attacking
-				if (activeInstance !== this) return
-				// Only activate power on secondary attack
-				if (hermitAttackType !== 'secondary') return
+		this.custom.attackType === null
 
-				game.addPickRequest({
-					playerId: player.id,
-					id: this.id,
-					message: "Pick one of your opponent's Hermits",
-					onResult(pickResult) {
-						if (pickResult.playerId !== opponentPlayer.id) return 'FAILURE_INVALID_PLAYER'
+		return newAttack
+	}
 
-						const rowIndex = pickResult.rowIndex
-						if (rowIndex === undefined) return 'FAILURE_INVALID_SLOT'
+	onAttach(game: GameModel, pos: CardPosModel) {
+		const {player, opponentPlayer} = pos
+		const imitatingCardInstance = Math.random().toString()
 
-						if (pickResult.slot.type !== 'hermit') return 'FAILURE_INVALID_SLOT'
-						const pickedCard = pickResult.card
-						if (!pickedCard) return 'FAILURE_INVALID_SLOT'
+		player.hooks.getAttackRequests.add(this, (activeInstance, hermitAttackType) => {
+			// Make sure we are attacking
+			if (activeInstance !== this) return
+			// Only activate power on secondary attack
+			if (hermitAttackType !== 'secondary') return
 
-						// No picking the same card as us
-						if (pickedCard.id === this.id) return 'FAILURE_WRONG_PICK'
+			const thisCard = this
 
-						game.addModalRequest({
-							playerId: player.id,
-							data: {
-								modalId: 'copyAttack',
-								payload: {
-									modalName: 'Rendog: Choose an attack to copy',
-									modalDescription: "Which of the Hermit's attacks do you want to copy?",
-									cardPos: getBasicCardPos(game, pickedCard),
-								},
+			game.addPickRequest({
+				playerId: player.id,
+				id: this.props.id,
+				message: "Pick one of your opponent's Hermits",
+				onResult(pickResult) {
+					if (pickResult.playerId !== opponentPlayer.id) return 'FAILURE_INVALID_PLAYER'
+
+					const rowIndex = pickResult.rowIndex
+					if (rowIndex === undefined) return 'FAILURE_INVALID_SLOT'
+
+					if (pickResult.slot.type !== 'hermit') return 'FAILURE_INVALID_SLOT'
+					const pickedCard = pickResult.card
+					if (!pickedCard) return 'FAILURE_INVALID_SLOT'
+
+					// No picking the same card as us
+					if (pickedCard.id === this.id) return 'FAILURE_WRONG_PICK'
+
+					game.addModalRequest({
+						playerId: player.id,
+						data: {
+							modalId: 'copyAttack',
+							payload: {
+								modalName: 'Rendog: Choose an attack to copy',
+								modalDescription: "Which of the Hermit's attacks do you want to copy?",
+								cardPos: getBasicCardPos(game, pickedCard),
 							},
-							onResult(modalResult) {
-								if (!modalResult) return 'FAILURE_INVALID_DATA'
-								if (modalResult.cancel) {
-									// Cancel this attack so player can choose a different hermit to imitate
-									game.state.turn.currentAttack = null
-									game.cancelPickRequests()
-									return 'SUCCESS'
-								}
-								if (!modalResult.pick) return 'FAILURE_INVALID_DATA'
-								const attack: HermitAttackType = modalResult.pick
-
-								// Store the chosen attack to copy
-								attackType = attack
-
-								// Replace the hooks of the card we're imitating only if it changed
-								if (!imitatingCard || pickedCard.id !== imitatingCard.id) {
-									if (imitatingCard && implementsHasAttach(imitatingCard)) {
-										imitatingCard.onDetach(game, pos)
-									}
-
-									// Attach the new card
-									if (implementsHasAttach(pickedCard)) pickedCard.onAttach(game, pos)
-
-									// Store which card we are imitating with our own instance
-									imitatingCard = pickedCard
-								}
-
-								// Add the attack requests of the chosen card
-								player.hooks.getAttackRequests.call(imitatingCard, modalResult.pick)
-
+						},
+						onResult(modalResult) {
+							if (!modalResult) return 'FAILURE_INVALID_DATA'
+							if (modalResult.cancel) {
+								// Cancel this attack so player can choose a different hermit to imitate
+								game.state.turn.currentAttack = null
+								game.cancelPickRequests()
 								return 'SUCCESS'
-							},
-							onTimeout() {
-								attackType = 'primary'
-							},
-						})
+							}
+							if (!modalResult.pick) return 'FAILURE_INVALID_DATA'
+							const attack: HermitAttackType = modalResult.pick
 
-						return 'SUCCESS'
-					},
-					onTimeout() {
-						// We didn't pick someone to imitate so do nothing
-					},
-				})
+							// Store the chosen attack to copy
+							thisCard.custom.attackType = attack
+
+							// Replace the hooks of the card we're imitating only if it changed
+							if (
+								!thisCard.custom.imitatingCard ||
+								pickedCard.id !== thisCard.custom.imitatingCard.props.id
+							) {
+								if (thisCard.custom.imitatingCard?.implementsAttach()) {
+									thisCard.custom.imitatingCard.onDetach(game, pos)
+								}
+
+								// Attach the new card
+								if (pickedCard instanceof Card || pickedCard.implementsAttach())
+									pickedCard.onAttach(game, pos)
+
+								// Store which card we are imitating with our own instance
+								thisCard.custom.imitatingCard = pickedCard
+							}
+
+							// Add the attack requests of the chosen card
+							if (thisCard.custom.imitatingCard) {
+								player.hooks.getAttackRequests.call(thisCard.custom.imitatingCard, modalResult.pick)
+							}
+
+							return 'SUCCESS'
+						},
+						onTimeout() {
+							thisCard.custom.attackType = 'primary'
+						},
+					})
+
+					return 'SUCCESS'
+				},
+				onTimeout() {
+					// We didn't pick someone to imitate so do nothing
+				},
 			})
+		})
 
-			player.hooks.onActiveRowChange.add(this, (oldRow, newRow) => {
-				if (pos.rowIndex === oldRow) {
-					// We switched away from ren, delete the imitating card
-					if (implementsHasAttach(imitatingCard)) {
-						// Detach the old card
-						imitatingCard.onDetach(game, pos)
-					}
+		player.hooks.onActiveRowChange.add(this, (oldRow, newRow) => {
+			if (pos.rowIndex === oldRow) {
+				// We switched away from ren, delete the imitating card
+				if (this.custom.imitatingCard?.implementsAttach()) {
+					// Detach the old card
+					this.custom.imitatingCard.onDetach(game, pos)
 				}
-			})
+			}
+		})
 
-			player.hooks.blockedActions.add(this, (blockedActions) => {
-				// Block "Role Play" if there are not opposing Hermit cards other than rare Ren(s)
-				const opposingHermits = getNonEmptyRows(opponentPlayer, false).filter((rowPos) => {
-					return rowPos.row.hermitCard && rowPos.row.hermitCard.id !== this.id
-				}).length
-				if (
-					player.board.activeRow === pos.rowIndex &&
-					opposingHermits <= 0 &&
-					!blockedActions.includes('SECONDARY_ATTACK')
-				) {
-					blockedActions.push('SECONDARY_ATTACK')
-				}
-
-				return blockedActions
-			})
-		},
-		onDetach(game: GameModel, pos: CardPosModel) {
-			const {player} = pos
-
-			// If the card we are imitating is still attached, detach it
-			if (implementsHasAttach(imitatingCard)) {
-				imitatingCard.onDetach(game, pos)
+		player.hooks.blockedActions.add(this, (blockedActions) => {
+			// Block "Role Play" if there are not opposing Hermit cards other than rare Ren(s)
+			const opposingHermits = getNonEmptyRows(opponentPlayer, false).filter((rowPos) => {
+				return rowPos.row.hermitCard && rowPos.row.hermitCard.id !== this.props.id
+			}).length
+			if (
+				player.board.activeRow === pos.rowIndex &&
+				opposingHermits <= 0 &&
+				!blockedActions.includes('SECONDARY_ATTACK')
+			) {
+				blockedActions.push('SECONDARY_ATTACK')
 			}
 
-			// Remove hooks and custom data
-			player.hooks.getAttackRequests.remove(this)
-			player.hooks.onActiveRowChange.remove(this)
-			player.hooks.blockedActions.remove(this)
-		},
+			return blockedActions
+		})
+	}
+	onDetach(game: GameModel, pos: CardPosModel) {
+		const {player} = pos
+
+		// If the card we are imitating is still attached, detach it
+		if (this.custom.imitatingCard?.implementsAttach()) {
+			this.custom.imitatingCard.onDetach(game, pos)
+		}
+
+		// Remove hooks and custom data
+		player.hooks.getAttackRequests.remove(this)
+		player.hooks.onActiveRowChange.remove(this)
+		player.hooks.blockedActions.remove(this)
 	}
 }
 

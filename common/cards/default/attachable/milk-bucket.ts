@@ -1,10 +1,10 @@
-import { CardPosModel } from '../../../models/card-pos-model'
-import { GameModel } from '../../../models/game-model'
-import { TurnActions } from '../../../types/game-state'
-import { AttachableCard, attachableCardDefaults } from '../../base/attachable-card'
-import { CARDS } from '../..'
-import { applySingleUse, removeStatusEffect } from '../../../utils/board'
-import { Card, HasAttach } from '../../base/card'
+import {CardPosModel} from '../../../models/card-pos-model'
+import {GameModel} from '../../../models/game-model'
+import {TurnActions} from '../../../types/game-state'
+import {AttachableCard, attachableCardDefaults} from '../../base/attachable-card'
+import {CARDS} from '../..'
+import {applySingleUse, removeStatusEffect} from '../../../utils/board'
+import {Card, HasAttach} from '../../base/card'
 import attachableTo from '../../base/attachable'
 
 class MilkBucketEffectCard extends Card<AttachableCard> implements HasAttach {
@@ -16,7 +16,10 @@ class MilkBucketEffectCard extends Card<AttachableCard> implements HasAttach {
 		rarity: 'common',
 		description:
 			'Remove poison and bad omen from one of your Hermits.\nIf attached, prevents the Hermit this card is attached to from being poisoned.',
-		canBeAttachedTo: attachableTo.every(attachableTo.player, attachableTo.some(attachableTo.effect, attachableTo.singleUse)),
+		canBeAttachedTo: attachableTo.every(
+			attachableTo.player,
+			attachableTo.some(attachableTo.effect, attachableTo.singleUse)
+		),
 		log: (values) => {
 			if (values.pos.slotType === 'single_use')
 				return `${values.defaultLog} on $p${values.pick.name}$`
@@ -25,7 +28,7 @@ class MilkBucketEffectCard extends Card<AttachableCard> implements HasAttach {
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {
-		const { player, opponentPlayer, slot, row } = pos
+		const {player, opponentPlayer, slot, row} = pos
 		if (slot.type === 'single_use') {
 			game.addPickRequest({
 				playerId: player.id,
@@ -56,9 +59,7 @@ class MilkBucketEffectCard extends Card<AttachableCard> implements HasAttach {
 		} else if (slot.type === 'effect') {
 			// Straight away remove poison
 			const poisonStatusEffect = game.state.statusEffects.find((ail) => {
-				return (
-					ail.target === row?.hermitCard && ail.name == 'poison'
-				)
+				return ail.target === row?.hermitCard && ail.name == 'poison'
 			})
 			if (poisonStatusEffect) {
 				removeStatusEffect(game, pos, poisonStatusEffect)
@@ -67,10 +68,7 @@ class MilkBucketEffectCard extends Card<AttachableCard> implements HasAttach {
 			player.hooks.onDefence.add(this, (attack) => {
 				if (!row) return
 				const statusEffectsToRemove = game.state.statusEffects.filter((ail) => {
-					return (
-						ail.target === row.hermitCard &&
-						(ail.name == 'poison' || ail.name == 'badomen')
-					)
+					return ail.target === row.hermitCard && (ail.name == 'poison' || ail.name == 'badomen')
 				})
 				statusEffectsToRemove.forEach((ail) => {
 					removeStatusEffect(game, pos, ail)
@@ -80,10 +78,7 @@ class MilkBucketEffectCard extends Card<AttachableCard> implements HasAttach {
 			opponentPlayer.hooks.afterApply.add(this, () => {
 				if (!row) return
 				const statusEffectsToRemove = game.state.statusEffects.filter((ail) => {
-					return (
-						ail.target === row.hermitCard &&
-						(ail.name == 'poison' || ail.name == 'badomen')
-					)
+					return ail.target === row.hermitCard && (ail.name == 'poison' || ail.name == 'badomen')
 				})
 				statusEffectsToRemove.forEach((ail) => {
 					removeStatusEffect(game, pos, ail)
@@ -93,7 +88,7 @@ class MilkBucketEffectCard extends Card<AttachableCard> implements HasAttach {
 	}
 
 	onDetach(game: GameModel, pos: CardPosModel) {
-		const { player, opponentPlayer } = pos
+		const {player, opponentPlayer} = pos
 		player.hooks.onDefence.remove(this)
 		opponentPlayer.hooks.afterApply.remove(this)
 	}

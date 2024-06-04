@@ -2,12 +2,11 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {getNonEmptyRows} from '../../../utils/board'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {HasAttach, overridesAttachDefaults} from '../../base/card'
+import {HasAttach, Card} from '../../base/card'
 
-const IJevinRareHermitCard = (): HermitCard & HasAttach => {
-	return {
+class IJevinRareHermitCard extends Card<HermitCard> implements HasAttach {
+	override props: HermitCard = {
 		...hermitCardDefaults,
-		...overridesAttachDefaults,
 		id: 'ijevin_rare',
 		numericId: 39,
 		name: 'Jevin',
@@ -27,59 +26,61 @@ const IJevinRareHermitCard = (): HermitCard & HasAttach => {
 			power:
 				'After your attack, your opponent must choose an AFK Hermit to set as their active Hermit, unless they have no AFK Hermits.',
 		},
-		onAttach(game: GameModel, pos: CardPosModel) {
-			const {player, opponentPlayer} = pos
+	}
 
-			player.hooks.afterAttack.add(this, (attack) => {
-				if (attack.type !== 'secondary' || !attack.getTarget()) return
+	onAttach(game: GameModel, pos: CardPosModel) {
+		const {player, opponentPlayer} = pos
 
-				const opponentInactiveRows = getNonEmptyRows(opponentPlayer, true, true)
-				if (opponentInactiveRows.length !== 0) {
-					const lastActiveRow = opponentPlayer.board.activeRow
+		player.hooks.afterAttack.add(this, (attack) => {
+			if (attack.type !== 'secondary' || !attack.getTarget()) return
 
-					game.addPickRequest({
-						playerId: opponentPlayer.id, // For opponent player to pick
-						id: this.id,
-						message: 'Choose a new active Hermit from your afk Hermits.',
-						onResult(pickResult) {
-							if (pickResult.playerId !== opponentPlayer.id) return 'FAILURE_INVALID_PLAYER'
+			const opponentInactiveRows = getNonEmptyRows(opponentPlayer, true, true)
+			if (opponentInactiveRows.length !== 0) {
+				const lastActiveRow = opponentPlayer.board.activeRow
 
-							const rowIndex = pickResult.rowIndex
-							if (rowIndex === undefined) return 'FAILURE_INVALID_SLOT'
-							if (rowIndex === lastActiveRow) return 'FAILURE_INVALID_SLOT'
+				game.addPickRequest({
+					playerId: opponentPlayer.id, // For opponent player to pick
+					id: this.props.id,
+					message: 'Choose a new active Hermit from your afk Hermits.',
+					onResult(pickResult) {
+						if (pickResult.playerId !== opponentPlayer.id) return 'FAILURE_INVALID_PLAYER'
 
-							if (pickResult.slot.type !== 'hermit') return 'FAILURE_INVALID_SLOT'
-							if (!pickResult.card) return 'FAILURE_INVALID_SLOT'
+						const rowIndex = pickResult.rowIndex
+						if (rowIndex === undefined) return 'FAILURE_INVALID_SLOT'
+						if (rowIndex === lastActiveRow) return 'FAILURE_INVALID_SLOT'
 
-							const row = opponentPlayer.board.rows[rowIndex]
-							if (!row.hermitCard) return 'FAILURE_INVALID_SLOT'
+						if (pickResult.slot.type !== 'hermit') return 'FAILURE_INVALID_SLOT'
+						if (!pickResult.card) return 'FAILURE_INVALID_SLOT'
 
-							game.changeActiveRow(opponentPlayer, rowIndex)
+						const row = opponentPlayer.board.rows[rowIndex]
+						if (!row.hermitCard) return 'FAILURE_INVALID_SLOT'
 
-							return 'SUCCESS'
-						},
-						onTimeout() {
-							const opponentInactiveRows = getNonEmptyRows(opponentPlayer, true, true)
+						game.changeActiveRow(opponentPlayer, rowIndex)
 
-							// Choose the first afk row
-							for (const inactiveRow of opponentInactiveRows) {
-								const {rowIndex} = inactiveRow
-								const canBeActive = rowIndex !== lastActiveRow
-								if (canBeActive) {
-									game.changeActiveRow(opponentPlayer, rowIndex)
-									break
-								}
+						return 'SUCCESS'
+					},
+					onTimeout() {
+						const opponentInactiveRows = getNonEmptyRows(opponentPlayer, true, true)
+
+						// Choose the first afk row
+						for (const inactiveRow of opponentInactiveRows) {
+							const {rowIndex} = inactiveRow
+							const canBeActive = rowIndex !== lastActiveRow
+							if (canBeActive) {
+								game.changeActiveRow(opponentPlayer, rowIndex)
+								break
 							}
-						},
-					})
-				}
-			})
-		},
-		onDetach(game: GameModel, pos: CardPosModel) {
-			const {player} = pos
+						}
+					},
+				})
+			}
+		})
+	}
 
-			player.hooks.afterAttack.remove(this)
-		},
+	onDetach(game: GameModel, pos: CardPosModel) {
+		const {player} = pos
+
+		player.hooks.afterAttack.remove(this)
 	}
 }
 

@@ -5,13 +5,13 @@ import {
 	HermitTypeT,
 	HermitAttackInfo,
 } from '../../types/cards'
-import { GameModel } from '../../models/game-model'
-import { CardPosModel } from '../../models/card-pos-model'
-import { TurnActions } from '../../types/game-state'
-import { FormattedTextNode } from '../../utils/formatting'
-import { HermitAttackType } from '../../types/attack'
-import { AttackModel } from '../../models/attack-model'
-import { AttachmentExpression } from './attachable'
+import {GameModel} from '../../models/game-model'
+import {CardPosModel} from '../../models/card-pos-model'
+import {TurnActions} from '../../types/game-state'
+import {FormattedTextNode} from '../../utils/formatting'
+import {HermitAttackType} from '../../types/attack'
+import {AttackModel} from '../../models/attack-model'
+import {AttachmentExpression} from './attachable'
 
 export abstract class Card<T extends {}> {
 	abstract props: T
@@ -57,7 +57,7 @@ export abstract class Card<T extends {}> {
 	}
 
 	implementsAttach(this: any): this is HasAttach {
-		return "onAttach" in this && "onDetach" in this
+		return 'onAttach' in this && 'onDetach' in this
 	}
 }
 
@@ -84,7 +84,7 @@ export interface CardProps {
 	//@TODO remove this and make mixin
 	log: ((values: PlayCardLog) => string) | null
 }
-export const isCardDefaults = { __card: undefined }
+export const isCardDefaults = {__card: undefined}
 
 export interface HermitDisplayInfo {
 	__hermit_display_info: undefined
@@ -93,20 +93,20 @@ export interface HermitDisplayInfo {
 	/* The shortened name for this card */
 	getShortName: () => string | null
 }
-export const hermitDisplayInfoDefaults = { __hermit_display_info: undefined }
+export const hermitDisplayInfoDefaults = {__hermit_display_info: undefined}
 
 export interface EffectDisplayInfo {
 	__effect_display_info: undefined
 }
-export const effectDisplayInfoDefaults = { __effect_display_info: undefined }
+export const effectDisplayInfoDefaults = {__effect_display_info: undefined}
 
-export interface ItemDisplayInfo { }
-export const itemDisplayInfoDefaults = { __item_display_info: undefined }
+export interface ItemDisplayInfo {}
+export const itemDisplayInfoDefaults = {__item_display_info: undefined}
 
 export interface SingleUseDisplayInfo {
 	__single_use_display_info: undefined
 }
-export const SingleUseDisplayInfo = { __single_use_display_info: undefined }
+export const SingleUseDisplayInfo = {__single_use_display_info: undefined}
 export function isSingleUseDisplayInfo(obj: any): obj is SingleUseDisplayInfo {
 	return '__single_use_display_info' in obj
 }
@@ -119,8 +119,8 @@ export const hasBattleLogDefaults = {
 	__has_battle_log: undefined,
 }
 
-export interface IsSingleUse { }
-export const isSingleUseDefaults = { __is_single_use: undefined }
+export interface IsSingleUse {}
+export const isSingleUseDefaults = {__is_single_use: undefined}
 
 export interface HasTurnActions {
 	__has_turn_actions: undefined
@@ -129,27 +129,31 @@ export interface HasTurnActions {
 	 */
 	getActions(game: GameModel): TurnActions
 }
-export const hasTurnActionsDefaults = { __has_turn_actions: undefined }
+export const hasTurnActionsDefaults = {__has_turn_actions: undefined}
 
 export interface HasAttach {
 	onAttach(game: GameModel, pos: CardPosModel): void
 	onDetach(game: GameModel, pos: CardPosModel): void
 }
 
-export interface GivesPointOnKnockout { }
-export const givesPointOnKnockoutDefaults = { __gives_point_on_knockout: undefined }
+export interface HasCustom {
+	custom: Record<string, any>
+}
+
+export interface GivesPointOnKnockout {}
+export const givesPointOnKnockoutDefaults = {__gives_point_on_knockout: undefined}
 
 export interface HasHermitType {
 	__has_hermit_type: undefined
 	hermitType: HermitTypeT
 }
-export const hasHermitTypeDefaults = { __has_hermit_type: undefined }
+export const hasHermitTypeDefaults = {__has_hermit_type: undefined}
 
 export interface HasHealth {
 	__has_health: undefined
 	health: number
 }
-export const hasHealthDefaults = { __has_health: undefined }
+export const hasHealthDefaults = {__has_health: undefined}
 
 export interface CanAttack {
 	__can_attack: undefined
@@ -172,7 +176,7 @@ export const canAttackDefaults = {
 	): AttackModel | null {
 		if (pos.rowIndex === null || !pos.row || !pos.row.hermitCard) return null
 
-		const { opponentPlayer: opponentPlayer } = game
+		const {opponentPlayer: opponentPlayer} = game
 		const targetIndex = opponentPlayer.board.activeRow
 		if (targetIndex === null) return null
 
@@ -195,7 +199,8 @@ export const canAttackDefaults = {
 			type: hermitAttackType,
 			createWeakness: 'ifWeak',
 			log: (values) =>
-				`${values.attacker} ${values.coinFlip ? values.coinFlip + ', then ' : ''} attacked ${values.target
+				`${values.attacker} ${values.coinFlip ? values.coinFlip + ', then ' : ''} attacked ${
+					values.target
 				} with ${values.attackName} for ${values.damage} damage`,
 		})
 
@@ -225,7 +230,7 @@ export interface HasDescription {
 	__has_description: undefined
 	description: string
 }
-export const hasDescriptionDefaults = { __has_description: undefined }
+export const hasDescriptionDefaults = {__has_description: undefined}
 
-export interface OverridesGetEnergy { }
-export const overridesGetEnergy = { __overrides_get_energy: undefined }
+export interface OverridesGetEnergy {}
+export const overridesGetEnergy = {__overrides_get_energy: undefined}

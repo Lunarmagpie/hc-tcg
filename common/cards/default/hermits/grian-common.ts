@@ -1,7 +1,8 @@
+import {Card} from '../../base/card'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 
-const GrianCommonHermitCard = (): HermitCard => {
-	return {
+class GrianCommonHermitCard extends Card<HermitCard> {
+	override props: HermitCard = {
 		...hermitCardDefaults,
 		id: 'grian_common',
 		numericId: 34,

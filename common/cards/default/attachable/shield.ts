@@ -1,9 +1,9 @@
-import { CardPosModel } from '../../../models/card-pos-model'
-import { GameModel } from '../../../models/game-model'
-import { isTargetingPos } from '../../../utils/attacks'
-import { discardCard } from '../../../utils/movement'
-import { AttachableCard, attachableCardDefaults } from '../../base/attachable-card'
-import { Card, HasAttach } from '../../base/card'
+import {CardPosModel} from '../../../models/card-pos-model'
+import {GameModel} from '../../../models/game-model'
+import {isTargetingPos} from '../../../utils/attacks'
+import {discardCard} from '../../../utils/movement'
+import {AttachableCard, attachableCardDefaults} from '../../base/attachable-card'
+import {Card, HasAttach} from '../../base/card'
 
 class ShieldEffectCard extends Card<AttachableCard> implements HasAttach {
 	override props: AttachableCard = {
@@ -17,7 +17,7 @@ class ShieldEffectCard extends Card<AttachableCard> implements HasAttach {
 		log: null,
 	}
 	onAttach(game: GameModel, pos: CardPosModel) {
-		const { player } = pos
+		const {player} = pos
 		let blockedAmount: number | null = null
 
 		// Note that we are using onDefence because we want to activate on any attack to us, not just from the opponent
@@ -36,7 +36,7 @@ class ShieldEffectCard extends Card<AttachableCard> implements HasAttach {
 		})
 
 		player.hooks.afterDefence.add(this, () => {
-			const { player, row } = pos
+			const {player, row} = pos
 
 			if (blockedAmount !== null && blockedAmount > 0 && row) {
 				discardCard(game, row.effectCard)
@@ -47,7 +47,7 @@ class ShieldEffectCard extends Card<AttachableCard> implements HasAttach {
 		})
 	}
 	onDetach(game: GameModel, pos: CardPosModel) {
-		const { player } = pos
+		const {player} = pos
 		player.hooks.onDefence.remove(this)
 		player.hooks.afterDefence.remove(this)
 	}

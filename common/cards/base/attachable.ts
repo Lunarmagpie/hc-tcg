@@ -5,13 +5,13 @@ export type AttachmentExpression = (game: GameModel, pos: CardPosModel) => boole
 
 export namespace attachableTo {
 	/*
-	* Return true if the card is attachable to all of the parameters.
-	*
-	* ```js
-	* every(player, hermit)
-	* ``` 
-	*
-	*/
+	 * Return true if the card is attachable to all of the parameters.
+	 *
+	 * ```js
+	 * every(player, hermit)
+	 * ```
+	 *
+	 */
 	export function every(...options: Array<AttachmentExpression>): AttachmentExpression {
 		return (game, pos) => {
 			return options.reduce((place, combinator) => place && combinator(game, pos), true)
@@ -19,13 +19,13 @@ export namespace attachableTo {
 	}
 
 	/*
-	* Return true if the card is attachable to any of the parameters.
-	*
-	* ```js
-	* every(opponent, some(effect, item))
-	* ``` 
-	*
-	*/
+	 * Return true if the card is attachable to any of the parameters.
+	 *
+	 * ```js
+	 * every(opponent, some(effect, item))
+	 * ```
+	 *
+	 */
 	export function some(...options: Array<AttachmentExpression>): AttachmentExpression {
 		return (game, pos) => {
 			return options.reduce((place, combinator) => place || combinator(game, pos), false)

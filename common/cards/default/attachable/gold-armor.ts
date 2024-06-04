@@ -1,8 +1,8 @@
-import { CardPosModel } from '../../../models/card-pos-model'
-import { GameModel } from '../../../models/game-model'
-import { isTargetingPos } from '../../../utils/attacks'
-import { AttachableCard, attachableCardDefaults } from '../../base/attachable-card'
-import { Card, HasAttach } from '../../base/card'
+import {CardPosModel} from '../../../models/card-pos-model'
+import {GameModel} from '../../../models/game-model'
+import {isTargetingPos} from '../../../utils/attacks'
+import {AttachableCard, attachableCardDefaults} from '../../base/attachable-card'
+import {Card, HasAttach} from '../../base/card'
 
 class GoldArmorEffectCard extends Card<AttachableCard> implements HasAttach {
 	props: AttachableCard = {
@@ -16,7 +16,7 @@ class GoldArmorEffectCard extends Card<AttachableCard> implements HasAttach {
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {
-		const { player, opponentPlayer } = pos
+		const {player, opponentPlayer} = pos
 		let counter = 0
 
 		player.hooks.onDefence.add(this, (attack) => {
@@ -31,7 +31,9 @@ class GoldArmorEffectCard extends Card<AttachableCard> implements HasAttach {
 			}
 		})
 
-		const resetCounter = () => { counter = 0 }
+		const resetCounter = () => {
+			counter = 0
+		}
 
 		// Reset counter at the start of every turn
 		player.hooks.onTurnStart.add(this, resetCounter)
@@ -39,7 +41,7 @@ class GoldArmorEffectCard extends Card<AttachableCard> implements HasAttach {
 	}
 
 	onDetach(game: GameModel, pos: CardPosModel) {
-		const { player, opponentPlayer } = pos
+		const {player, opponentPlayer} = pos
 		player.hooks.onDefence.remove(this)
 		player.hooks.onTurnStart.remove(this)
 		opponentPlayer.hooks.onTurnStart.remove(this)

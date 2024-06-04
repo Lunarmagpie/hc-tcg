@@ -8,7 +8,7 @@ import {PlayCardLog} from '../../../types/cards'
 import attachableTo from '../../base/attachable'
 
 class ArmorStandEffectCard extends Card<AttachableCard & HasHealth> implements HasAttach {
-	override props: AttachableCard & HasHealth =  {
+	override props: AttachableCard & HasHealth = {
 		...attachableCardDefaults,
 		...hasHealthDefaults,
 		health: 50,
@@ -90,7 +90,6 @@ class ArmorStandEffectCard extends Card<AttachableCard & HasHealth> implements H
 		player.hooks.canAttach.remove(this)
 		opponentPlayer.hooks.afterAttack.remove(this)
 	}
-
 }
 
 export default ArmorStandEffectCard

@@ -1,10 +1,10 @@
-import { CardPosModel } from '../../../models/card-pos-model'
-import { GameModel } from '../../../models/game-model'
-import { isTargetingPos } from '../../../utils/attacks'
-import { discardCard } from '../../../utils/movement'
-import { removeStatusEffect } from '../../../utils/board'
-import { AttachableCard, attachableCardDefaults } from '../../base/attachable-card'
-import { Card, HasAttach } from '../../base/card'
+import {CardPosModel} from '../../../models/card-pos-model'
+import {GameModel} from '../../../models/game-model'
+import {isTargetingPos} from '../../../utils/attacks'
+import {discardCard} from '../../../utils/movement'
+import {removeStatusEffect} from '../../../utils/board'
+import {AttachableCard, attachableCardDefaults} from '../../base/attachable-card'
+import {Card, HasAttach} from '../../base/card'
 
 class TotemEffectCard extends Card<AttachableCard> implements HasAttach {
 	override props: AttachableCard = {
@@ -20,18 +20,18 @@ class TotemEffectCard extends Card<AttachableCard> implements HasAttach {
 				type: 'glossary',
 				name: 'knockout',
 			},
-		]
+		],
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {
-		const { player, opponentPlayer } = pos
+		const {player, opponentPlayer} = pos
 
 		// If we are attacked from any source
 		// Add before any other hook so they can know a hermits health reliably
 		player.hooks.afterDefence.addBefore(this, (attack) => {
 			const target = attack.getTarget()
 			if (!isTargetingPos(attack, pos) || !target) return
-			const { row } = target
+			const {row} = target
 			if (row.health) return
 
 			row.health = 10
@@ -56,7 +56,7 @@ class TotemEffectCard extends Card<AttachableCard> implements HasAttach {
 		opponentPlayer.hooks.afterAttack.addBefore(this, (attack) => {
 			const target = attack.getTarget()
 			if (!isTargetingPos(attack, pos) || !target) return
-			const { row } = target
+			const {row} = target
 			if (row.health) return
 
 			row.health = 10
@@ -79,7 +79,6 @@ class TotemEffectCard extends Card<AttachableCard> implements HasAttach {
 		pos.player.hooks.afterDefence.remove(this)
 		pos.opponentPlayer.hooks.afterAttack.remove(this)
 	}
-
 }
 
 export default TotemEffectCard

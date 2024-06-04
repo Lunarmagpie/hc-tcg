@@ -11,7 +11,7 @@ import {
 	ItemDisplayInfo,
 	HasBattleLog,
 	hasBattleLogDefaults,
-  CardProps,
+	CardProps,
 } from './card'
 
 export type ItemCard = CardProps & HasHermitType & ItemDisplayInfo
