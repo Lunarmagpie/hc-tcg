@@ -37,16 +37,16 @@ export const hermitCardDefaults = {
 	expansion: 'default',
 	palette: 'default',
 	canBeAttachedTo: attachableTo.every(attachableTo.player, attachableTo.hermit),
-	getBackground(this: Card) {
-		return this.props.id.split('_')[0]
+	getBackground(this: HermitCard) {
+		return this.id.split('_')[0]
 	},
-	getShortName(this: Card) {
+	getShortName(this: HermitCard) {
 		return null
 	},
-	getDescription(this: Card & CanAttack) {
+	getDescription(this: HermitCard) {
 		return formatText(
-			(this.props.primary.power ? `**${this.primary.name}**\n*${this.primary.power}*` : '') +
-				(this.props.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
+			(this.primary.power ? `**${this.primary.name}**\n*${this.primary.power}*` : '') +
+				(this.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
 		)
 	},
 	log: (values: PlayCardLog) => `$p{You|${values.player}}$ placed $p${values.pos.name}$`,

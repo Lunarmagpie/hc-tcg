@@ -1,6 +1,6 @@
 import {GameModel} from '../models/game-model'
 import {PlayerState} from '../types/game-state'
-import {Card, implementsHasAttach} from '../cards/base/card'
+import {Card} from '../cards/base/card'
 import {CARDS} from '../cards'
 import {BasicCardPos, CardPosModel, getCardPos} from '../models/card-pos-model'
 import {SlotPos} from '../types/cards'
@@ -50,7 +50,7 @@ export function discardCard(
 	}
 
 	// Call `onDetach`
-	if (implementsHasAttach(card)) card.onDetach(game, pos)
+	if (card.implementsAttach()) card.onDetach(game, pos)
 	pos.player.hooks.onDetach.call(card)
 
 	// Remove the card

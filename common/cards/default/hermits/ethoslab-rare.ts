@@ -2,15 +2,13 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
 import {applyStatusEffect, getActiveRow} from '../../../utils/board'
-import {HasAttach} from '../../base/card'
+import {Card, HasAttach} from '../../base/card'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import FireStatusEffect from '../../../status-effects/fire'
-import {overridesAttachDefaults} from '../../base/card'
 
-const EthosLabRareHermitCard = (): HermitCard & HasAttach => {
-	return {
+class EthosLabRareHermitCard extends Card<HermitCard> implements HasAttach {
+	override props: HermitCard = {
 		...hermitCardDefaults,
-		...overridesAttachDefaults,
 		id: 'ethoslab_rare',
 		numericId: 20,
 		name: 'Etho',
@@ -29,37 +27,39 @@ const EthosLabRareHermitCard = (): HermitCard & HasAttach => {
 			damage: 80,
 			power: "Flip a coin.\nIf heads, burn your opponent's active Hermit.",
 		},
-		onAttach(game: GameModel, pos: CardPosModel) {
-			const {player, opponentPlayer} = pos
 
-			player.hooks.onAttack.add(this, (attack) => {
-				const attacker = attack.getAttacker()
-				const target = attack.getTarget()?.row.hermitCard
-				if (attack.getCreator() !== this || attack.type !== 'secondary' || !target || !attacker)
-					return
-
-				const coinFlip = flipCoin(player, attacker.row.hermitCard)
-
-				if (coinFlip[0] !== 'heads') return
-
-				const opponentActiveRow = getActiveRow(opponentPlayer)
-				if (!opponentActiveRow || !opponentActiveRow.hermitCard) return
-
-				applyStatusEffect(game, FireStatusEffect(target))
-			})
-		},
-
-		onDetach(game: GameModel, pos: CardPosModel) {
-			const {player} = pos
-			// Remove hooks
-			player.hooks.onAttack.remove(this)
-		},
 		sidebarDescriptions: [
 			{
 				type: 'statusEffect',
 				name: 'fire',
 			},
 		],
+	}
+
+	onAttach(game: GameModel, pos: CardPosModel) {
+		const {player, opponentPlayer} = pos
+
+		player.hooks.onAttack.add(this, (attack) => {
+			const attacker = attack.getAttacker()
+			const target = attack.getTarget()?.row.hermitCard
+			if (attack.getCreator() !== this || attack.type !== 'secondary' || !target || !attacker)
+				return
+
+			const coinFlip = flipCoin(player, attacker.row.hermitCard)
+
+			if (coinFlip[0] !== 'heads') return
+
+			const opponentActiveRow = getActiveRow(opponentPlayer)
+			if (!opponentActiveRow || !opponentActiveRow.hermitCard) return
+
+			applyStatusEffect(game, FireStatusEffect(target))
+		})
+	}
+
+	onDetach(game: GameModel, pos: CardPosModel) {
+		const {player} = pos
+		// Remove hooks
+		player.hooks.onAttack.remove(this)
 	}
 }
 

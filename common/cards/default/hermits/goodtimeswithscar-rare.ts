@@ -1,13 +1,11 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {HasAttach} from '../../base/card'
-import {overridesAttachDefaults} from '../../base/card'
+import {Card, HasAttach} from '../../base/card'
 
-const GoodTimesWithScarRareHermitCard = (): HermitCard & HasAttach => {
-	return {
+class GoodTimesWithScarRareHermitCard extends Card<HermitCard> implements HasAttach {
+	override props: HermitCard = {
 		...hermitCardDefaults,
-		...overridesAttachDefaults,
 		id: 'goodtimeswithscar_rare',
 		numericId: 33,
 		name: 'Scar',
@@ -27,8 +25,15 @@ const GoodTimesWithScarRareHermitCard = (): HermitCard & HasAttach => {
 			power:
 				'If this Hermit is knocked out before the start of your next turn, they are revived with 50hp.\nDoes not count as a knockout. This Hermit can only be revived once using this ability.',
 		},
-		onAttach(game: GameModel, pos: CardPosModel) {
-			/**
+		sidebarDescriptions: [
+			{
+				type: 'glossary',
+				name: 'knockout',
+			},
+		],
+	}
+	onAttach(game: GameModel, pos: CardPosModel) {
+		/**
 			const {player, opponentPlayer} = pos
 
 			const canRevives: {[key: string]: boolean} = (player.custom[this.getKey('reviveNextTurn')] ||=
@@ -84,9 +89,9 @@ const GoodTimesWithScarRareHermitCard = (): HermitCard & HasAttach => {
 				delete canRevives[targetInstance]
 			})
 			*/
-		},
-		onDetach(game: GameModel, pos: CardPosModel) {
-			/**
+	}
+	onDetach(game: GameModel, pos: CardPosModel) {
+		/**
 			const {player, opponentPlayer} = pos
 			const canRevives = player.custom[this.getKey('reviveNextTurn')]
 			const canCleanUp = () => !Object.keys(canRevives).length
@@ -119,13 +124,6 @@ const GoodTimesWithScarRareHermitCard = (): HermitCard & HasAttach => {
 				})
 			}
 			*/
-		},
-		sidebarDescriptions: [
-			{
-				type: 'glossary',
-				name: 'knockout',
-			},
-		],
 	}
 }
 
