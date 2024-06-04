@@ -13,7 +13,7 @@ import MilkBucketEffectCard from './milk-bucket'
 import { AttachableCard } from '../../base/attachable-card'
 import { Card } from '../../base/card'
 
-const effectCardClasses: Array<typeof Card<any> = [
+const effectCardClasses: Array<typeof Card<any>> = [
 	BedEffectCard,
 	WolfEffectCard,
 	GoldArmorEffectCard,

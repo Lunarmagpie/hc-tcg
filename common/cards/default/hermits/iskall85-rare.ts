@@ -1,8 +1,8 @@
-import { CardPosModel } from '../../../models/card-pos-model'
-import { GameModel } from '../../../models/game-model'
-import { CardCategoryT, CardRarityT, EnergyT, HermitTypeT } from '../../../types/cards'
-import { HasAttach, Card } from '../../base/card'
-import { HermitCard, hermitCardDefaults } from '../../base/hermit-card'
+import {CardPosModel} from '../../../models/card-pos-model'
+import {GameModel} from '../../../models/game-model'
+import {CardCategoryT, CardRarityT, EnergyT, HermitTypeT} from '../../../types/cards'
+import {HasAttach, Card} from '../../base/card'
+import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 
 class Iskall85RareHermitCard extends Card<HermitCard> implements HasAttach {
 	override props: HermitCard = {
@@ -25,11 +25,11 @@ class Iskall85RareHermitCard extends Card<HermitCard> implements HasAttach {
 			cost: ['farm', 'farm'],
 			damage: 80,
 			power: 'Attack damage doubles versus Builder types.',
-		}
+		},
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {
-		const { player } = pos
+		const {player} = pos
 
 		player.hooks.beforeAttack.add(this, (attack) => {
 			const target = attack.getTarget()
@@ -41,7 +41,7 @@ class Iskall85RareHermitCard extends Card<HermitCard> implements HasAttach {
 	}
 
 	onDetach(game: GameModel, pos: CardPosModel) {
-		const { player } = pos
+		const {player} = pos
 		player.hooks.beforeAttack.remove(this)
 	}
 }
