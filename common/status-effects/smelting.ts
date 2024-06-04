@@ -1,42 +1,44 @@
-import StatusEffect, {statusEffectDefaults} from './status-effect'
+import {HasDuration, StatusEffect} from './status-effect'
 import {GameModel} from '../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../models/card-pos-model'
 import {discardCard} from '../utils/movement'
 import {Card} from '../cards/base/card'
 
-const SmeltingStatusEffect = (target: Card): StatusEffect => {
-	return {
-		...statusEffectDefaults,
-		id: 'smelting',
-		name: 'Smelting',
-		description:
-			'When the counter reaches 0, upgrades all item cards attached to this Hermit to double items',
-		duration: 4,
-		counter: true,
-		damageEffect: false,
-		target: target,
-		onApply(game: GameModel, pos: CardPosModel) {
-			game.state.statusEffects.push(this)
-			const {player} = pos
+class SmeltingStatusEffect extends StatusEffect implements HasDuration {
 
-			player.hooks.onTurnStart.add(this, () => {
-				if (this.duration === undefined) return
-				this.duration -= 1
-				if (this.duration === 0) {
-					discardCard(game, pos.card)
-					pos.row?.itemCards.forEach((card) => {
-						if (!card) return
-						card.id = card.id.replace('common', 'rare')
-					})
-				}
-			})
-		},
+	constructor(target: Card) {
+		super({
+			id: 'smelting',
+			name: 'Smelting',
+			description:
+				'When the counter reaches 0, upgrades all item cards attached to this Hermit to double items',
+			damageEffect: false,
+			target: target,
+		})
+	}
+	duration = 3
 
-		onRemoval(game: GameModel, pos: CardPosModel) {
-			const {player} = pos
+	override onApply(game: GameModel, pos: CardPosModel) {
+		game.state.statusEffects.push(this)
+		const {player} = pos
 
-			player.hooks.onTurnStart.remove(this)
-		},
+		player.hooks.onTurnStart.add(this, () => {
+			if (this.duration === undefined) return
+			this.duration -= 1
+			if (this.duration === 0) {
+				discardCard(game, pos.card)
+				pos.row?.itemCards.forEach((card) => {
+					if (!card) return
+					card.props.id = card.props.id.replace('common', 'rare')
+				})
+			}
+		})
+	}
+
+	override onRemoval(game: GameModel, pos: CardPosModel) {
+		const {player} = pos
+
+		player.hooks.onTurnStart.remove(this)
 	}
 }
 
