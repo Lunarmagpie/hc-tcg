@@ -1,4 +1,4 @@
-import {GameModel} from '../../models/game-model'
+import { GameModel } from '../../models/game-model'
 import {
 	Card,
 	HasHermitType,
@@ -12,11 +12,11 @@ import {
 	givesPointOnKnockoutDefaults,
 	hasHealthDefaults,
 	CanAttack,
-    CardProps,
+	CardProps,
 } from './card'
-import {CardCategoryT, PlayCardLog} from '../../types/cards'
-import {TurnActions} from '../../types/game-state'
-import {formatText} from '../../utils/formatting'
+import { CardCategoryT, PlayCardLog } from '../../types/cards'
+import { TurnActions } from '../../types/game-state'
+import { formatText } from '../../utils/formatting'
 import attachableTo from './attachable'
 
 export type HermitCard = CardProps &
@@ -38,15 +38,15 @@ export const hermitCardDefaults = {
 	palette: 'default',
 	canBeAttachedTo: attachableTo.every(attachableTo.player, attachableTo.hermit),
 	getBackground(this: Card) {
-		return this.id.split('_')[0]
+		return this.props.id.split('_')[0]
 	},
 	getShortName(this: Card) {
 		return null
 	},
 	getDescription(this: Card & CanAttack) {
 		return formatText(
-			(this.primary.power ? `**${this.primary.name}**\n*${this.primary.power}*` : '') +
-				(this.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
+			(this.props.primary.power ? `**${this.primary.name}**\n*${this.primary.power}*` : '') +
+			(this.props.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
 		)
 	},
 	log: (values: PlayCardLog) => `$p{You|${values.player}}$ placed $p${values.pos.name}$`,
@@ -54,7 +54,7 @@ export const hermitCardDefaults = {
 }
 
 function getActions(game: GameModel): TurnActions {
-	const {currentPlayer} = game
+	const { currentPlayer } = game
 
 	// Is there a hermit slot free on the board
 	const spaceForHermit = currentPlayer.board.rows.some((row) => !row.hermitCard)

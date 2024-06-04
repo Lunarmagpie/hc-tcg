@@ -136,6 +136,10 @@ export interface HasAttach {
 	onDetach(game: GameModel, pos: CardPosModel): void
 }
 
+export interface HasCustom {
+	custom: Record<string, any>
+}
+
 export interface GivesPointOnKnockout { }
 export const givesPointOnKnockoutDefaults = { __gives_point_on_knockout: undefined }
 
