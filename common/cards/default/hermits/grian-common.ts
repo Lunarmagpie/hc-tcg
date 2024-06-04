@@ -1,5 +1,5 @@
-import { Card } from '../../base/card'
-import { HermitCard, hermitCardDefaults } from '../../base/hermit-card'
+import {Card} from '../../base/card'
+import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 
 class GrianCommonHermitCard extends Card<HermitCard> {
 	override props: HermitCard = {

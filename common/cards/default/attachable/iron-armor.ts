@@ -1,9 +1,9 @@
-import { CardPosModel } from '../../../models/card-pos-model'
-import { GameModel } from '../../../models/game-model'
-import { isTargetingPos } from '../../../utils/attacks'
-import { canAttachToSlot } from '../../../utils/movement'
-import { AttachableCard, attachableCardDefaults } from '../../base/attachable-card'
-import { Card, HasAttach } from '../../base/card'
+import {CardPosModel} from '../../../models/card-pos-model'
+import {GameModel} from '../../../models/game-model'
+import {isTargetingPos} from '../../../utils/attacks'
+import {canAttachToSlot} from '../../../utils/movement'
+import {AttachableCard, attachableCardDefaults} from '../../base/attachable-card'
+import {Card, HasAttach} from '../../base/card'
 
 class IronArmorEffectCard extends Card<AttachableCard> implements HasAttach {
 	override props: AttachableCard = {
@@ -18,9 +18,8 @@ class IronArmorEffectCard extends Card<AttachableCard> implements HasAttach {
 
 	private totalReduction = 0
 
-
 	onAttach(game: GameModel, pos: CardPosModel) {
-		const { player, opponentPlayer } = pos
+		const {player, opponentPlayer} = pos
 
 		player.hooks.onDefence.add(this, (attack) => {
 			if (!isTargetingPos(attack, pos) || attack.isType('status-effect')) return
@@ -42,7 +41,7 @@ class IronArmorEffectCard extends Card<AttachableCard> implements HasAttach {
 	}
 
 	onDetach(game: GameModel, pos: CardPosModel) {
-		const { player, opponentPlayer } = pos
+		const {player, opponentPlayer} = pos
 		player.hooks.onDefence.remove(this)
 		player.hooks.onTurnStart.remove(this)
 		opponentPlayer.hooks.onTurnStart.remove(this)

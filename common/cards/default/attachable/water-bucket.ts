@@ -1,11 +1,11 @@
-import { CardPosModel } from '../../../models/card-pos-model'
-import { GameModel } from '../../../models/game-model'
-import { TurnActions } from '../../../types/game-state'
-import { discardCard } from '../../../utils/movement'
-import { AttachableCard, attachableCardDefaults } from '../../base/attachable-card'
-import { CARDS } from '../..'
-import { applySingleUse, removeStatusEffect } from '../../../utils/board'
-import { Card, HasAttach } from '../../base/card'
+import {CardPosModel} from '../../../models/card-pos-model'
+import {GameModel} from '../../../models/game-model'
+import {TurnActions} from '../../../types/game-state'
+import {discardCard} from '../../../utils/movement'
+import {AttachableCard, attachableCardDefaults} from '../../base/attachable-card'
+import {CARDS} from '../..'
+import {applySingleUse, removeStatusEffect} from '../../../utils/board'
+import {Card, HasAttach} from '../../base/card'
 import attachableTo from '../../base/attachable'
 
 class WaterBucketEffectCard extends Card<AttachableCard> implements HasAttach {
@@ -26,7 +26,7 @@ class WaterBucketEffectCard extends Card<AttachableCard> implements HasAttach {
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {
-		const { player, opponentPlayer, slot, row } = pos
+		const {player, opponentPlayer, slot, row} = pos
 		if (slot.type === 'single_use') {
 			game.addPickRequest({
 				playerId: player.id,
@@ -94,13 +94,13 @@ class WaterBucketEffectCard extends Card<AttachableCard> implements HasAttach {
 	}
 
 	onDetach(game: GameModel, pos: CardPosModel) {
-		const { player, opponentPlayer } = pos
+		const {player, opponentPlayer} = pos
 		opponentPlayer.hooks.afterApply.remove(instance)
 		player.hooks.onDefence.remove(instance)
 	}
 
 	override canAttach(game: GameModel, pos: CardPosModel) {
-		const { currentPlayer } = game
+		const {currentPlayer} = game
 		const result: CanAttachResult = []
 
 		if (!['single_use', 'effect'].includes(pos.slot.type)) result.push('INVALID_SLOT')
@@ -114,7 +114,7 @@ class WaterBucketEffectCard extends Card<AttachableCard> implements HasAttach {
 
 	// Allows placing in effect or single use slot
 	public getActions(game: GameModel): TurnActions {
-		const { currentPlayer } = game
+		const {currentPlayer} = game
 
 		// Is there is a hermit on the board with space for an effect card
 		const spaceForEffect = currentPlayer.board.rows.some((row) => {

@@ -12,7 +12,7 @@ import ShadEECommonHermitCard from './shadee-common'
 import SpookyStressCommonHermitCard from '../../alter-egos-ii/hermits/spookystress-common'
 import SteampunkTangoCommonHermitCard from '../../alter-egos-ii/hermits/steampunktango-common'
 import WormManCommonHermitCard from '../../alter-egos-ii/hermits/wormman-common'
-import { HermitCard } from '../../base/hermit-card'
+import {HermitCard} from '../../base/hermit-card'
 
 const hermitCardClasses: Array<HermitCard> = [
 	ArchitectFalseCommonHermitCard,

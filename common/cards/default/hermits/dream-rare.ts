@@ -1,7 +1,7 @@
 import {Card} from '../../base/card'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 
-class DreamRareHermitCard extends Card<HermitCard>  {
+class DreamRareHermitCard extends Card<HermitCard> {
 	override props: HermitCard = {
 		...hermitCardDefaults,
 		id: 'dream_rare',

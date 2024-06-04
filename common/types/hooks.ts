@@ -26,9 +26,7 @@ export class Hook<T extends (...args: any) => any> {
 	 * Calls all the added listeners. Returns an array of the results
 	 */
 	public call(...params: Parameters<T>) {
-		return this.listeners.map(
-			([_, listener]) => listener(...(params as Array<any>))
-		)
+		return this.listeners.map(([_, listener]) => listener(...(params as Array<any>)))
 	}
 }
 
@@ -55,12 +53,9 @@ export class GameHook<T extends (...args: any) => any> extends Hook<T> {
  */
 export class WaterfallHook<T extends (...args: any) => Parameters<T>[0]> extends Hook<T> {
 	public override call(...params: Parameters<T>): Parameters<T>[0] {
-		return this.listeners.reduce(
-			(params, [_, listener]) => {
-				params[0] = listener(...(params as Array<any>))
-				return params
-			},
-			params,
-		)[0]
+		return this.listeners.reduce((params, [_, listener]) => {
+			params[0] = listener(...(params as Array<any>))
+			return params
+		}, params)[0]
 	}
 }

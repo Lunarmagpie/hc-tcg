@@ -1,4 +1,4 @@
-import { PlayCardLog, CardRarityT, CardCategoryT } from '../../types/cards'
+import {PlayCardLog, CardRarityT, CardCategoryT} from '../../types/cards'
 import {
 	AllowAttacks,
 	EffectDisplayInfo,
@@ -9,10 +9,10 @@ import {
 	hasDescriptionDefaults,
 	CardProps,
 } from './card'
-import { GameModel } from '../../models/game-model'
-import { CardPosModel } from '../../models/card-pos-model'
-import { TurnActions } from '../../types/game-state'
-import { FormattedTextNode, formatText } from '../../utils/formatting'
+import {GameModel} from '../../models/game-model'
+import {CardPosModel} from '../../models/card-pos-model'
+import {TurnActions} from '../../types/game-state'
+import {FormattedTextNode, formatText} from '../../utils/formatting'
 import attachableTo from './attachable'
 
 export type SingleUseCard = CardProps & EffectDisplayInfo & HasDescription & HasAttach

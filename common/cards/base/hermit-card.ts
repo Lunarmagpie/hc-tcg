@@ -1,4 +1,4 @@
-import { GameModel } from '../../models/game-model'
+import {GameModel} from '../../models/game-model'
 import {
 	Card,
 	HasHermitType,
@@ -14,9 +14,9 @@ import {
 	CanAttack,
 	CardProps,
 } from './card'
-import { CardCategoryT, PlayCardLog } from '../../types/cards'
-import { TurnActions } from '../../types/game-state'
-import { formatText } from '../../utils/formatting'
+import {CardCategoryT, PlayCardLog} from '../../types/cards'
+import {TurnActions} from '../../types/game-state'
+import {formatText} from '../../utils/formatting'
 import attachableTo from './attachable'
 
 export type HermitCard = CardProps &
@@ -46,7 +46,7 @@ export const hermitCardDefaults = {
 	getDescription(this: Card & CanAttack) {
 		return formatText(
 			(this.props.primary.power ? `**${this.primary.name}**\n*${this.primary.power}*` : '') +
-			(this.props.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
+				(this.props.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
 		)
 	},
 	log: (values: PlayCardLog) => `$p{You|${values.player}}$ placed $p${values.pos.name}$`,
@@ -54,7 +54,7 @@ export const hermitCardDefaults = {
 }
 
 function getActions(game: GameModel): TurnActions {
-	const { currentPlayer } = game
+	const {currentPlayer} = game
 
 	// Is there a hermit slot free on the board
 	const spaceForHermit = currentPlayer.board.rows.some((row) => !row.hermitCard)

@@ -11,7 +11,7 @@ import FireChargeSingleUseCard from './fire-charge'
 import PistonSingleUseCard from './piston'
 import SplashPotionOfHealingIISingleUseCard from './splash-potion-of-healing-ii'
 import TargetBlockSingleUseCard from './target-block'
-import { SingleUseCard } from '../../base/single-use-card'
+import {SingleUseCard} from '../../base/single-use-card'
 
 const singleUseCardClasses: Array<SingleUseCard> = [
 	// AE Cards

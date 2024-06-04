@@ -2,18 +2,18 @@ import {AttackModel} from '../../../models/attack-model'
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {moveCardToHand} from '../../../utils/movement'
-import { AttachableCard, attachableCardDefaults } from '../../base/attachable-card'
-import { Card, HasAttach } from '../../base/card'
+import {AttachableCard, attachableCardDefaults} from '../../base/attachable-card'
+import {Card, HasAttach} from '../../base/card'
 
 class LoyaltyEffectCard extends Card<AttachableCard> implements HasAttach {
 	override props: AttachableCard = {
-			...attachableCardDefaults,
-			id: 'loyalty',
-			numericId: 77,
-			name: 'Loyalty',
-			rarity: 'rare',
-			description:
-				'When the Hermit that this card is attached to is knocked out, all attached item cards are returned to your hand.',
+		...attachableCardDefaults,
+		id: 'loyalty',
+		numericId: 77,
+		name: 'Loyalty',
+		rarity: 'rare',
+		description:
+			'When the Hermit that this card is attached to is knocked out, all attached item cards are returned to your hand.',
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {

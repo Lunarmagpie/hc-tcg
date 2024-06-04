@@ -1,9 +1,9 @@
-import { AttackModel } from '../../../models/attack-model'
-import { CardPosModel, getCardPos } from '../../../models/card-pos-model'
-import { GameModel } from '../../../models/game-model'
-import { isTargetingPos } from '../../../utils/attacks'
-import { AttachableCard, attachableCardDefaults } from '../../base/attachable-card'
-import { Card, HasAttach } from '../../base/card'
+import {AttackModel} from '../../../models/attack-model'
+import {CardPosModel, getCardPos} from '../../../models/card-pos-model'
+import {GameModel} from '../../../models/game-model'
+import {isTargetingPos} from '../../../utils/attacks'
+import {AttachableCard, attachableCardDefaults} from '../../base/attachable-card'
+import {Card, HasAttach} from '../../base/card'
 
 class ThornsEffectCard extends Card<AttachableCard> implements HasAttach {
 	override props: AttachableCard = {
@@ -16,10 +16,10 @@ class ThornsEffectCard extends Card<AttachableCard> implements HasAttach {
 			"When the Hermit this card is attached to takes damage, your opponent's active Hermit takes 20hp damage.\nIgnores armour.",
 	}
 
-	private triggered = false;
+	private triggered = false
 
 	onAttach(game: GameModel, pos: CardPosModel) {
-		const { player, opponentPlayer } = pos
+		const {player, opponentPlayer} = pos
 
 		// Only when the opponent attacks us
 		opponentPlayer.hooks.afterAttack.add(this, (attack) => {
@@ -43,7 +43,9 @@ class ThornsEffectCard extends Card<AttachableCard> implements HasAttach {
 				}).addDamage(this.props.id, 20)
 
 				backlashAttack.shouldIgnoreCards.push((target) => {
-					return ['gold_armor', 'iron_armor', 'diamond_armor', 'netherite_armor'].includes(target.props.id)
+					return ['gold_armor', 'iron_armor', 'diamond_armor', 'netherite_armor'].includes(
+						target.props.id
+					)
 				})
 
 				attack.addNewAttack(backlashAttack)
@@ -53,12 +55,12 @@ class ThornsEffectCard extends Card<AttachableCard> implements HasAttach {
 		})
 
 		opponentPlayer.hooks.onTurnEnd.add(this, () => {
-			this.triggered = false;
+			this.triggered = false
 		})
 	}
 
 	onDetach(game: GameModel, pos: CardPosModel) {
-		const { player, opponentPlayer } = pos
+		const {player, opponentPlayer} = pos
 		opponentPlayer.hooks.afterAttack.remove(this)
 		opponentPlayer.hooks.onTurnEnd.remove(this)
 	}

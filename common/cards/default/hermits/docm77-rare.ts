@@ -4,7 +4,7 @@ import {flipCoin} from '../../../utils/coinFlips'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {HasAttach, Card} from '../../base/card'
 
-class Docm77RareHermitCard extends Card<HermitCard> implements  HasAttach {
+class Docm77RareHermitCard extends Card<HermitCard> implements HasAttach {
 	override props: HermitCard = {
 		...hermitCardDefaults,
 		id: 'docm77_rare',
@@ -24,13 +24,13 @@ class Docm77RareHermitCard extends Card<HermitCard> implements  HasAttach {
 			cost: ['farm', 'farm'],
 			damage: 80,
 			power: 'Flip a Coin.\nIf heads, attack damage doubles.\nIf tails, attack damage is halved.',
-		}
+		},
 	}
-		
-	onAttach(game: GameModel, pos: CardPosModel) {
-			const {player} = pos
 
-			player.hooks.onAttack.add(this, (attack) => {
+	onAttach(game: GameModel, pos: CardPosModel) {
+		const {player} = pos
+
+		player.hooks.onAttack.add(this, (attack) => {
 			const attacker = attack.getAttacker()
 			if (attack.getCreator() !== this || attack.type !== 'secondary' || !attacker) return
 
@@ -45,9 +45,8 @@ class Docm77RareHermitCard extends Card<HermitCard> implements  HasAttach {
 	}
 
 	onDetach(game: GameModel, pos: CardPosModel) {
-			pos.player.hooks.onAttack.remove(this)
+		pos.player.hooks.onAttack.remove(this)
 	}
-
 }
 
 export default Docm77RareHermitCard

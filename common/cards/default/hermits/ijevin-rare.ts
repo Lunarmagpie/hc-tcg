@@ -1,8 +1,8 @@
-import { CardPosModel } from '../../../models/card-pos-model'
-import { GameModel } from '../../../models/game-model'
-import { getNonEmptyRows } from '../../../utils/board'
-import { HermitCard, hermitCardDefaults } from '../../base/hermit-card'
-import { HasAttach, Card } from '../../base/card'
+import {CardPosModel} from '../../../models/card-pos-model'
+import {GameModel} from '../../../models/game-model'
+import {getNonEmptyRows} from '../../../utils/board'
+import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
+import {HasAttach, Card} from '../../base/card'
 
 class IJevinRareHermitCard extends Card<HermitCard> implements HasAttach {
 	override props: HermitCard = {
@@ -29,7 +29,7 @@ class IJevinRareHermitCard extends Card<HermitCard> implements HasAttach {
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {
-		const { player, opponentPlayer } = pos
+		const {player, opponentPlayer} = pos
 
 		player.hooks.afterAttack.add(this, (attack) => {
 			if (attack.type !== 'secondary' || !attack.getTarget()) return
@@ -64,7 +64,7 @@ class IJevinRareHermitCard extends Card<HermitCard> implements HasAttach {
 
 						// Choose the first afk row
 						for (const inactiveRow of opponentInactiveRows) {
-							const { rowIndex } = inactiveRow
+							const {rowIndex} = inactiveRow
 							const canBeActive = rowIndex !== lastActiveRow
 							if (canBeActive) {
 								game.changeActiveRow(opponentPlayer, rowIndex)
@@ -78,7 +78,7 @@ class IJevinRareHermitCard extends Card<HermitCard> implements HasAttach {
 	}
 
 	onDetach(game: GameModel, pos: CardPosModel) {
-		const { player } = pos
+		const {player} = pos
 
 		player.hooks.afterAttack.remove(this)
 	}

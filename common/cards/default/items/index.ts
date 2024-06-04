@@ -18,7 +18,7 @@ import TerraformCommonItemCard from './terraform-common'
 import TerraformRareItemCard from './terraform-rare'
 import MinerCommonItemCard from './miner-common'
 import MinerRareItemCard from './miner-rare'
-import { ItemCard } from '../../base/item-card'
+import {ItemCard} from '../../base/item-card'
 
 const itemCardClasses: Array<ItemCard> = [
 	BuilderCommonItemCard,

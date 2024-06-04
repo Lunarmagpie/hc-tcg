@@ -37,7 +37,7 @@ class GrianRareHermitCard extends Card<HermitCard> implements HasAttach {
 			cost: ['prankster', 'prankster', 'prankster'],
 			damage: 100,
 			power: null,
-		}
+		},
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {
@@ -97,16 +97,12 @@ class GrianRareHermitCard extends Card<HermitCard> implements HasAttach {
 						discardCard(game, row.effectCard)
 
 						// Move their effect card over
-						const opponentEffectSlot = getSlotPos(
-							opponentPlayer,
-							opponentRowPos.rowIndex,
-							'effect'
-						)
+						const opponentEffectSlot = getSlotPos(opponentPlayer, opponentRowPos.rowIndex, 'effect')
 						swapSlots(game, effectSlot, opponentEffectSlot)
 
 						const newPos = getCardPos(game, opponentEffectCard)
 
-				if (newPos) {
+						if (newPos) {
 							// Call onAttach
 							if (!opponentEffectCard.implementsAttach()) return 'FAILURE_INVALID_DATA'
 							opponentEffectCard.onAttach(game, newPos)

@@ -6,7 +6,7 @@ import {
 	effectDisplayInfoDefaults,
 	hasDescriptionDefaults,
 	isCardDefaults,
-  CardProps,
+	CardProps,
 } from './card'
 import attachableTo from './attachable'
 import {CARDS} from '..'
@@ -22,7 +22,8 @@ export const attachableCardDefaults = {
 	...isCardDefaults,
 	...effectDisplayInfoDefaults,
 	...hasDescriptionDefaults,
-	log: (values: PlayCardLog) => `$p{You|${values.player}}$ attached $e${values.pos.name}$ to $p${values.pos.hermitCard}$`,
+	log: (values: PlayCardLog) =>
+		`$p{You|${values.player}}$ attached $e${values.pos.name}$ to $p${values.pos.hermitCard}$`,
 	canBeAttachedTo: attachableTo.every(attachableTo.player, attachableTo.effect),
 	category: 'attachable' as CardCategoryT,
 	expansion: 'default',

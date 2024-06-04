@@ -1,10 +1,10 @@
-import { AttackModel } from '../../../models/attack-model'
-import { CardPosModel } from '../../../models/card-pos-model'
-import { GameModel } from '../../../models/game-model'
-import { getActiveRowPos, getRowPos } from '../../../utils/board'
+import {AttackModel} from '../../../models/attack-model'
+import {CardPosModel} from '../../../models/card-pos-model'
+import {GameModel} from '../../../models/game-model'
+import {getActiveRowPos, getRowPos} from '../../../utils/board'
 import attachableTo from '../../base/attachable'
-import { AttachableCard, attachableCardDefaults } from '../../base/attachable-card'
-import { Card, HasAttach } from '../../base/card'
+import {AttachableCard, attachableCardDefaults} from '../../base/attachable-card'
+import {Card, HasAttach} from '../../base/card'
 
 class WolfEffectCard extends Card<AttachableCard> implements HasAttach {
 	override props: AttachableCard = {
@@ -15,11 +15,15 @@ class WolfEffectCard extends Card<AttachableCard> implements HasAttach {
 		rarity: 'rare',
 		description:
 			"Attach to your active Hermit.\nIf any of your Hermits take damage on your opponent's turn, your opponent's active Hermit takes 20hp damage for each Wolf card you have on the game board.",
-		canBeAttachedTo: attachableTo.every(attachableTo.player, attachableTo.effect, attachableTo.activeRow),
+		canBeAttachedTo: attachableTo.every(
+			attachableTo.player,
+			attachableTo.effect,
+			attachableTo.activeRow
+		),
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {
-		const { player, opponentPlayer } = pos
+		const {player, opponentPlayer} = pos
 		let activated = false
 
 		opponentPlayer.hooks.onTurnStart.add(this, () => {
@@ -60,7 +64,7 @@ class WolfEffectCard extends Card<AttachableCard> implements HasAttach {
 		})
 	}
 	onDetach(game: GameModel, pos: CardPosModel) {
-		const { player, opponentPlayer } = pos
+		const {player, opponentPlayer} = pos
 
 		// Delete hooks and custom
 		opponentPlayer.hooks.onTurnStart.remove(this)
