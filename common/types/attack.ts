@@ -12,7 +12,7 @@ export type AttackDefence = {
 	damageReduction: number
 }
 
-export type ShouldIgnoreCard = (instance: Card<any>) => boolean
+export type ShouldIgnoreCard = (instance: Card) => boolean
 
 export type AttackLog = {
 	/**The default log for attacks.*/
@@ -34,7 +34,7 @@ export type AttackLog = {
 }
 
 export type AttackDefs = {
-	creator: Card<any> | StatusEffect
+	creator: Card | StatusEffect
 	attacker?: RowPos | null
 	target?: RowPos | null
 	type: AttackType

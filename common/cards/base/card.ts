@@ -13,50 +13,50 @@ import {HermitAttackType} from '../../types/attack'
 import {AttackModel} from '../../models/attack-model'
 import {AttachmentExpression} from './attachable'
 
-export abstract class Card<T extends {}> {
+export abstract class Card<T extends CardProps = CardProps> {
 	abstract props: T
 
-	implementsHermitDisplayInfo(this: any): this is HermitDisplayInfo {
-		return '__hermit_display_info' in this
+	implementsHermitDisplayInfo(this: any): this is Card<T & HermitDisplayInfo> {
+		return '__hermit_display_info' in this.props
 	}
-	implementsEffectDisplayInfo(this: any): this is EffectDisplayInfo {
-		return '__effect_display_info' in this
+	implementsEffectDisplayInfo(this: any): this is Card<T & EffectDisplayInfo> {
+		return '__effect_display_info' in this.props
 	}
-	implementsItemDisplayInfo(this: any): this is ItemDisplayInfo {
-		return '__item_display_info' in this
+	implementsItemDisplayInfo(this: any): this is Card<T & ItemDisplayInfo> {
+		return '__item_display_info' in this.props
 	}
-	implementsIsSingleUse(this: any): this is IsSingleUse {
-		return '__is_single_use' in this
+	implementsIsSingleUse(this: any): this is Card<T & IsSingleUse> {
+		return '__is_single_use' in this.props
 	}
-	implementsHasBattleLog(this: any): this is HasBattleLog {
-		return '__has_battle_log' in this
+	implementsHasBattleLog(this: any): this is Card<T & HasBattleLog> {
+		return '__has_battle_log' in this.props
 	}
-	implementsHasTurnActions(this: any): this is HasTurnActions {
-		return '__has_turn_actions' in this
+	implementsHasTurnActions(this: any): this is Card<T & HasTurnActions> {
+		return '__has_turn_actions' in this.props
 	}
-	implementsGivesPointOnKnockout(this: any): this is GivesPointOnKnockout {
-		return '__gives_point_on_knockout' in this
+	implementsGivesPointOnKnockout(this: any): this is Card<T & GivesPointOnKnockout> {
+		return '__gives_point_on_knockout' in this.props
 	}
-	implementsHasHermitType(this: any): this is HasHermitType {
-		return '__has_hermit_type' in this
+	implementsHasHermitType(this: any): this is Card<T & HasHermitType> {
+		return '__has_hermit_type' in this.props
 	}
-	implementsHasHealth(this: any): this is HasHealth {
-		return '__has_health' in this
+	implementsHasHealth(this: any): this is Card<T & HasHealth> {
+		return '__has_health' in this.props
 	}
-	implementsCanAttack(this: any): this is CanAttack {
-		return '__can_attack' in this
+	implementsCanAttack(this: any): this is Card<T & CanAttack> {
+		return '__can_attack' in this.props
 	}
-	implementsUseAttackDefaults(this: any): this is CanAttack {
-		return '__single_use_attack' in this
+	implementsUseAttackDefaults(this: any): this is Card<T & CanAttack> {
+		return '__single_use_attack' in this.props
 	}
-	implementsHasDescription(this: any): this is HasDescription {
-		return '__has_description' in this
+	implementsHasDescription(this: any): this is Card<T & HasDescription> {
+		return '__has_description' in this.props
 	}
-	implementsOverridesGetEnergy(this: any): this is OverridesGetEnergy {
-		return '__overrides_get_energy' in this
+	implementsOverridesGetEnergy(this: any): this is Card<T & OverridesGetEnergy> {
+		return '__overrides_get_energy' in this.props
 	}
 
-	implementsAttach(this: any): this is HasAttach {
+	implementsAttach(this: any): this is Card<T & HasAttach> {
 		return 'onAttach' in this && 'onDetach' in this
 	}
 }

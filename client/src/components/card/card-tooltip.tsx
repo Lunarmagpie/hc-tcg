@@ -9,7 +9,8 @@ import {GLOSSARY} from 'common/glossary'
 import {useSelector} from 'react-redux'
 import {getSettings} from 'logic/local-settings/local-settings-selectors'
 import {FormattedText} from 'components/formatting/formatting'
-import {Card} from 'common/cards/base/card'
+import {Card, CardProps} from 'common/cards/base/card'
+import {HermitCard} from 'common/cards/base/hermit-card'
 
 const HERMIT_TYPES: Record<string, string> = {
 	balanced: 'Balanced',
@@ -29,7 +30,7 @@ type Props = {
 }
 
 const getDescription = (card: Card): React.ReactNode => {
-	return FormattedText(card.getDescription())
+	return FormattedText(card.props.getDescription())
 }
 
 const joinJsx = (array: Array<React.ReactNode>) => {
@@ -38,12 +39,12 @@ const joinJsx = (array: Array<React.ReactNode>) => {
 	return array.reduce((prev: any, curr: any): any => [prev, ' ', curr])
 }
 
-const getStrengthsAndWeaknesses = (card: Card): React.ReactNode => {
-	if (card.category !== 'hermit') return null
+const getStrengthsAndWeaknesses = (card: Card<HermitCard>): React.ReactNode => {
+	if (card.props.category !== 'hermit') return null
 
-	const strengths = STRENGTHS[card.hermitType]
+	const strengths = STRENGTHS[card.props.hermitType]
 	const weaknesses = Object.entries(STRENGTHS)
-		.filter(([, value]) => value.includes(card.hermitType))
+		.filter(([, value]) => value.includes(card.props.hermitType))
 		.map(([key]) => key) as Array<HermitTypeT>
 
 	const result = (
@@ -74,14 +75,14 @@ const getStrengthsAndWeaknesses = (card: Card): React.ReactNode => {
 }
 
 const getName = (card: Card): React.ReactNode => {
-	if (card instanceof ItemCard) {
-		return <div className={classNames(css.name, css[card.hermitType])}>{card.name}</div>
+	if (card.implementsHasHermitType()) {
+		return <div className={classNames(css.name, css[card.props.hermitType])}>{card.props.name}</div>
 	}
-	return <div className={css.name}>{card.name}</div>
+	return <div className={css.name}>{card.props.name}</div>
 }
 
 const getRank = (card: Card): React.ReactNode => {
-	const {name, cost} = getCardRank(card.id)
+	const {name, cost} = getCardRank(card.props.id)
 	const highlight = name === 'stone' || name === 'iron' ? '■' : '★'
 	return (
 		<div className={classNames(css.rank, css[name])}>

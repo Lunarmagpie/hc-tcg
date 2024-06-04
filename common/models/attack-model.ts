@@ -23,7 +23,7 @@ export class AttackModel {
 	/** The list of all changes made to this attack */
 	private history: Array<AttackHistory> = []
 	/** The creator of this attack */
-	private creator: Card<any> | StatusEffect
+	private creator: Card | StatusEffect
 
 	/** The attacker */
 	private attacker: RowPos | null
