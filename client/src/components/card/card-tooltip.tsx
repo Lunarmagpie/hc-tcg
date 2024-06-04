@@ -75,10 +75,11 @@ const getStrengthsAndWeaknesses = (card: Card<HermitCard>): React.ReactNode => {
 }
 
 const getName = (card: Card): React.ReactNode => {
-	if (card.implementsHasHermitType()) {
-		return <div className={classNames(css.name, css[card.props.hermitType])}>{card.props.name}</div>
-	}
-	return <div className={css.name}>{card.props.name}</div>
+	let className = classNames(
+		css.name,
+		card.implementsHasHermitType() ? css[card.props.hermitType] : ''
+	)
+	return <div className={className}>{card.props.name}</div>
 }
 
 const getRank = (card: Card): React.ReactNode => {
