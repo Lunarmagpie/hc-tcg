@@ -56,7 +56,7 @@ export abstract class Card<T extends CardProps = CardProps> {
 		return '__overrides_get_energy' in this.props
 	}
 
-	implementsAttach(this: any): this is Card<T & HasAttach> {
+	implementsAttach(this: any): this is Card<T> & HasAttach {
 		return 'onAttach' in this && 'onDetach' in this
 	}
 }
