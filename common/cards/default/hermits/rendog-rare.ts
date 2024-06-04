@@ -1,11 +1,11 @@
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {Card, CardProps, HasAttach, HasCustom} from '../../base/card'
+import {Card, CardProps, HasAttach} from '../../base/card'
 import {GameModel} from '../../../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../../../models/card-pos-model'
 import {HermitAttackType} from '../../../types/attack'
 import {getNonEmptyRows} from '../../../utils/board'
 
-class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, HasCustom {
+class RendogRareHermitCard extends Card<HermitCard> implements HasAttach {
 	override props: HermitCard = {
 		...hermitCardDefaults,
 		id: 'rendog_rare',
@@ -28,10 +28,8 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, HasCus
 		},
 	}
 
-	custom = {
-		imitatingCard: null as Card<CardProps> | null,
-		attackType: null as HermitAttackType | null,
-	}
+	imitatingCard: Card<CardProps> | null = null
+	attackType: HermitAttackType | null = null
 
 	getAttack(game: GameModel, pos: CardPosModel, hermitAttackType: HermitAttackType) {
 		const attack = super.getAttack(game, pos, hermitAttackType)
@@ -39,29 +37,29 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, HasCus
 		if (!attack || attack.type !== 'secondary') return attack
 		if (attack.getCreator() !== this) return attack
 
-		if (!this.custom.imitatingCard) return null
-		if (!this.custom.imitatingCard.implementsCanAttack()) return null
+		if (!this.imitatingCard) return null
+		if (!this.imitatingCard.implementsCanAttack()) return null
 
 		// No loops please
-		if (this.custom.imitatingCard.props.id === this.props.id) return null
+		if (this.imitatingCard.props.id === this.props.id) return null
 
-		if (!this.custom.attackType) return null
+		if (!this.attackType) return null
 
 		// Return the attack we picked from the card we picked
-		const newAttack = this.custom.imitatingCard.getAttack(game, pos, this.custom.attackType)
+		const newAttack = this.imitatingCard.getAttack(game, pos, this.attackType)
 		if (!newAttack) return null
 
 		const attackName =
 			newAttack.type === 'primary'
-				? this.custom.imitatingCard.primary.name
-				: this.custom.imitatingCard.secondary.name
+				? this.imitatingCard.primary.name
+				: this.imitatingCard.secondary.name
 		newAttack.log = (values) => {
-			return this.custom.imitatingCard
-				? `${values.attacker} attacked ${values.target} with $v${this.custom.imitatingCard.props.name}'s ${attackName}$ for ${values.damage} damage`
+			return this.imitatingCard
+				? `${values.attacker} attacked ${values.target} with $v${this.imitatingCard.props.name}'s ${attackName}$ for ${values.damage} damage`
 				: ''
 		}
 
-		this.custom.attackType === null
+		this.attackType === null
 
 		return newAttack
 	}
@@ -117,15 +115,15 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, HasCus
 							const attack: HermitAttackType = modalResult.pick
 
 							// Store the chosen attack to copy
-							thisCard.custom.attackType = attack
+							thisCard.attackType = attack
 
 							// Replace the hooks of the card we're imitating only if it changed
 							if (
-								!thisCard.custom.imitatingCard ||
-								pickedCard.id !== thisCard.custom.imitatingCard.props.id
+								!thisCard.imitatingCard ||
+								pickedCard.id !== thisCard.imitatingCard.props.id
 							) {
-								if (thisCard.custom.imitatingCard?.implementsAttach()) {
-									thisCard.custom.imitatingCard.onDetach(game, pos)
+								if (thisCard.imitatingCard?.implementsAttach()) {
+									thisCard.imitatingCard.onDetach(game, pos)
 								}
 
 								// Attach the new card
@@ -133,18 +131,18 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, HasCus
 									pickedCard.onAttach(game, pos)
 
 								// Store which card we are imitating with our own instance
-								thisCard.custom.imitatingCard = pickedCard
+								thisCard.imitatingCard = pickedCard
 							}
 
 							// Add the attack requests of the chosen card
-							if (thisCard.custom.imitatingCard) {
-								player.hooks.getAttackRequests.call(thisCard.custom.imitatingCard, modalResult.pick)
+							if (thisCard.imitatingCard) {
+								player.hooks.getAttackRequests.call(thisCard.imitatingCard, modalResult.pick)
 							}
 
 							return 'SUCCESS'
 						},
 						onTimeout() {
-							thisCard.custom.attackType = 'primary'
+							thisCard.attackType = 'primary'
 						},
 					})
 
@@ -159,9 +157,9 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, HasCus
 		player.hooks.onActiveRowChange.add(this, (oldRow, newRow) => {
 			if (pos.rowIndex === oldRow) {
 				// We switched away from ren, delete the imitating card
-				if (this.custom.imitatingCard?.implementsAttach()) {
+				if (this.imitatingCard?.implementsAttach()) {
 					// Detach the old card
-					this.custom.imitatingCard.onDetach(game, pos)
+					this.imitatingCard.onDetach(game, pos)
 				}
 			}
 		})
@@ -186,8 +184,8 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, HasCus
 		const {player} = pos
 
 		// If the card we are imitating is still attached, detach it
-		if (this.custom.imitatingCard?.implementsAttach()) {
-			this.custom.imitatingCard.onDetach(game, pos)
+		if (this.imitatingCard?.implementsAttach()) {
+			this.imitatingCard.onDetach(game, pos)
 		}
 
 		// Remove hooks and custom data
