@@ -1,13 +1,11 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {HasAttach} from '../../base/card'
-import {overridesAttachDefaults} from '../../base/card'
+import {Card, HasAttach} from '../../base/card'
 
-const Cubfan135RareHermitCard = (): HermitCard & HasAttach => {
-	return {
+class Cubfan135RareHermitCard extends Card<HermitCard> implements HasAttach {
+	override props: HermitCard = {
 		...hermitCardDefaults,
-		...overridesAttachDefaults,
 		id: 'cubfan135_rare',
 		numericId: 10,
 		name: 'Cub',
@@ -26,21 +24,22 @@ const Cubfan135RareHermitCard = (): HermitCard & HasAttach => {
 			damage: 100,
 			power: 'After attack, you can choose to go AFK.',
 		},
-		onAttach(game: GameModel, pos: CardPosModel) {
-			const {player} = pos
+	}
+	onAttach(game: GameModel, pos: CardPosModel) {
+		const {player} = pos
 
-			player.hooks.afterAttack.add(this, (attack) => {
-				if (attack.getCreator() !== this || attack.type !== 'secondary') return
+		player.hooks.afterAttack.add(this, (attack) => {
+			if (attack.getCreator() !== this || attack.type !== 'secondary') return
 
-				// We used our secondary attack, activate power
-				// AKA remove change active hermit from blocked actions
-				game.removeBlockedActions('game', 'CHANGE_ACTIVE_HERMIT')
-			})
-		},
-		onDetach(game: GameModel, pos: CardPosModel) {
-			const {player} = pos
-			player.hooks.afterAttack.remove(this)
-		},
+			// We used our secondary attack, activate power
+			// AKA remove change active hermit from blocked actions
+			game.removeBlockedActions('game', 'CHANGE_ACTIVE_HERMIT')
+		})
+	}
+
+	onDetach(game: GameModel, pos: CardPosModel) {
+		const {player} = pos
+		player.hooks.afterAttack.remove(this)
 	}
 }
 

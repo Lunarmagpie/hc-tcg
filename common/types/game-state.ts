@@ -1,5 +1,7 @@
+import { AttachableCard } from '../cards/base/attachable-card'
 import {Card, HasAttach} from '../cards/base/card'
 import {HermitCard} from '../cards/base/hermit-card'
+import { ItemCard } from '../cards/base/item-card'
 import {AttackModel} from '../models/attack-model'
 import {BattleLogModel} from '../models/battle-log-model'
 import {CardPosModel} from '../models/card-pos-model'
@@ -13,9 +15,9 @@ import {ModalRequest, PickRequest} from './server-requests'
 export type PlayerId = string
 
 export type RowStateWithHermit = {
-	hermitCard: HermitCard
-	effectCard: Card | null
-	itemCards: Array<Card | null>
+	hermitCard: Card<HermitCard>
+	effectCard: Card<AttachableCard> | null
+	itemCards: Array<Card<ItemCard> | null>
 	health: number
 }
 

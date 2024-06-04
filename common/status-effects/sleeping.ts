@@ -2,7 +2,7 @@ import StatusEffect, {statusEffectDefaults} from './status-effect'
 import {GameModel} from '../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../models/card-pos-model'
 import {removeStatusEffect} from '../utils/board'
-import {Card, implementsHasHealth} from '../cards/base/card'
+import {Card} from '../cards/base/card'
 
 const SleepingStatusEffect = (target: Card): StatusEffect => {
 	return {
