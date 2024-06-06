@@ -14,7 +14,11 @@ import {AttackModel} from '../../models/attack-model'
 import {AttachmentExpression} from './attachable'
 
 export abstract class Card<T extends CardProps = CardProps> {
-	abstract props: T
+	public props: T
+
+	constructor(props: T) {
+		this.props = props
+	}
 
 	implementsHermitDisplayInfo(this: any): this is Card<T & HermitDisplayInfo> {
 		return '__hermit_display_info' in this.props
@@ -155,59 +159,15 @@ export interface CanAttack {
 	__can_attack: undefined
 	primary: HermitAttackInfo
 	secondary: HermitAttackInfo
-	getAttack: (
-		game: GameModel,
-		pos: CardPosModel,
-		hermitAttackType: HermitAttackType
-	) => AttackModel | null
+	// getAttack: (
+	// 	game: GameModel,
+	// 	pos: CardPosModel,
+	// 	hermitAttackType: HermitAttackType
+	// ) => AttackModel | null
 }
 export const canAttackDefaults = {
 	__can_attack: undefined,
 	// Default is to return
-	getAttack(
-		this: Card<CanAttack>,
-		game: GameModel,
-		pos: CardPosModel,
-		hermitAttackType: HermitAttackType
-	): AttackModel | null {
-		if (pos.rowIndex === null || !pos.row || !pos.row.hermitCard) return null
-
-		const {opponentPlayer: opponentPlayer} = game
-		const targetIndex = opponentPlayer.board.activeRow
-		if (targetIndex === null) return null
-
-		const targetRow = opponentPlayer.board.rows[targetIndex]
-		if (!targetRow.hermitCard) return null
-
-		// Create an attack with default damage
-		const attack = new AttackModel({
-			creator: this,
-			attacker: {
-				player: pos.player,
-				rowIndex: pos.rowIndex,
-				row: pos.row,
-			},
-			target: {
-				player: opponentPlayer,
-				rowIndex: targetIndex,
-				row: targetRow,
-			},
-			type: hermitAttackType,
-			createWeakness: 'ifWeak',
-			log: (values) =>
-				`${values.attacker} ${values.coinFlip ? values.coinFlip + ', then ' : ''} attacked ${
-					values.target
-				} with ${values.attackName} for ${values.damage} damage`,
-		})
-
-		if (hermitAttackType == 'primary') {
-			attack.addDamage(this, this.props.primary.damage)
-		} else if (hermitAttackType == 'secondary') {
-			attack.addDamage(this, this.props.secondary.damage)
-		}
-
-		return attack
-	},
 }
 
 export interface SingleUseAttack {
