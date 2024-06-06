@@ -6,9 +6,10 @@ import {
 	TurnActions,
 	PlayerState,
 	Message,
+	ModalData,
 } from '../types/game-state'
 import {getGameState} from '../utils/state-gen'
-import {ModalRequest, PickRequest} from '../types/server-requests'
+import {ModalRequest, PickInfo, PickRequest} from '../types/server-requests'
 import {BattleLogModel} from './battle-log-model'
 import {getSlotPos} from '../utils/board'
 import {CARDS} from '../cards'
@@ -188,13 +189,31 @@ export class GameModel {
 		this.state.lastActionResult = {action, result}
 	}
 
-	public addPickRequest(newRequest: PickRequest, before = false) {
+	public addPickRequest(
+		playerId: string,
+		id: string,
+		message: string,
+		onResult: (pickResult: PickInfo) => ActionResult,
+		onCancel?: () => void,
+		onTimeout?: () => void,
+		before: boolean = false
+	) {
+		let pickRequst: PickRequest = {
+			playerId,
+			id,
+			message,
+			onResult,
+			onCancel,
+			onTimeout,
+		}
+
 		if (before) {
-			this.state.pickRequests.unshift(newRequest)
+			this.state.pickRequests.unshift(pickRequst)
 		} else {
-			this.state.pickRequests.push(newRequest)
+			this.state.pickRequests.push(pickRequst)
 		}
 	}
+
 	public removePickRequest(index = 0, timeout = true) {
 		if (this.state.pickRequests[index] !== undefined) {
 			const request = this.state.pickRequests.splice(index, 1)[0]
@@ -213,11 +232,24 @@ export class GameModel {
 		}
 	}
 
-	public addModalRequest(newRequest: ModalRequest, before = false) {
+	public addModalRequest(
+		playerId: string,
+		data: ModalData,
+		onResult: (modalResult: any) => ActionResult,
+		onTimeout: () => void,
+		before = false
+	) {
+		let modalRequest = {
+			playerId,
+			data,
+			onResult,
+			onTimeout,
+			before,
+		}
 		if (before) {
-			this.state.modalRequests.unshift(newRequest)
+			this.state.modalRequests.unshift(modalRequest)
 		} else {
-			this.state.modalRequests.push(newRequest)
+			this.state.modalRequests.push(modalRequest)
 		}
 	}
 	public removeModalRequest(index = 0, timeout = true) {

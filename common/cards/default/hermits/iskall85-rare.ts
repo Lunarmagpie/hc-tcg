@@ -36,7 +36,7 @@ class Iskall85RareHermitCard extends Card<HermitCard> implements HasAttach {
 		player.hooks.beforeAttack.add(this, (attack) => {
 			const target = attack.getTarget()
 			if (attack.getCreator() !== this || attack.type !== 'secondary' || !target) return
-			if (target.row.hermitCard.hermitType !== 'builder') return
+			if (target.row.hermitCard.props.hermitType !== 'builder') return
 
 			attack.multiplyDamage(this.props.id, 2)
 		})

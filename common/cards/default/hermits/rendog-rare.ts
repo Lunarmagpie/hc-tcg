@@ -28,8 +28,8 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach {
 		},
 	}
 
-	imitatingCard: Card<CardProps> | null = null
-	attackType: HermitAttackType | null = null
+	private imitatingCard: Card<CardProps> | null = null
+	private attackType: HermitAttackType | null = null
 
 	getAttack(game: GameModel, pos: CardPosModel, hermitAttackType: HermitAttackType) {
 		const attack = super.getAttack(game, pos, hermitAttackType)
@@ -51,8 +51,8 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach {
 
 		const attackName =
 			newAttack.type === 'primary'
-				? this.imitatingCard.primary.name
-				: this.imitatingCard.secondary.name
+				? this.imitatingCard.props.primary.name
+				: this.imitatingCard.props.secondary.name
 		newAttack.log = (values) => {
 			return this.imitatingCard
 				? `${values.attacker} attacked ${values.target} with $v${this.imitatingCard.props.name}'s ${attackName}$ for ${values.damage} damage`
@@ -74,13 +74,11 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach {
 			// Only activate power on secondary attack
 			if (hermitAttackType !== 'secondary') return
 
-			const thisCard = this
-
-			game.addPickRequest({
-				playerId: player.id,
-				id: this.props.id,
-				message: "Pick one of your opponent's Hermits",
-				onResult(pickResult) {
+			game.addPickRequest(
+				player.id,
+				this.props.id,
+				"Pick one of your opponent's Hermits",
+				(pickResult) => {
 					if (pickResult.playerId !== opponentPlayer.id) return 'FAILURE_INVALID_PLAYER'
 
 					const rowIndex = pickResult.rowIndex
@@ -91,11 +89,11 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach {
 					if (!pickedCard) return 'FAILURE_INVALID_SLOT'
 
 					// No picking the same card as us
-					if (pickedCard.id === this.id) return 'FAILURE_WRONG_PICK'
+					if (pickedCard.props.id === this.props.id) return 'FAILURE_WRONG_PICK'
 
-					game.addModalRequest({
-						playerId: player.id,
-						data: {
+					game.addModalRequest(
+						player.id,
+						{
 							modalId: 'copyAttack',
 							payload: {
 								modalName: 'Rendog: Choose an attack to copy',
@@ -103,7 +101,7 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach {
 								cardPos: getBasicCardPos(game, pickedCard),
 							},
 						},
-						onResult(modalResult) {
+						(modalResult) => {
 							if (!modalResult) return 'FAILURE_INVALID_DATA'
 							if (modalResult.cancel) {
 								// Cancel this attack so player can choose a different hermit to imitate
@@ -115,43 +113,39 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach {
 							const attack: HermitAttackType = modalResult.pick
 
 							// Store the chosen attack to copy
-							thisCard.attackType = attack
+							this.attackType = attack
 
 							// Replace the hooks of the card we're imitating only if it changed
-							if (
-								!thisCard.imitatingCard ||
-								pickedCard.id !== thisCard.imitatingCard.props.id
-							) {
-								if (thisCard.imitatingCard?.implementsAttach()) {
-									thisCard.imitatingCard.onDetach(game, pos)
+							if (!this.imitatingCard || pickedCard.props.id !== this.imitatingCard.props.id) {
+								if (this.imitatingCard?.implementsAttach()) {
+									this.imitatingCard.onDetach(game, pos)
 								}
 
 								// Attach the new card
-								if (pickedCard instanceof Card || pickedCard.implementsAttach())
-									pickedCard.onAttach(game, pos)
+								if (pickedCard.implementsAttach()) pickedCard.onAttach(game, pos)
 
 								// Store which card we are imitating with our own instance
-								thisCard.imitatingCard = pickedCard
+								this.imitatingCard = pickedCard
 							}
 
 							// Add the attack requests of the chosen card
-							if (thisCard.imitatingCard) {
-								player.hooks.getAttackRequests.call(thisCard.imitatingCard, modalResult.pick)
+							if (this.imitatingCard) {
+								player.hooks.getAttackRequests.call(this.imitatingCard, modalResult.pick)
 							}
 
 							return 'SUCCESS'
 						},
-						onTimeout() {
-							thisCard.attackType = 'primary'
-						},
-					})
+						() => {
+							this.attackType = 'primary'
+						}
+					)
 
 					return 'SUCCESS'
 				},
-				onTimeout() {
+				() => {
 					// We didn't pick someone to imitate so do nothing
-				},
-			})
+				}
+			)
 		})
 
 		player.hooks.onActiveRowChange.add(this, (oldRow, newRow) => {
