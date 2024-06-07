@@ -3,18 +3,10 @@ import {CardPosModel} from '../models/card-pos-model'
 import {GameModel} from '../models/game-model'
 
 export class StatusEffect<T extends StatusEffectProps = StatusEffectProps> {
-	public id: string
-	public name: string
-	public description: string
-	public damageEffect: boolean
-	public target: Card
+	public readonly props: T
 	
-	constructor(defs: StatusEffectProps) {
-		this.id = defs.id
-		this.name = defs.name
-		this.description = defs.description
-		this.damageEffect = defs.damageEffect
-		this.target = defs.target
+	constructor(defs: T) {
+		 this.props = defs
 	}
 
 	implementsDuration(this: any): this is StatusEffect<T & HasDuration> {

@@ -1,88 +1,86 @@
-import StatusEffect, {statusEffectDefaults} from './status-effect'
+import {StatusEffect, StatusEffectProps} from './status-effect'
 import {GameModel} from '../models/game-model'
 import {RowPos} from '../types/cards'
 import {AttackModel} from '../models/attack-model'
 import {getActiveRowPos, removeStatusEffect} from '../utils/board'
 import {executeExtraAttacks} from '../utils/attacks'
-import {CARDS} from '../cards'
 import {Card} from '../cards/base/card'
 import {CardPosModel, getBasicCardPos, getCardPos} from '../models/card-pos-model'
 
-const PoisonStatusEffect = (target: Card): StatusEffect => {
-	return {
-		...statusEffectDefaults,
-		id: 'poison',
-		name: 'Poison',
-		description:
-			"Poisoned Hermits take an additional 20hp damage at the end of their opponent's turn, until down to 10hp. Can not stack with burn.",
-		duration: 0,
-		counter: false,
-		damageEffect: true,
-		target: target,
-		onApply(game: GameModel, pos: CardPosModel) {
-			const {player, opponentPlayer} = pos
+class PoisonStatusEffect extends StatusEffect<StatusEffectProps> {
+	constructor(target: Card) {
+		super({
+			id: 'poison',
+			name: 'Poison',
+			description:
+				"Poisoned Hermits take an additional 20hp damage at the end of their opponent's turn, until down to 10hp. Can not stack with burn.",
+			damageEffect: true,
+			target: target,
+		})
+	}
 
-			const hasDamageEffect = game.state.statusEffects.some(
-				(a) => a.target === pos.card && a.damageEffect === true
-			)
+	override onApply(game: GameModel, pos: CardPosModel) {
+		const {player, opponentPlayer} = pos
 
-			if (hasDamageEffect) return
+		const hasDamageEffect = game.state.statusEffects.some(
+			(a) => a.target === pos.card && a.damageEffect === true
+		)
 
-			game.state.statusEffects.push(this)
-			game.battleLog.addEntry(player.id, `$p${this.target.name}$ was $ePoisoned$`)
+		if (hasDamageEffect) return
 
-			opponentPlayer.hooks.onTurnEnd.add(this, () => {
-				const targetPos = getBasicCardPos(game, this.target)
-				if (!targetPos || !targetPos.row || targetPos.rowIndex === null) return
-				if (!targetPos.row.hermitCard || !targetPos.row.health) return
+		game.state.statusEffects.push(this)
+		game.battleLog.addEntry(player.id, `$p${this.props.target.props.name}$ was $eBurned$`)
 
-				const activeRowPos = getActiveRowPos(opponentPlayer)
-				const sourceRow: RowPos | null = activeRowPos
-					? {
-							player: activeRowPos.player,
-							rowIndex: activeRowPos.rowIndex,
-							row: activeRowPos.row,
-					  }
-					: null
+		opponentPlayer.hooks.onTurnEnd.add(this, () => {
+			const targetPos = getBasicCardPos(game, this.props.target)
+			if (!targetPos || !targetPos.row || targetPos.rowIndex === null) return
+			if (!targetPos.row.hermitCard || !targetPos.row.health) return
 
-				const targetRow: RowPos = {
-					player: targetPos.player,
-					rowIndex: targetPos.rowIndex,
-					row: targetPos.row,
-				}
+			const activeRowPos = getActiveRowPos(opponentPlayer)
+			const sourceRow: RowPos | null = activeRowPos
+				? {
+						player: activeRowPos.player,
+						rowIndex: activeRowPos.rowIndex,
+						row: activeRowPos.row,
+					}
+				: null
 
-				const statusEffectAttack = new AttackModel({
-					creator: this,
-					attacker: sourceRow,
-					target: targetRow,
-					type: 'status-effect',
-					log: (values) => `${values.target} took ${values.damage} damage from $bBurn$`,
-				})
-				statusEffectAttack.addDamage(this.id, 20)
+			const targetRow: RowPos = {
+				player: targetPos.player,
+				rowIndex: targetPos.rowIndex,
+				row: targetPos.row,
+			}
 
-				if (targetPos.row.health >= 30) {
-					statusEffectAttack.addDamage(this.id, 20)
-				} else if (targetPos.row.health == 20) {
-					statusEffectAttack.addDamage(this.id, 10)
-				}
-
-				executeExtraAttacks(game, [statusEffectAttack], true)
+			const statusEffectAttack = new AttackModel({
+				creator: this,
+				attacker: sourceRow,
+				target: targetRow,
+				type: 'status-effect',
+				log: (values) => `${values.target} took ${values.damage} damage from $bBurn$`,
 			})
 
-			player.hooks.afterDefence.add(this, (attack) => {
-				const attackTarget = attack.getTarget()
-				if (!attackTarget) return
-				if (attackTarget.row.hermitCard !== this.target) return
-				if (attackTarget.row.health > 0) return
-				removeStatusEffect(game, pos, this)
-			})
-		},
+			if (targetPos.row.health >= 30) {
+				statusEffectAttack.addDamage(this.props.id, 20)
+			} else if (targetPos.row.health == 20) {
+				statusEffectAttack.addDamage(this.props.id, 10)
+			}
 
-		onRemoval(game: GameModel, pos: CardPosModel) {
-			const {player, opponentPlayer} = pos
-			opponentPlayer.hooks.onTurnEnd.remove(this)
-			player.hooks.afterDefence.remove(this)
-		},
+			executeExtraAttacks(game, [statusEffectAttack], true)
+		})
+
+		player.hooks.afterDefence.add(this, (attack) => {
+			const attackTarget = attack.getTarget()
+			if (!attackTarget) return
+			if (attackTarget.row.hermitCard !== this.props.target) return
+			if (attackTarget.row.health > 0) return
+			removeStatusEffect(game, pos, this)
+		})
+	}
+
+	override onRemoval(game: GameModel, pos: CardPosModel) {
+		const {player, opponentPlayer} = pos
+		opponentPlayer.hooks.onTurnEnd.remove(this)
+		player.hooks.afterDefence.remove(this)
 	}
 }
 

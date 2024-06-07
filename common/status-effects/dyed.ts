@@ -1,40 +1,40 @@
-import StatusEffect, {statusEffectDefaults} from './status-effect'
+import {StatusEffect, StatusEffectProps} from './status-effect'
 import {GameModel} from '../models/game-model'
 import {CardPosModel, getBasicCardPos, getCardPos} from '../models/card-pos-model'
 import {Card} from '../cards/base/card'
 
-const DyedStatusEffect = (target: Card): StatusEffect => {
-	return {
-		...statusEffectDefaults,
-		id: 'dyed',
-		name: 'Dyed',
-		description: 'Items attached to this Hermit become any type.',
-		duration: 0,
-		counter: false,
-		damageEffect: false,
-		target: target,
-		onApply(game: GameModel, pos: CardPosModel) {
-			const {player} = pos
+class DyedStatusEffect extends StatusEffect<StatusEffectProps> {
+	constructor(target: Card) {
+		super({
+			id: 'dyed',
+			name: 'Dyed',
+			description: 'Items attached to this Hermit become any type.',
+			damageEffect: false,
+			target: target,
+		})
+	}
 
-			game.state.statusEffects.push(this)
+	override onApply(game: GameModel, pos: CardPosModel) {
+		const {player} = pos
 
-			player.hooks.availableEnergy.add(this, (availableEnergy) => {
-				if (player.board.activeRow === null) return availableEnergy
+		game.state.statusEffects.push(this)
 
-				const activeRow = player.board.rows[player.board.activeRow]
+		player.hooks.availableEnergy.add(this, (availableEnergy) => {
+			if (player.board.activeRow === null) return availableEnergy
 
-				if (this.target !== activeRow.hermitCard) return availableEnergy
+			const activeRow = player.board.rows[player.board.activeRow]
 
-				return availableEnergy.map(() => 'any')
-			})
-		},
+			if (this.props.target !== activeRow.hermitCard) return availableEnergy
 
-		onRemoval(game: GameModel, pos: CardPosModel) {
-			const {player, opponentPlayer} = pos
+			return availableEnergy.map(() => 'any')
+		})
+	}
 
-			player.hooks.availableEnergy.remove(this)
-			opponentPlayer.hooks.onTurnEnd.remove(this)
-		},
+	override onRemoval(game: GameModel, pos: CardPosModel) {
+		const {player, opponentPlayer} = pos
+
+		player.hooks.availableEnergy.remove(this)
+		opponentPlayer.hooks.onTurnEnd.remove(this)
 	}
 }
 

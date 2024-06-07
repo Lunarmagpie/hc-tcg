@@ -1,11 +1,10 @@
-import {HasDuration, StatusEffect} from './status-effect'
+import {HasDuration, StatusEffect, StatusEffectProps} from './status-effect'
 import {GameModel} from '../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../models/card-pos-model'
 import {discardCard} from '../utils/movement'
 import {Card} from '../cards/base/card'
 
-class SmeltingStatusEffect extends StatusEffect implements HasDuration {
-
+class SmeltingStatusEffect extends StatusEffect<StatusEffectProps & HasDuration> {
 	constructor(target: Card) {
 		super({
 			id: 'smelting',
@@ -14,18 +13,18 @@ class SmeltingStatusEffect extends StatusEffect implements HasDuration {
 				'When the counter reaches 0, upgrades all item cards attached to this Hermit to double items',
 			damageEffect: false,
 			target: target,
+			duration: 3,
 		})
 	}
-	duration = 3
 
 	override onApply(game: GameModel, pos: CardPosModel) {
 		game.state.statusEffects.push(this)
 		const {player} = pos
 
 		player.hooks.onTurnStart.add(this, () => {
-			if (this.duration === undefined) return
-			this.duration -= 1
-			if (this.duration === 0) {
+			if (this.props.duration === undefined) return
+			this.props.duration -= 1
+			if (this.props.duration === 0) {
 				discardCard(game, pos.card)
 				pos.row?.itemCards.forEach((card) => {
 					if (!card) return
