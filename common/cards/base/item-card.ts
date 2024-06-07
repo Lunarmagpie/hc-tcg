@@ -39,3 +39,28 @@ export const itemCardDefaults = {
 		return [this.hermitType]
 	},
 }
+
+abstract class ItemCard extends Card {
+	public hermitType: HermitTypeT
+
+	constructor(defs: ItemDefs) {
+		super({
+			type: 'item',
+			id: defs.id,
+			numericId: defs.numericId,
+			name: defs.name,
+			rarity: defs.rarity,
+		})
+
+		this.hermitType = defs.hermitType
+
+		this.updateLog(
+			(values) =>
+				`$p{You|${values.player}}$ attached $m${values.pos.name}$ to $p${values.pos.hermitCard}$`
+		)
+	}
+
+	public abstract getEnergy(game: GameModel, instance: string, pos: CardPosModel): Array<EnergyT>
+}
+
+export default ItemCard

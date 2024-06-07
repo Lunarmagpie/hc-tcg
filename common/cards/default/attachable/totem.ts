@@ -5,6 +5,7 @@ import {discardCard} from '../../../utils/movement'
 import {removeStatusEffect} from '../../../utils/board'
 import {AttachableCard, attachableCardDefaults} from '../../base/attachable-card'
 import {Card, HasAttach} from '../../base/card'
+import { AttackModel } from '../../../models/attack-model'
 
 class TotemEffectCard extends Card<AttachableCard> implements HasAttach {
 	override props: AttachableCard = {
@@ -25,10 +26,7 @@ class TotemEffectCard extends Card<AttachableCard> implements HasAttach {
 
 	onAttach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer} = pos
-
-		// If we are attacked from any source
-		// Add before any other hook so they can know a hermits health reliably
-		player.hooks.afterDefence.addBefore(this, (attack) => {
+		const reviveHook = (attack: AttackModel) => {
 			const target = attack.getTarget()
 			if (!isTargetingPos(attack, pos) || !target) return
 			const {row} = target
@@ -43,36 +41,20 @@ class TotemEffectCard extends Card<AttachableCard> implements HasAttach {
 				removeStatusEffect(game, pos, ail)
 			})
 
-			const revivedHermit = row.hermitCard.name
-
+			const revivedHermit = row.hermitCard.props.name
 			game.battleLog.addEntry(player.id, `Using $eTotem$, $p${revivedHermit}$ revived with $g10hp$`)
 
 			// This will remove this hook, so it'll only be called once
 			discardCard(game, row.effectCard)
-		})
+		}
+
+		// If we are attacked from any source
+		// Add before any other hook so they can know a hermits health reliably
+		player.hooks.afterDefence.addBefore(this, (attack) => reviveHook(attack))
 
 		// Also hook into afterAttack of opponent before other hooks, so that health will always be the same when their hooks are called
 		// @TODO this is slightly more hacky than I'd like
-		opponentPlayer.hooks.afterAttack.addBefore(this, (attack) => {
-			const target = attack.getTarget()
-			if (!isTargetingPos(attack, pos) || !target) return
-			const {row} = target
-			if (row.health) return
-
-			row.health = 10
-
-			const thisHermitId = pos.row?.hermitCard
-
-			const statusEffectsToRemove = game.state.statusEffects.filter((ail) => {
-				return ail.target === thisHermitId
-			})
-			statusEffectsToRemove.forEach((ail) => {
-				removeStatusEffect(game, pos, ail)
-			})
-
-			// This will remove this hook, so it'll only be called once
-			discardCard(game, row.effectCard)
-		})
+		opponentPlayer.hooks.afterAttack.addBefore(this, (attack) => reviveHook(attack))
 	}
 
 	onDetach(game: GameModel, pos: CardPosModel) {

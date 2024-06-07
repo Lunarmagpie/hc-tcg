@@ -90,9 +90,12 @@ const KeralisRareHermitCard = (): HermitCard & HasAttach => {
 				// Heal
 				const maxHealth = Math.max(pickedRow.health, pickedRow.hermitCard.health)
 				pickedRow.health = Math.min(pickedRow.health + 100, maxHealth)
+
 				game.battleLog.addEntry(
 					player.id,
-					`$p${pickedRow.hermitCard.name} (${pickedRowIndex + 1})$ healed $g100hp$`
+					`$p${pickedHermitInfo.name} (${
+						pickedRowIndex + 1
+					})$ was healed $g100hp$ by $p${activeHermitName}$`
 				)
 			})
 		},

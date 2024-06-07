@@ -103,4 +103,5 @@ export type PlayCardLog = {
 		/**The slot type that was picked.*/
 		slotType: string
 	}
+	previousLog?: string
 }

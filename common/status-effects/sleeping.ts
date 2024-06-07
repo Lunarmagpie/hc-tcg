@@ -18,16 +18,16 @@ const SleepingStatusEffect = (target: Card): StatusEffect => {
 		onApply(game: GameModel, pos: CardPosModel) {
 			const {player, card, row, rowIndex} = pos
 
-			if (!card || !row?.hermitCard || !rowIndex || !implementsHasHealth(card)) return
+			if (!card || !row?.hermitCard || !rowIndex || !card.implementsHasHealth)  return
 
 			game.state.statusEffects.push(this)
 			game.addBlockedActions(this.id, 'PRIMARY_ATTACK', 'SECONDARY_ATTACK', 'CHANGE_ACTIVE_HERMIT')
 
-			row.health = card.health
+			row.health = card.props.health
 
 			game.battleLog.addEntry(
 				player.id,
-				`$p${card.name}$ went to $eSleep$ and restored $gfull health$`
+				`$p${card.props.name}$ went to $eSleep$ and restored $gfull health$`
 			)
 
 			player.hooks.onTurnStart.add(this, () => {

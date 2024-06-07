@@ -39,6 +39,6 @@ export const defaultDamagingSingleUseInfo = {
 	getDescription(this: CardProps & HasDescription) {
 		return formatText(this.description)
 	},
-	log: null,
+	log: [],
 	allowAttacks: false,
 }

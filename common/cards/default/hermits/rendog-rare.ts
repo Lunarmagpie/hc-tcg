@@ -50,17 +50,13 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, GetAtt
 		if (!newAttack) return null
 
 		const attackName =
-			newAttack.type === 'primary'
-				? this.imitatingCard.props.primary.name
-				: this.imitatingCard.props.secondary.name
-		newAttack.log = (values) => {
-			return this.imitatingCard
-				? `${values.attacker} attacked ${values.target} with $v${this.imitatingCard.props.name}'s ${attackName}$ for ${values.damage} damage`
-				: ''
-		}
-
-		this.attackType === null
-
+			newAttack.type === 'primary' ? this.props.primary.name : this.props.secondary.name
+		newAttack.updateLog(
+			(values) =>
+				`${values.attacker} ${values.coinFlip ? values.coinFlip + ', then ' : ''} attacked ${
+					values.target
+				} with $v${hermitInfo.name}'s ${attackName}$ for ${values.damage} damage`
+		)
 		return newAttack
 	}
 

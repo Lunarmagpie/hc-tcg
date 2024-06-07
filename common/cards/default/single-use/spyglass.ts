@@ -15,7 +15,7 @@ class SpyglassSingleUseCard extends SingleUseCard {
 			rarity: 'common',
 			description:
 				"Look at your opponent's hand, and then flip a coin.\nIf heads, choose one card to discard from your opponent's hand.",
-			log: (values) => `${values.defaultLog}`,
+			log: (values) => `${values.defaultLog} and ${values.coinFlip}`,
 		})
 	}
 
@@ -54,7 +54,7 @@ class SpyglassSingleUseCard extends SingleUseCard {
 
 					game.battleLog.addEntry(
 						player.id,
-						`$p{You|${opponentPlayer.playerName}}$ took ${getFormattedName(
+						`$p{You|${opponentPlayer.playerName}}$ discarded ${getFormattedName(
 							modalResult.cards[0].cardId,
 							true
 						)} from {$o${game.opponentPlayer.playerName}'s$|your} hand`

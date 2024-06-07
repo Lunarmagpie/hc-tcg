@@ -3,7 +3,7 @@ import {broadcast} from '../../server/src/utils/comm'
 import {AttackModel} from './attack-model'
 import {CardPosModel} from './card-pos-model'
 import {GameModel} from './game-model'
-import {LineNode, formatText} from '../utils/formatting'
+import {formatText} from '../utils/formatting'
 import {DEBUG_CONFIG} from '../config'
 import {Card} from '../cards/base/card'
 import {PickInfo} from '../types/server-requests'
@@ -88,8 +88,6 @@ export class BattleLogModel {
 		coinFlips: Array<CurrentCoinFlipT>,
 		pickInfo?: PickInfo
 	) {
-		if (!card.log) return
-
 		const getCardName = (
 			player: PlayerState | undefined,
 			cardId: string | undefined,
@@ -124,13 +122,13 @@ export class BattleLogModel {
 
 		const pickedPlayer = pickInfoPlayer()
 
-		const logMessage = card.log({
+		const logMessage = card.getLog({
 			player: pos.player.playerName,
 			opponent: pos.opponentPlayer.playerName,
 			coinFlip: thisFlip ? this.generateCoinFlipDescription(thisFlip) : '',
 			defaultLog: `$p{You|${pos.player.playerName}}$ used $e${card.name}$`,
 			pos: {
-				rowIndex: pos.rowIndex ? `${pos.rowIndex}` : invalid,
+				rowIndex: pos.rowIndex ? `${pos.rowIndex + 1}` : invalid,
 				id: pos.card ? pos.card.id : invalid,
 				name: pos.card ? getCardName(pos.player, pos.card.id, pos.rowIndex) : invalid,
 				hermitCard: pos.row?.hermitCard
@@ -139,16 +137,17 @@ export class BattleLogModel {
 				slotType: pos.slot.type,
 			},
 			pick: {
-				rowIndex: pickInfo ? `${pickInfo.rowIndex}` : invalid,
-				id: pickInfo?.card ? pickInfo.card.id : invalid,
+				rowIndex:
+					pickInfo && pickInfo.rowIndex !== undefined ? `${pickInfo.rowIndex + 1}` : invalid,
+				id: pickInfo?.card ? pickInfo.card.props.id : invalid,
 				name: pickInfo?.card
-					? getCardName(pickedPlayer, pickInfo.card.id, pickInfo.rowIndex)
+					? getCardName(pickedPlayer, pickInfo.card.props.id, pickInfo.rowIndex)
 					: invalid,
 				hermitCard:
 					pickInfo && pickInfo.rowIndex !== null && pickInfo.rowIndex !== undefined && pickedPlayer
 						? getCardName(
 								pickedPlayer,
-								pickedPlayer.board.rows[pickInfo.rowIndex].hermitCard?.id,
+								pickedPlayer.board.rows[pickInfo.rowIndex].hermitCard?.props.id,
 								pickInfo.rowIndex
 						  )
 						: invalid,
@@ -178,8 +177,6 @@ export class BattleLogModel {
 		const attacks = [attack, ...attack.nextAttacks]
 
 		let log = attacks.reduce((reducer, subAttack) => {
-			if (!subAttack.log) return reducer
-
 			const attacker = subAttack.getAttacker()
 			const target = subAttack.getTarget()
 
@@ -198,16 +195,16 @@ export class BattleLogModel {
 			const targetFormatting = target.player.id === playerId ? 'p' : 'o'
 
 			const rowNumberString =
-				target.player.board.activeRow === target.rowIndex ? '' : `(${target.rowIndex})`
+				target.player.board.activeRow === target.rowIndex ? '' : `(${target.rowIndex + 1})`
 
 			const attackName =
-				subAttack.type === 'primary' ? attackingHermit.primary.name : attackingHermit.secondary.name
+				subAttack.type === 'primary' ? attackingHermit.props.primary.name : attackingHermit.props.secondary.name
 
-			const logMessage = subAttack.log({
-				attacker: `$p${attackingHermit.name}$`,
+			const logMessage = subAttack.getLog({
+				attacker: `$p${attackingHermit.props.name}$`,
 				player: attacker.player.playerName,
 				opponent: target.player.playerName,
-				target: `$${targetFormatting}${targetHermit.name} ${rowNumberString}$`,
+				target: `$${targetFormatting}${targetHermit.props.name} ${rowNumberString}$`,
 				attackName: `$v${attackName}$`,
 				damage: `$b${subAttack.calculateDamage()}hp$`,
 				defaultLog: this.generateEffectEntryHeader(singleUse),
@@ -237,7 +234,7 @@ export class BattleLogModel {
 		const player = this.game.currentPlayer
 		// Opponent coin flips
 		coinFlips.forEach((coinFlip) => {
-			const cardName = coinFlip.card.name
+			const cardName = coinFlip.card.props.name
 			if (!coinFlip.opponentFlip) return
 
 			this.logMessageQueue.push({
@@ -267,16 +264,16 @@ export class BattleLogModel {
 		if (oldHermit) {
 			this.logMessageQueue.push({
 				player: player.id,
-				description: `$p{You|${player.playerName}}$ swapped $p${oldHermit.name}$ for $p${
-					oldHermit.name
-				}$ on row #${newRow + 1}`,
+				description: `$p{You|${player.playerName}}$ swapped $p${oldHermit.props.name}$ for $p${
+					newHermit.props.name
+				} (${newRow + 1})$`,
 			})
 		} else {
 			this.logMessageQueue.push({
 				player: player.id,
-				description: `$p{You|${player.playerName}}$ activated $p${newHermit.name}$ on row #${
+				description: `$p{You|${player.playerName}}$ activated $p${newHermit.props.name} (${
 					newRow + 1
-				}`,
+				})$`,
 			})
 		}
 	}
@@ -288,7 +285,7 @@ export class BattleLogModel {
 
 		this.logMessageQueue.push({
 			player: player.id,
-			description: `$p${card.name}$ was knocked out, and $p{you|${player.playerName}}$ now {have|has} $b${livesRemaining}$ remaining`,
+			description: `$p${card.props.name}$ was knocked out, and $p{you|${player.playerName}}$ now {have|has} $b${livesRemaining}$ remaining`,
 		})
 		this.sendLogs()
 	}
