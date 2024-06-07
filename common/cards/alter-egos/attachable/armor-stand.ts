@@ -1,32 +1,32 @@
-import {isTargetingPos} from '../../../utils/attacks'
 import {GameModel} from '../../../models/game-model'
-import {discardCard} from '../../../utils/movement'
 import {CardPosModel} from '../../../models/card-pos-model'
 import {HasHealth, Card, hasHealthDefaults, HasAttach} from '../../base/card'
 import {AttachableCard, attachableCardDefaults} from '../../base/attachable-card'
 import {PlayCardLog} from '../../../types/cards'
 import attachableTo from '../../base/attachable'
 
-:class ArmorStandEffectCard extends Card<AttachableCard & HasHealth> implements HasAttach {
-	override props: AttachableCard & HasHealth = {
-		...attachableCardDefaults,
-		...hasHealthDefaults,
-		health: 50,
-		id: 'armor_stand',
-		numericId: 118,
-		name: 'Armour Stand',
-		rarity: 'ultra_rare',
-		description:
-			'Use like a Hermit card with a maximum 50hp.\nYou can not attach any cards to this card. While this card is active, you can not attack, or use damaging effect cards.\nIf this card is knocked out, it does not count as a knockout.',
-		canBeAttachedTo: attachableTo.every(attachableTo.player, attachableTo.hermit),
-		log: (values: PlayCardLog) => `$p{You|${values.player}}$ placed $p${values.pos.name}$`,
-		expansion: 'alter_egos',
-		sidebarDescriptions: [
-			{
-				type: 'glossary',
-				name: 'knockout',
-			},
-		],
+class ArmorStandEffectCard extends Card<AttachableCard & HasHealth> implements HasAttach {
+	constructor() {
+		super({
+			...attachableCardDefaults,
+			...hasHealthDefaults,
+			health: 50,
+			id: 'armor_stand',
+			numericId: 118,
+			name: 'Armour Stand',
+			rarity: 'ultra_rare',
+			description:
+				'Use like a Hermit card with a maximum 50hp.\nYou can not attach any cards to this card. While this card is active, you can not attack, or use damaging effect cards.\nIf this card is knocked out, it does not count as a knockout.',
+			canBeAttachedTo: attachableTo.every(attachableTo.player, attachableTo.hermit),
+			log: (values: PlayCardLog) => `$p{You|${values.player}}$ placed $p${values.pos.name}$`,
+			expansion: 'alter_egos',
+			sidebarDescriptions: [
+				{
+					type: 'glossary',
+					name: 'knockout',
+				},
+			],
+		})
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {
@@ -47,6 +47,7 @@ import attachableTo from '../../base/attachable'
 
 			return blockedActions
 		})
+	}
 
 	onDetach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer, slot, row} = pos
