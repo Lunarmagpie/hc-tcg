@@ -16,10 +16,18 @@ import {AttachmentExpression} from './attachable'
 export abstract class Card<T extends CardProps = CardProps> {
 	public readonly props: T
 
+	private instance = Math.random().toString()
+
 	constructor(props: T) {
 		this.props = props
 	}
 
+	equals(this: Card<T>, otherCard: Card<T> | null | undefined): boolean {
+		if (otherCard === null || otherCard === undefined) return false
+		if (this.instance !== otherCard.instance) return false
+		return true
+	}
+	
 	implementsHermitDisplayInfo(this: any): this is Card<T & HermitDisplayInfo> {
 		return '__hermit_display_info' in this.props
 	}
