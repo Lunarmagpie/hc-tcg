@@ -1,4 +1,9 @@
-import {HermitCard, createHermitAttackModel, getHermitsAttack, hermitCardDefaults} from '../../base/hermit-card'
+import {
+	HermitCard,
+	createHermitAttackModel,
+	getHermitsAttack,
+	hermitCardDefaults,
+} from '../../base/hermit-card'
 import {Card, CardProps, GetAttack, HasAttach} from '../../base/card'
 import {GameModel} from '../../../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../../../models/card-pos-model'
@@ -39,14 +44,11 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, GetAtt
 
 		if (!this.imitatingCard) return null
 		if (!this.imitatingCard.implementsCanAttack()) return null
-
-		// No loops please
-		if (this.imitatingCard.props.id === this.props.id) return null
-
 		if (!this.attackType) return null
 
 		// Return the attack we picked from the card we picked
 		const newAttack = getHermitsAttack(this.imitatingCard, game, pos, this.attackType)
+		const imitatingCardName = this.imitatingCard.props.name
 		if (!newAttack) return null
 
 		const attackName =
@@ -55,7 +57,7 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, GetAtt
 			(values) =>
 				`${values.attacker} ${values.coinFlip ? values.coinFlip + ', then ' : ''} attacked ${
 					values.target
-				} with $v${hermitInfo.name}'s ${attackName}$ for ${values.damage} damage`
+				} with $v${imitatingCardName}'s ${attackName}$ for ${values.damage} damage`
 		)
 		return newAttack
 	}
