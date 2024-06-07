@@ -63,6 +63,9 @@ export abstract class Card<T extends CardProps = CardProps> {
 	implementsAttach(this: any): this is Card<T> & HasAttach {
 		return 'onAttach' in this && 'onDetach' in this
 	}
+	implementsGetAttack(this: any): this is Card<T> & GetAttack {
+		return 'getAttack' in this
+	}
 }
 
 export interface CardProps {
@@ -190,3 +193,11 @@ export const hasDescriptionDefaults = {__has_description: undefined}
 
 export interface OverridesGetEnergy {}
 export const overridesGetEnergy = {__overrides_get_energy: undefined}
+
+export interface GetAttack {
+	getAttack: (
+		game: GameModel,
+		pos: CardPosModel,
+		hermitAttackType: HermitAttackType
+	) => AttackModel | null
+}

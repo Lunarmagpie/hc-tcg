@@ -17,27 +17,29 @@ Some assumptions that make sense to me:
 */
 
 class GrianRareHermitCard extends Card<HermitCard> implements HasAttach {
-	override props: HermitCard = {
-		...hermitCardDefaults,
-		id: 'grian_rare',
-		numericId: 35,
-		name: 'Grian',
-		rarity: 'rare',
-		hermitType: 'prankster',
-		health: 300,
-		primary: {
-			name: 'Borrow',
-			cost: ['prankster', 'prankster'],
-			damage: 50,
-			power:
-				"After your attack, flip a coin.\nIf heads, steal the attached effect card of your opponent's active Hermit, and then choose to attach or discard it.",
-		},
-		secondary: {
-			name: 'Start a War',
-			cost: ['prankster', 'prankster', 'prankster'],
-			damage: 100,
-			power: null,
-		},
+	constructor() {
+		super({
+			...hermitCardDefaults,
+			id: 'grian_rare',
+			numericId: 35,
+			name: 'Grian',
+			rarity: 'rare',
+			hermitType: 'prankster',
+			health: 300,
+			primary: {
+				name: 'Borrow',
+				cost: ['prankster', 'prankster'],
+				damage: 50,
+				power:
+					"After your attack, flip a coin.\nIf heads, steal the attached effect card of your opponent's active Hermit, and then choose to attach or discard it.",
+			},
+			secondary: {
+				name: 'Start a War',
+				cost: ['prankster', 'prankster', 'prankster'],
+				damage: 100,
+				power: null,
+			},
+		})
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {
@@ -70,9 +72,9 @@ class GrianRareHermitCard extends Card<HermitCard> implements HasAttach {
 				return
 			}
 
-			game.addModalRequest({
-				playerId: player.id,
-				data: {
+			game.addModalRequest(
+				player.id,
+				{
 					modalId: 'selectCards',
 					payload: {
 						modalName: 'Grian - Borrow',
@@ -89,7 +91,7 @@ class GrianRareHermitCard extends Card<HermitCard> implements HasAttach {
 						},
 					},
 				},
-				onResult(modalResult) {
+				(modalResult) => {
 					if (!modalResult || modalResult.attach === undefined) return 'FAILURE_INVALID_DATA'
 
 					if (modalResult.attach) {
@@ -115,11 +117,11 @@ class GrianRareHermitCard extends Card<HermitCard> implements HasAttach {
 
 					return 'SUCCESS'
 				},
-				onTimeout() {
+				() => {
 					// Discard
 					discardCard(game, opponentEffectCard, player)
 				},
-			})
+			)
 		})
 	}
 

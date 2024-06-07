@@ -1,11 +1,11 @@
-import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {Card, CardProps, HasAttach} from '../../base/card'
+import {HermitCard, createHermitAttackModel, hermitCardDefaults} from '../../base/hermit-card'
+import {Card, CardProps, GetAttack, HasAttach} from '../../base/card'
 import {GameModel} from '../../../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../../../models/card-pos-model'
 import {HermitAttackType} from '../../../types/attack'
 import {getNonEmptyRows} from '../../../utils/board'
 
-class RendogRareHermitCard extends Card<HermitCard> implements HasAttach {
+class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, GetAttack {
 	override props: HermitCard = {
 		...hermitCardDefaults,
 		id: 'rendog_rare',
@@ -32,7 +32,7 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach {
 	private attackType: HermitAttackType | null = null
 
 	getAttack(game: GameModel, pos: CardPosModel, hermitAttackType: HermitAttackType) {
-		const attack = super.getAttack(game, pos, hermitAttackType)
+		const attack = createHermitAttackModel(this, game, pos, hermitAttackType)
 
 		if (!attack || attack.type !== 'secondary') return attack
 		if (attack.getCreator() !== this) return attack

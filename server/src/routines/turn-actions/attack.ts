@@ -7,6 +7,7 @@ import {CardPosModel, getCardPos} from 'common/models/card-pos-model'
 import {AttackActionData, attackActionToAttack} from 'common/types/action-data'
 import {getActiveRow} from 'common/utils/board'
 import {executeAttacks} from 'common/utils/attacks'
+import { createHermitAttackModel } from 'common/cards/base/hermit-card'
 
 function getAttack(
 	game: GameModel,
@@ -19,14 +20,18 @@ function getAttack(
 	if (!attackPos.row || !attackPos.row.hermitCard) return []
 
 	// hermit attacks
-	const hermitCard = HERMIT_CARDS[attackPos.row.hermitCard.id]
+	const hermitCard = attackPos.row.hermitCard
 
-	const nextAttack = hermitCard.getAttack(
-		game,
-		attackPos.row.hermitCard.cardInstance,
-		attackPos,
-		hermitAttackType
-	)
+	let nextAttack = null
+	if (hermitCard.implementsGetAttack()) {
+		nextAttack = hermitCard.getAttack(
+			game,
+			attackPos,
+			hermitAttackType,
+		)
+	} else {
+		nextAttack = createHermitAttackModel(hermitCard, game, attackPos, hermitAttackType)
+	}
 
 	if (nextAttack) attacks.push(nextAttack)
 

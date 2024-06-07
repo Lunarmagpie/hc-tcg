@@ -71,7 +71,7 @@ export function getHermitCardDefaults(name: string) {
 	}
 }
 
-export function getAttack(
+export function createHermitAttackModel(
 	hermit: Card<CardProps & CanAttack>,
 	game: GameModel,
 	pos: CardPosModel,
