@@ -197,13 +197,15 @@ function* checkHermitHealth(game: GameModel) {
 					game.changeActiveRow(playerState, null)
 					playerState.hooks.onActiveRowChange.call(activeRow, null)
 				}
-				playerState.lives -= 1
 
-				// reward card
-				const opponentState = playerStates.find((s) => s.id !== playerState.id)
-				if (!opponentState) continue
-				const rewardCard = playerState.pile.shift()
-				if (rewardCard) opponentState.hand.push(rewardCard)
+				if (row.hermitCard.props.category === 'hermit') {
+					playerState.lives -= 1
+					// reward card
+					const opponentState = playerStates.find((s) => s.id !== playerState.id)
+					if (!opponentState) continue
+					const rewardCard = playerState.pile.shift()
+					if (rewardCard) opponentState.hand.push(rewardCard)
+				}
 			}
 		}
 

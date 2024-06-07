@@ -7,7 +7,7 @@ import {AttachableCard, attachableCardDefaults} from '../../base/attachable-card
 import {PlayCardLog} from '../../../types/cards'
 import attachableTo from '../../base/attachable'
 
-class ArmorStandEffectCard extends Card<AttachableCard & HasHealth> implements HasAttach {
+:class ArmorStandEffectCard extends Card<AttachableCard & HasHealth> implements HasAttach {
 	override props: AttachableCard & HasHealth = {
 		...attachableCardDefaults,
 		...hasHealthDefaults,
@@ -48,35 +48,6 @@ class ArmorStandEffectCard extends Card<AttachableCard & HasHealth> implements H
 			return blockedActions
 		})
 
-		player.hooks.afterAttack.add(this, (attack) => {
-			const attacker = attack.getAttacker()
-			if (!row.health && attacker && isTargetingPos(attack, pos)) {
-				// Discard to prevent losing a life
-				discardCard(game, row.hermitCard)
-
-				const activeRow = player.board.activeRow
-				const isActive = activeRow !== null && activeRow == pos.rowIndex
-				if (isActive && attacker.player.id !== player.id) {
-					// Reset the active row so the player can switch
-					game.changeActiveRow(player, null)
-				}
-			}
-		})
-
-		opponentPlayer.hooks.afterAttack.add(this, (attack) => {
-			const attacker = attack.getAttacker()
-			if (!row.health && attacker && isTargetingPos(attack, pos)) {
-				// Discard to prevent losing a life
-				const activeRow = player.board.activeRow
-				const isActive = activeRow !== null && activeRow == pos.rowIndex
-				if (isActive && attacker.player.id !== player.id) {
-					// Reset the active row so the player can switch
-					game.changeActiveRow(player, null)
-				}
-			}
-		})
-	}
-
 	onDetach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer, slot, row} = pos
 		if (slot && slot.type === 'hermit' && row) {
@@ -86,9 +57,7 @@ class ArmorStandEffectCard extends Card<AttachableCard & HasHealth> implements H
 		}
 
 		player.hooks.blockedActions.remove(this)
-		player.hooks.afterAttack.remove(this)
 		player.hooks.canAttach.remove(this)
-		opponentPlayer.hooks.afterAttack.remove(this)
 	}
 }
 
