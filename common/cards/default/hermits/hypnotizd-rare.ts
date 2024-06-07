@@ -4,54 +4,58 @@ import {HermitAttackType} from '../../../types/attack'
 import {PickRequest} from '../../../types/server-requests'
 import {getActiveRow, getNonEmptyRows} from '../../../utils/board'
 import {discardCard} from '../../../utils/movement'
-import {HermitCard, getAttack, hermitCardDefaults} from '../../base/hermit-card'
-import {Card, HasAttach} from '../../base/card'
+import {HermitCard, createHermitAttackModel, hermitCardDefaults} from '../../base/hermit-card'
+import {Card, GetAttack, HasAttach} from '../../base/card'
 
 /*
 - Has to support having two different afk targets (one for hypno, one for su effect like bow)
 - If the afk target for Hypno's ability & e.g. bow are the same, don't apply weakness twice
 - TODO - Can't use Got 'Em to attack AFK hermits even with Efficiency if Hypno has no item cards to discard
 */
-class HypnotizdRareHermitCard extends Card<HermitCard> implements HasAttach {
-	override props: HermitCard = {
-		...hermitCardDefaults,
-		id: 'hypnotizd_rare',
-		numericId: 37,
-		name: 'Hypno',
-		rarity: 'rare',
-		hermitType: 'miner',
-		health: 270,
-		primary: {
-			name: 'MmHmm',
-			cost: ['miner'],
-			damage: 60,
-			power: null,
-		},
-		secondary: {
-			name: "Got 'Em",
-			cost: ['miner', 'any'],
-			damage: 70,
-			power:
-				"You can choose to attack one of your opponent's AFK Hermits. If you do this, you must discard one item card attached to your active Hermit.",
-		},
+class HypnotizdRareHermitCard extends Card<HermitCard> implements HasAttach, GetAttack {
+	constructor() {
+		super({
+			...hermitCardDefaults,
+			id: 'hypnotizd_rare',
+			numericId: 37,
+			name: 'Hypno',
+			rarity: 'rare',
+			hermitType: 'miner',
+			health: 270,
+			primary: {
+				name: 'MmHmm',
+				cost: ['miner'],
+				damage: 60,
+				power: null,
+			},
+			secondary: {
+				name: "Got 'Em",
+				cost: ['miner', 'any'],
+				damage: 70,
+				power:
+					"You can choose to attack one of your opponent's AFK Hermits. If you do this, you must discard one item card attached to your active Hermit.",
+			},
+		})
 	}
 
+	private targetIndex: number | null = null
+	
 	getAttack(game: GameModel, pos: CardPosModel, hermitAttackType: HermitAttackType) {
 		const {opponentPlayer} = pos
-		const attack = getAttack(this, game, pos, hermitAttackType)
+		const attack = createHermitAttackModel(this, game, pos, hermitAttackType)
 
 		if (!attack || attack.type !== 'secondary') return attack
 
-		if (targetIndex === null) return attack
-		if (targetIndex === opponentPlayer.board.activeRow) return attack
+		if (this.targetIndex === null) return attack
+		if (this.targetIndex === opponentPlayer.board.activeRow) return attack
 
-		const targetRow = opponentPlayer.board.rows[targetIndex]
+		const targetRow = opponentPlayer.board.rows[this.targetIndex]
 		if (!targetRow.hermitCard) return attack
 
 		// Change attack target
-		attack.setTarget(this.id, {
+		attack.setTarget(this.props.id, {
 			player: opponentPlayer,
-			rowIndex: targetIndex,
+			rowIndex: this.targetIndex,
 			row: targetRow,
 		})
 
@@ -59,6 +63,7 @@ class HypnotizdRareHermitCard extends Card<HermitCard> implements HasAttach {
 
 		return newAttacks
 	}
+
 	onAttach(game: GameModel, pos: CardPosModel): void {
 		const {player, opponentPlayer} = pos
 
@@ -70,7 +75,7 @@ class HypnotizdRareHermitCard extends Card<HermitCard> implements HasAttach {
 
 			const itemRequest: PickRequest = {
 				playerId: player.id,
-				id: this.id,
+				id: this.props.id,
 				message: 'Choose an item to discard from your active Hermit.',
 				onResult(pickResult) {
 					if (pickResult.playerId !== player.id) return 'FAILURE_INVALID_PLAYER'
@@ -82,7 +87,7 @@ class HypnotizdRareHermitCard extends Card<HermitCard> implements HasAttach {
 					if (pickResult.slot.type !== 'item') return 'FAILURE_INVALID_SLOT'
 					if (!pickResult.card) return 'FAILURE_INVALID_SLOT'
 
-					if (pickResult.card.category !== 'item') return 'FAILURE_INVALID_SLOT'
+					if (pickResult.card.props.category !== 'item') return 'FAILURE_INVALID_SLOT'
 
 					discardCard(game, pickResult.card)
 
@@ -97,11 +102,12 @@ class HypnotizdRareHermitCard extends Card<HermitCard> implements HasAttach {
 					discardCard(game, itemCard)
 				},
 			}
+
 			game.addPickRequest({
 				playerId: player.id,
-				id: this.id,
+				id: this.props.id,
 				message: "Pick one of your opponent's Hermits",
-				onResult(pickResult) {
+				onResult: (pickResult) => {
 					if (pickResult.playerId !== opponentPlayer.id) return 'FAILURE_INVALID_PLAYER'
 
 					const rowIndex = pickResult.rowIndex
@@ -111,7 +117,7 @@ class HypnotizdRareHermitCard extends Card<HermitCard> implements HasAttach {
 					if (!pickResult.card) return 'FAILURE_INVALID_SLOT'
 
 					// Store the row index to use later
-					targetIndex = rowIndex
+					this.targetIndex = rowIndex
 
 					const isItemToDiscard = getActiveRow(player)?.itemCards.some((card) => {
 						if (!card) return false
@@ -126,12 +132,13 @@ class HypnotizdRareHermitCard extends Card<HermitCard> implements HasAttach {
 
 					return 'SUCCESS'
 				},
-				onTimeout() {
+				onTimeout: () => {
 					// We didn't choose anyone so we will just attack as normal
 				},
 			})
 		})
 	}
+
 	onDetach(game: GameModel, pos: CardPosModel): void {
 		const {player} = pos
 		player.hooks.getAttackRequests.remove(this)

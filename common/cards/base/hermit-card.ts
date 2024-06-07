@@ -18,9 +18,9 @@ import {CardCategoryT, PlayCardLog} from '../../types/cards'
 import {TurnActions} from '../../types/game-state'
 import {formatText} from '../../utils/formatting'
 import attachableTo from './attachable'
-import { HermitAttackType } from '../../types/attack'
-import { CardPosModel } from '../../models/card-pos-model'
-import { AttackModel } from '../../models/attack-model'
+import {HermitAttackType} from '../../types/attack'
+import {CardPosModel} from '../../models/card-pos-model'
+import {AttackModel} from '../../models/attack-model'
 
 export type HermitCard = CardProps &
 	HasHermitType &
@@ -71,6 +71,27 @@ export function getHermitCardDefaults(name: string) {
 	}
 }
 
+/*
+ * Get the attack for a specific hermit, using the `GetAttack` interface if needed.
+ */
+export function getHermitsAttack(
+	hermit: Card<CardProps & CanAttack>,
+	game: GameModel,
+	pos: CardPosModel,
+	hermitAttackType: HermitAttackType
+) {
+	let attack = null
+	if (hermit.implementsGetAttack()) {
+		attack = hermit.getAttack(game, pos, hermitAttackType)
+	} else {
+		attack = createHermitAttackModel(hermit, game, pos, hermitAttackType)
+	}
+	return attack
+}
+
+/*
+ * Create a AttackModel for a hermit card, ignoring the `GetAttack` interface.
+ */
 export function createHermitAttackModel(
 	hermit: Card<CardProps & CanAttack>,
 	game: GameModel,

@@ -14,7 +14,7 @@ import {AttackModel} from '../../models/attack-model'
 import {AttachmentExpression} from './attachable'
 
 export abstract class Card<T extends CardProps = CardProps> {
-	public props: T
+	public readonly props: T
 
 	constructor(props: T) {
 		this.props = props

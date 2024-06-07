@@ -1,4 +1,4 @@
-import {HermitCard, createHermitAttackModel, hermitCardDefaults} from '../../base/hermit-card'
+import {HermitCard, createHermitAttackModel, getHermitsAttack, hermitCardDefaults} from '../../base/hermit-card'
 import {Card, CardProps, GetAttack, HasAttach} from '../../base/card'
 import {GameModel} from '../../../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../../../models/card-pos-model'
@@ -46,7 +46,7 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, GetAtt
 		if (!this.attackType) return null
 
 		// Return the attack we picked from the card we picked
-		const newAttack = this.imitatingCard.getAttack(game, pos, this.attackType)
+		const newAttack = getHermitsAttack(this.imitatingCard, game, pos, this.attackType)
 		if (!newAttack) return null
 
 		const attackName =
@@ -74,11 +74,11 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, GetAtt
 			// Only activate power on secondary attack
 			if (hermitAttackType !== 'secondary') return
 
-			game.addPickRequest(
-				player.id,
-				this.props.id,
-				"Pick one of your opponent's Hermits",
-				(pickResult) => {
+			game.addPickRequest({
+				playerId: player.id,
+				id: this.props.id,
+				message: "Pick one of your opponent's Hermits",
+				onResult: (pickResult) => {
 					if (pickResult.playerId !== opponentPlayer.id) return 'FAILURE_INVALID_PLAYER'
 
 					const rowIndex = pickResult.rowIndex
@@ -91,9 +91,9 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, GetAtt
 					// No picking the same card as us
 					if (pickedCard.props.id === this.props.id) return 'FAILURE_WRONG_PICK'
 
-					game.addModalRequest(
-						player.id,
-						{
+					game.addModalRequest({
+						playerId: player.id,
+						data: {
 							modalId: 'copyAttack',
 							payload: {
 								modalName: 'Rendog: Choose an attack to copy',
@@ -101,7 +101,7 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, GetAtt
 								cardPos: getBasicCardPos(game, pickedCard),
 							},
 						},
-						(modalResult) => {
+						onResult: (modalResult) => {
 							if (!modalResult) return 'FAILURE_INVALID_DATA'
 							if (modalResult.cancel) {
 								// Cancel this attack so player can choose a different hermit to imitate
@@ -135,17 +135,17 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, GetAtt
 
 							return 'SUCCESS'
 						},
-						() => {
+						onTimeout: () => {
 							this.attackType = 'primary'
-						}
-					)
+						},
+					})
 
 					return 'SUCCESS'
 				},
-				() => {
+				onTimeout: () => {
 					// We didn't pick someone to imitate so do nothing
-				}
-			)
+				},
+			})
 		})
 
 		player.hooks.onActiveRowChange.add(this, (oldRow, newRow) => {
@@ -161,7 +161,7 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, GetAtt
 		player.hooks.blockedActions.add(this, (blockedActions) => {
 			// Block "Role Play" if there are not opposing Hermit cards other than rare Ren(s)
 			const opposingHermits = getNonEmptyRows(opponentPlayer, false).filter((rowPos) => {
-				return rowPos.row.hermitCard && rowPos.row.hermitCard.id !== this.props.id
+				return rowPos.row.hermitCard && rowPos.row.hermitCard.props.id !== this.props.id
 			}).length
 			if (
 				player.board.activeRow === pos.rowIndex &&

@@ -189,28 +189,11 @@ export class GameModel {
 		this.state.lastActionResult = {action, result}
 	}
 
-	public addPickRequest(
-		playerId: string,
-		id: string,
-		message: string,
-		onResult: (pickResult: PickInfo) => ActionResult,
-		onCancel?: () => void,
-		onTimeout?: () => void,
-		before: boolean = false
-	) {
-		let pickRequst: PickRequest = {
-			playerId,
-			id,
-			message,
-			onResult,
-			onCancel,
-			onTimeout,
-		}
-
+	public addPickRequest(pickRequest: PickRequest, before: boolean = false) {
 		if (before) {
-			this.state.pickRequests.unshift(pickRequst)
+			this.state.pickRequests.unshift(pickRequest)
 		} else {
-			this.state.pickRequests.push(pickRequst)
+			this.state.pickRequests.push(pickRequest)
 		}
 	}
 
@@ -232,20 +215,7 @@ export class GameModel {
 		}
 	}
 
-	public addModalRequest(
-		playerId: string,
-		data: ModalData,
-		onResult: (modalResult: any) => ActionResult,
-		onTimeout: () => void,
-		before = false
-	) {
-		let modalRequest = {
-			playerId,
-			data,
-			onResult,
-			onTimeout,
-			before,
-		}
+	public addModalRequest(modalRequest: ModalRequest, before: boolean = false) {
 		if (before) {
 			this.state.modalRequests.unshift(modalRequest)
 		} else {
