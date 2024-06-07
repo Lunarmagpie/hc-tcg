@@ -30,7 +30,7 @@ class ArmorStandEffectCard extends Card<AttachableCard & HasHealth> implements H
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {
-		const {player, opponentPlayer, row} = pos
+		const {player, row} = pos
 		if (!row) return
 
 		if (player.board.activeRow === null) {
