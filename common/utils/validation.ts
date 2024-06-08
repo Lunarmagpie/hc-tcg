@@ -1,5 +1,4 @@
 import {CONFIG, DEBUG_CONFIG, EXPANSIONS} from '../config'
-import {CARDS} from '../cards'
 import {getDeckCost} from './ranks'
 import {Card} from '../cards/base/card'
 

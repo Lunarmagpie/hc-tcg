@@ -17,7 +17,7 @@ import {GameHook, WaterfallHook} from 'common/types/hooks'
 import {Card} from 'common/cards/base/card'
 import {CardPosModel} from 'common/models/card-pos-model'
 import {HermitAttackType} from 'common/types/attack'
-import {getCardRank} from 'common/utils/ranks'
+import {getCardCost, getCardRank} from 'common/utils/ranks'
 
 ////////////////////////////////////////
 // @TODO sort this whole thing out properly
@@ -28,104 +28,105 @@ function randomBetween(min: number, max: number) {
 }
 
 export function getStarterPack(): Array<Card> {
-	const limits = CONFIG.limits
+	return []
+	// const limits = CONFIG.limits
 
-	// only allow some starting types
-	const startingTypes = ['balanced', 'builder', 'farm', 'miner', 'redstone']
-	const hermitTypesCount = randomBetween(2, 3)
-	const hermitTypes = Object.keys(STRENGTHS)
-		.filter((type) => startingTypes.includes(type))
-		.sort(() => 0.5 - Math.random())
-		.slice(0, hermitTypesCount)
+	// // only allow some starting types
+	// const startingTypes = ['balanced', 'builder', 'farm', 'miner', 'redstone']
+	// const hermitTypesCount = randomBetween(2, 3)
+	// const hermitTypes = Object.keys(STRENGTHS)
+	// 	.filter((type) => startingTypes.includes(type))
+	// 	.sort(() => 0.5 - Math.random())
+	// 	.slice(0, hermitTypesCount)
 
-	const cards = Object.values(CARDS).filter(
-		(card) => card.implementsHasHermitType() && !EXPANSIONS.disabled.includes(card.props.expansion)
-	)
+	// const cards = Object.values(CARDS).filter(
+	// 	(card) => card.implementsHasHermitType() && !EXPANSIONS.disabled.includes(card.props.expansion)
+	// )
 
-	const effectCards = cards.filter((card) =>
-		['singleUse', 'attachable'].includes(card.props.category)
-	)
-	const hermitCount = hermitTypesCount === 2 ? 8 : 10
+	// const effectCards = cards.filter((card) =>
+	// 	['singleUse', 'attachable'].includes(card.props.category)
+	// )
+	// const hermitCount = hermitTypesCount === 2 ? 8 : 10
 
-	const deck: Array<Card> = []
+	// const deck: Array<Card> = []
 
-	let itemCounts = {
-		[hermitTypes[0]]: {
-			items: 0,
-			tokens: 0,
-		},
-		[hermitTypes[1]]: {
-			items: 0,
-			tokens: 0,
-		},
-	}
-	if (hermitTypes[2]) {
-		itemCounts[hermitTypes[2]] = {
-			items: 0,
-			tokens: 0,
-		}
-	}
-	let tokens = 0
+	// let itemCounts = {
+	// 	[hermitTypes[0]]: {
+	// 		items: 0,
+	// 		tokens: 0,
+	// 	},
+	// 	[hermitTypes[1]]: {
+	// 		items: 0,
+	// 		tokens: 0,
+	// 	},
+	// }
+	// if (hermitTypes[2]) {
+	// 	itemCounts[hermitTypes[2]] = {
+	// 		items: 0,
+	// 		tokens: 0,
+	// 	}
+	// }
+	// let tokens = 0
 
-	// hermits, but not diamond ones
-	let hermitCards = cards.filter(
-		(card) =>
-			card.props.category === 'hermit' && getCardRank(card.props.id) !== ('diamond' as RankT)
-	)
+	// // hermits, but not diamond ones
+	// let hermitCards = cards.filter(
+	// 	(card) => card.props.category === 'hermit' && getCardRank(card.props.id).name !== 'diamond'
+	// )
 
-	while (deck.length < hermitCount && hermitCards.length > 0) {
-		const randomIndex = Math.floor(Math.random() * hermitCards.length)
-		const hermitCard = hermitCards[randomIndex]
+	// while (deck.length < hermitCount && hermitCards.length > 0) {
+	// 	const randomIndex = Math.floor(Math.random() * hermitCards.length)
+	// 	const hermitCard = hermitCards[randomIndex]
+	// 	if (!hermitCard.implementsHasHermitType()) continue
 
-		// remove this option
-		hermitCards = hermitCards.filter((card, index) => index !== randomIndex)
+	// 	// remove this option
+	// 	hermitCards = hermitCards.filter((card, index) => index !== randomIndex)
 
-		// add 1 - 3 of this hermit
-		const hermitAmount = Math.min(randomBetween(1, 3), hermitCount - deck.length)
+	// 	// add 1 - 3 of this hermit
+	// 	const hermitAmount = Math.min(randomBetween(1, 3), hermitCount - deck.length)
 
-		tokens += getCardCost(hermitCard) * hermitAmount
-		for (let i = 0; i < hermitAmount; i++) {
-			deck.push(hermitCard)
-			itemCounts[hermitCard.hermitType].items += 2
-		}
-	}
+	// 	tokens += getCardCost(hermitCard) * hermitAmount
+	// 	for (let i = 0; i < hermitAmount; i++) {
+	// 		deck.push(hermitCard)
+	// 		itemCounts[hermitCard.props.hermitType].items += 2
+	// 	}
+	// }
 
-	// items
-	for (let hermitType in itemCounts) {
-		let counts = itemCounts[hermitType]
+	// // items
+	// for (let hermitType in itemCounts) {
+	// 	let counts = itemCounts[hermitType]
 
-		for (let i = 0; i < counts.items; i++) {
-			deck.push(CARDS[`item_${hermitType}_common`])
-		}
-	}
+	// 	for (let i = 0; i < counts.items; i++) {
+	// 		deck.push(CARDS[`item_${hermitType}_common`])
+	// 	}
+	// }
 
-	let loopBreaker = 0
-	// effects
-	while (deck.length < limits.maxCards) {
-		const effectCard = effectCards[Math.floor(Math.random() * effectCards.length)]
+	// let loopBreaker = 0
+	// // effects
+	// while (deck.length < limits.maxCards) {
+	// 	const effectCard = effectCards[Math.floor(Math.random() * effectCards.length)]
 
-		const duplicates = deck.filter((card) => card.id === effectCard.id)
-		if (duplicates.length >= limits.maxDuplicates) continue
+	// 	const duplicates = deck.filter((card) => card.id === effectCard.id)
+	// 	if (duplicates.length >= limits.maxDuplicates) continue
 
-		const tokenCost = getCardCost(effectCard)
-		if (tokens + tokenCost >= limits.maxDeckCost) {
-			loopBreaker++
-			continue
-		} else {
-			loopBreaker = 0
-		}
-		if (loopBreaker >= 10000) {
-			const err = new Error()
-			console.log('Broke out of loop while generating starter deck!', err.stack)
-			break
-		}
+	// 	const tokenCost = getCardCost(effectCard)
+	// 	if (tokens + tokenCost >= limits.maxDeckCost) {
+	// 		loopBreaker++
+	// 		continue
+	// 	} else {
+	// 		loopBreaker = 0
+	// 	}
+	// 	if (loopBreaker >= 10000) {
+	// 		const err = new Error()
+	// 		console.log('Broke out of loop while generating starter deck!', err.stack)
+	// 		break
+	// 	}
 
-		tokens += tokenCost
-		deck.push(effectCard)
-	}
+	// 	tokens += tokenCost
+	// 	deck.push(effectCard)
+	// }
 
-	const deckIds: Array<string> = deck.map((card) => card.id)
-	return deckIds
+	// const deckIds: Array<string> = deck.map((card) => card.id)
+	// return deckIds
 }
 
 export function getEmptyRow(): RowState {

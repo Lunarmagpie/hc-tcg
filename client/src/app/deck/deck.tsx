@@ -47,7 +47,7 @@ export const sortCards = (cards: Array<Card>): Array<Card> => {
 
 		if (cardA.props.category !== cardB.props.category) {
 			// seperate by types first
-			return TYPE_ORDER[cardA.category] - TYPE_ORDER[cardB.category]
+			return TYPE_ORDER[cardA.props.category] - TYPE_ORDER[cardB.props.category]
 		} else if (
 			// then by hermit types
 			cardA.implementsHasHermitType() &&
@@ -140,7 +140,7 @@ const Deck = ({setMenuSection}: Props) => {
 		if (validateDeck(loadedDeck.cards)) {
 			return setShowValidateDeckModal(true)
 		}
-
+		
 		setActiveDeck(loadedDeck.name)
 		dispatchToast(selectedDeckToast)
 
