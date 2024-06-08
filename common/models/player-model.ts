@@ -27,9 +27,7 @@ export class PlayerModel {
 		this.internalDeck = {
 			name: 'Starter Deck',
 			icon: 'any',
-			cards: getStarterPack().map((id) => {
-				return {cardId: id, cardInstance: Math.random().toString()}
-			}),
+			cards: getStarterPack(),
 		}
 
 		this.name = playerName
@@ -61,7 +59,7 @@ export class PlayerModel {
 
 	setPlayerDeck(newDeck: PlayerDeckT) {
 		if (!newDeck || !newDeck.cards) return
-		const validationMessage = validateDeck(newDeck.cards.map((card) => card.props.id))
+		const validationMessage = validateDeck(newDeck.cards)
 		if (validationMessage) return
 		this.internalDeck = newDeck
 	}

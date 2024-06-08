@@ -3,7 +3,6 @@ import {STRENGTHS} from 'common/const/strengths'
 import {CONFIG, DEBUG_CONFIG, EXPANSIONS} from 'common/config'
 import {
 	TurnActions,
-	CardT,
 	CoinFlipT,
 	LocalGameState,
 	LocalPlayerState,
@@ -12,16 +11,13 @@ import {
 } from 'common/types/game-state'
 import {GameModel} from 'common/models/game-model'
 import {PlayerModel} from 'common/models/player-model'
-import {EnergyT, SlotPos} from 'common/types/cards'
+import {EnergyT, RankT, SlotPos} from 'common/types/cards'
 import {AttackModel} from 'common/models/attack-model'
 import {GameHook, WaterfallHook} from 'common/types/hooks'
-import Card, {CanAttachResult, implementsHasHermitType} from 'common/cards/base/card'
-import HermitCard from 'common/cards/base/hermit-card'
-import ItemCard from 'common/cards/base/item-card'
-import EffectCard from 'common/cards/base/effect-card'
+import {Card} from 'common/cards/base/card'
 import {CardPosModel} from 'common/models/card-pos-model'
-import {getCardCost, getCardRank} from 'common/utils/ranks'
 import {HermitAttackType} from 'common/types/attack'
+import {getCardRank} from 'common/utils/ranks'
 
 ////////////////////////////////////////
 // @TODO sort this whole thing out properly
@@ -31,19 +27,7 @@ function randomBetween(min: number, max: number) {
 	return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
-const isHermitOrItem: (cardInfo: Card) => cardInfo is HermitCard | ItemCard = (
-	cardInfo
-): cardInfo is HermitCard | ItemCard => ['hermit', 'item'].includes(cardInfo.type)
-
-const isHermit: (cardInfo: Card) => cardInfo is HermitCard = (cardInfo): cardInfo is HermitCard =>
-	cardInfo.type === 'hermit'
-
-const isEffect: (cardInfo: Card) => cardInfo is EffectCard = (cardInfo): cardInfo is EffectCard =>
-	['effect', 'single_use'].includes(cardInfo.type)
-
-export function getStarterPack() {
-	return []
-
+export function getStarterPack(): Array<Card> {
 	const limits = CONFIG.limits
 
 	// only allow some starting types
@@ -55,11 +39,12 @@ export function getStarterPack() {
 		.slice(0, hermitTypesCount)
 
 	const cards = Object.values(CARDS).filter(
-		(cardInfo) =>
-			implementsHasHermitType(cardInfo) && !EXPANSIONS.disabled.includes(cardInfo.expansion)
+		(card) => card.implementsHasHermitType() && !EXPANSIONS.disabled.includes(card.props.expansion)
 	)
 
-	const effectCards = cards.filter(isEffect)
+	const effectCards = cards.filter((card) =>
+		['singleUse', 'attachable'].includes(card.props.category)
+	)
 	const hermitCount = hermitTypesCount === 2 ? 8 : 10
 
 	const deck: Array<Card> = []
@@ -83,7 +68,10 @@ export function getStarterPack() {
 	let tokens = 0
 
 	// hermits, but not diamond ones
-	let hermitCards = cards.filter(isHermit).filter((card) => getCardRank(card.id).name !== 'diamond')
+	let hermitCards = cards.filter(
+		(card) =>
+			card.props.category === 'hermit' && getCardRank(card.props.id) !== ('diamond' as RankT)
+	)
 
 	while (deck.length < hermitCount && hermitCards.length > 0) {
 		const randomIndex = Math.floor(Math.random() * hermitCards.length)
@@ -223,7 +211,7 @@ export function getPlayerState(player: PlayerModel): PlayerState {
 			availableEnergy: new WaterfallHook<(availableEnergy: Array<EnergyT>) => Array<EnergyT>>(),
 			blockedActions: new WaterfallHook<(blockedActions: TurnActions) => TurnActions>(),
 
-			canAttach: new GameHook<(canAttach: CanAttachResult, pos: CardPosModel) => void>(),
+			canAttach: new GameHook<(canAttach: boolean, pos: CardPosModel) => void>(),
 			onAttach: new GameHook<(instance: Card) => void>(),
 			onDetach: new GameHook<(instance: Card) => void>(),
 			beforeApply: new GameHook<() => void>(),
@@ -240,8 +228,8 @@ export function getPlayerState(player: PlayerModel): PlayerState {
 			afterAttack: new GameHook<(attack: AttackModel) => void>(),
 			afterDefence: new GameHook<(attack: AttackModel) => void>(),
 			onTurnStart: new GameHook<() => void>(),
-			onTurnEnd: new GameHook<(drawCards: Array<CardT>) => void>(),
-			onCoinFlip: new GameHook<(card: CardT, coinFlips: Array<CoinFlipT>) => Array<CoinFlipT>>(),
+			onTurnEnd: new GameHook<(drawCards: Array<Card>) => void>(),
+			onCoinFlip: new GameHook<(card: Card, coinFlips: Array<CoinFlipT>) => Array<CoinFlipT>>(),
 			beforeActiveRowChange: new GameHook<
 				(oldRow: number | null, newRow: number | null) => boolean
 			>(),

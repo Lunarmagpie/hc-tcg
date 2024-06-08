@@ -3,10 +3,10 @@ import {RowState} from 'common/types/game-state'
 import css from './board.module.scss'
 import {SlotTypeT} from 'common/types/cards'
 import {HealthIndicator} from 'common/cards/base/health-card'
-import {Card, implementsHasHealth} from 'common/cards/base/card'
-import StatusEffect from 'common/status-effects/status-effect'
+import {Card} from 'common/cards/base/card'
 import StatusEffectComponent from 'components/status-effects/status-effect'
 import CardComponent from 'components/card'
+import {StatusEffect} from 'common/status-effects/status-effect'
 
 export type SlotProps = {
 	type: SlotTypeT
@@ -29,8 +29,14 @@ const SlotComponent = ({
 	let cardInfo: Card | null = card
 	if (type === 'health' && rowState?.health) {
 		cardInfo = HealthIndicator()
-		if (!implementsHasHealth(cardInfo)) return null
-		cardInfo.health = rowState.health
+		if (!cardInfo.implementsHasHealth()) return null
+		cardInfo.props.health = rowState.health
+	}
+
+	function getDuration(statusEffect: StatusEffect): number {
+		if (statusEffect.implementsDuration()) return statusEffect.props.duration
+		if (statusEffect.implementsCounter()) return statusEffect.props.counter
+		return 0
 	}
 
 	const renderStatusEffects = (cleanedStatusEffects: StatusEffect[]) => {
@@ -38,9 +44,12 @@ const SlotComponent = ({
 			<div className={css.statusEffectContainer}>
 				{cleanedStatusEffects.map((statusEffect) => {
 					if (!statusEffect) return null
-					if (statusEffect.damageEffect == true) return null
+					if (statusEffect.props.damageEffect == true) return null
 					return (
-						<StatusEffectComponent statusEffect={statusEffect} duration={statusEffect.duration} />
+						<StatusEffectComponent
+							statusEffect={statusEffect}
+							duration={getDuration(statusEffect)}
+						/>
 					)
 				})}
 			</div>
@@ -52,7 +61,7 @@ const SlotComponent = ({
 				{cleanedStatusEffects
 					? cleanedStatusEffects.map((statusEffect) => {
 							if (!statusEffect) return null
-							if (statusEffect.damageEffect == false) return null
+							if (statusEffect.props.damageEffect == false) return null
 							return <StatusEffectComponent statusEffect={statusEffect} />
 					  })
 					: null}
@@ -63,13 +72,14 @@ const SlotComponent = ({
 	const hermitStatusEffects = Array.from(
 		new Set(
 			statusEffects
-				.filter((a) => rowState?.hermitCard && a.target == rowState.hermitCard)
+				.filter((a) => rowState?.hermitCard && a.props.target == rowState.hermitCard)
 				.map((a) => a) || []
 		)
 	)
 	const effectStatusEffects = Array.from(
 		new Set(
-			statusEffects.filter((a) => rowState?.effectCard && a.target == rowState.effectCard) || []
+			statusEffects.filter((a) => rowState?.effectCard && a.props.target == rowState.effectCard) ||
+				[]
 		)
 	)
 	const frameImg = type === 'hermit' ? '/images/game/frame_glow.png' : '/images/game/frame.png'

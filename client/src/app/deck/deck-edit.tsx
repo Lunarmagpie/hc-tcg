@@ -132,22 +132,22 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 	const filteredCards = CARDS.filter(
 		(card) =>
 			// Card Name Filter
-			card.name.toLowerCase().includes(deferredTextQuery.toLowerCase()) &&
+			card.props.name.toLowerCase().includes(deferredTextQuery.toLowerCase()) &&
 			// Card Type Filter
-			(implementsHasHermitType(card) ? card.hermitType.includes(typeQuery) : card) &&
+			(card.implementsHasHermitType() ? card.props.hermitType.includes(typeQuery) : card) &&
 			// Card Rarity Filter
-			(rankQuery === '' || getCardRank(card.id).name === rankQuery) &&
+			(rankQuery === '' || getCardRank(card.props.id).name === rankQuery) &&
 			// Card Expansion Filter
-			(expansionQuery === '' || card.expansion === expansionQuery) &&
+			(expansionQuery === '' || card.props.expansion === expansionQuery) &&
 			// Don't show disabled cards
-			!EXPANSIONS.disabled.includes(card.expansion)
+			!EXPANSIONS.disabled.includes(card.props.expansion)
 	)
 
 	const selectedCards = {
-		hermits: loadedDeck.cards.filter((card) => card.category === 'hermit'),
-		items: loadedDeck.cards.filter((card) => card.category === 'item'),
-		attachableEffects: loadedDeck.cards.filter((card) => card.category === 'attachable'),
-		singleUseEffects: loadedDeck.cards.filter((card) => card.category === 'single_use'),
+		hermits: loadedDeck.cards.filter((card) => card.props.category === 'hermit'),
+		items: loadedDeck.cards.filter((card) => card.props.category === 'item'),
+		attachableEffects: loadedDeck.cards.filter((card) => card.props.category === 'attachable'),
+		singleUseEffects: loadedDeck.cards.filter((card) => card.props.category === 'single_use'),
 	}
 
 	//CARD LOGIC
@@ -163,7 +163,7 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 	const removeCard = (card: Card) => {
 		setLoadedDeck((loadedDeck) => ({
 			...loadedDeck,
-			cards: loadedDeck.cards.filter((pickedCard) => pickedCard.id !== card.id),
+			cards: loadedDeck.cards.filter((pickedCard) => pickedCard.props.id !== card.props.id),
 		}))
 	}
 
@@ -226,7 +226,7 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 		})
 		back()
 	}
-	const validationMessage = validateDeck(loadedDeck.cards.map((card) => card.id))
+	const validationMessage = validateDeck(loadedDeck.cards)
 
 	return (
 		<>
@@ -332,28 +332,32 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 				>
 					<Accordion header={'Hermits'}>
 						<CardList
-							cards={sortCards(filteredCards).filter((card) => card.category === 'hermit')}
+							cards={sortCards(filteredCards).filter((card) => card.props.category === 'hermit')}
 							wrap={true}
 							onClick={addCard}
 						/>
 					</Accordion>
 					<Accordion header={'Attachable Effects'}>
 						<CardList
-							cards={sortCards(filteredCards).filter((card) => card.category === 'attachable')}
+							cards={sortCards(filteredCards).filter(
+								(card) => card.props.category === 'attachable'
+							)}
 							wrap={true}
 							onClick={addCard}
 						/>
 					</Accordion>
 					<Accordion header={'Single Use Effects'}>
 						<CardList
-							cards={sortCards(filteredCards).filter((card) => card.category === 'single_use')}
+							cards={sortCards(filteredCards).filter(
+								(card) => card.props.category === 'single_use'
+							)}
 							wrap={true}
 							onClick={addCard}
 						/>
 					</Accordion>
 					<Accordion header={'Items'}>
 						<CardList
-							cards={sortCards(filteredCards).filter((card) => card.category === 'item')}
+							cards={sortCards(filteredCards).filter((card) => card.props.category === 'item')}
 							wrap={true}
 							onClick={addCard}
 						/>
@@ -371,7 +375,7 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 									<span className={css.hideOnMobile}>cards</span>
 								</p>
 								<div className={classNames(css.cardCount, css.dark, css.tokens)}>
-									{getDeckCost(loadedDeck.cards.map((card) => card.id))}/{CONFIG.limits.maxDeckCost}{' '}
+									{getDeckCost(loadedDeck.cards)}/{CONFIG.limits.maxDeckCost}{' '}
 									<span className={css.hideOnMobile}>tokens</span>
 								</div>
 							</div>

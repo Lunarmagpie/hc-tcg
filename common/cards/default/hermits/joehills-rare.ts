@@ -3,7 +3,7 @@ import {GameModel} from '../../../models/game-model'
 import {applyStatusEffect} from '../../../utils/board'
 import {flipCoin} from '../../../utils/coinFlips'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {Card, HasAttach, overridesAttachDefaults} from '../../base/card'
+import {Card, HasAttach} from '../../base/card'
 import UsedClockStatusEffect from '../../../status-effects/used-clock'
 
 const JoeHillsRareHermitCard = (): HermitCard & HasAttach => {

@@ -23,7 +23,7 @@ class FireStatusEffect extends StatusEffect<StatusEffectProps> {
 		const {player, opponentPlayer} = pos
 
 		const hasDamageEffect = game.state.statusEffects.some(
-			(a) => a.target === pos.card && a.damageEffect === true
+			(a) => a.props.target === pos.card && a.props.damageEffect === true
 		)
 
 		if (hasDamageEffect) return

@@ -1,7 +1,6 @@
 import {RANKS} from '../config'
 import {RankT} from '../types/cards'
-import Card from '../cards/base/card'
-import {CARDS} from '../cards'
+import {Card} from '../cards/base/card'
 
 export function getCardRank(cardId: string): RankT {
 	let rank: RankT = {name: 'stone', cost: 0}
@@ -20,18 +19,13 @@ export function getCardRank(cardId: string): RankT {
 }
 
 export function getCardCost(card: Card) {
-	const rank = getCardRank(card.id)
+	const rank = getCardRank(card.props.id)
 	return rank.cost
 }
 
-export function getDeckCost(deckCards: Array<string>) {
+export function getDeckCost(deckCards: Array<Card>) {
+	return deckCards.reduce((sum, card) => {
+		return getCardCost(card) + sum
+	}, 0)
 	let tokenCost = 0
-
-	deckCards = deckCards.filter((cardId) => CARDS[cardId])
-
-	deckCards.forEach((cardId) => {
-		tokenCost += getCardCost(CARDS[cardId])
-	})
-
-	return tokenCost
 }

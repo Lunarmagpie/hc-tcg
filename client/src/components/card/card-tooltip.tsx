@@ -9,8 +9,7 @@ import {GLOSSARY} from 'common/glossary'
 import {useSelector} from 'react-redux'
 import {getSettings} from 'logic/local-settings/local-settings-selectors'
 import {FormattedText} from 'components/formatting/formatting'
-import {Card, CardProps} from 'common/cards/base/card'
-import {HermitCard} from 'common/cards/base/hermit-card'
+import {Card} from 'common/cards/base/card'
 
 const HERMIT_TYPES: Record<string, string> = {
 	balanced: 'Balanced',
@@ -39,8 +38,9 @@ const joinJsx = (array: Array<React.ReactNode>) => {
 	return array.reduce((prev: any, curr: any): any => [prev, ' ', curr])
 }
 
-const getStrengthsAndWeaknesses = (card: Card<HermitCard>): React.ReactNode => {
+const getStrengthsAndWeaknesses = (card: Card): React.ReactNode => {
 	if (card.props.category !== 'hermit') return null
+	if (!card.implementsHasHermitType()) return null
 
 	const strengths = STRENGTHS[card.props.hermitType]
 	const weaknesses = Object.entries(STRENGTHS)
@@ -93,35 +93,21 @@ const getRank = (card: Card): React.ReactNode => {
 }
 
 const getExpansion = (card: Card): React.ReactNode => {
-	if (card.getExpansion() !== 'default') {
-		const expansion = card.getExpansion() as
-			| 'default'
-			| 'alter_egos'
-			| 'advent_of_tcg'
-			| 'alter_egos_ii'
+	if (card.props.expansion !== 'default') {
+		const expansion = card.props.expansion
 		return (
 			<div className={classNames(css.expansion, css[expansion])}>
-				■ {EXPANSIONS.expansions[expansion]} Card ■
+				■ {(EXPANSIONS.expansions as Record<string, string>)[expansion]} Card ■
 			</div>
 		)
 	}
 }
 
-const getAttach = (card: Card): React.ReactNode => {
-	if (!card.showAttachTooltip()) return null
-	return <div className={css.attach}>Attach</div>
-}
-
-const getSingleUse = (card: Card): React.ReactNode => {
-	if (!card.showSingleUseTooltip()) return null
-	return <div className={css.singleUse}>Single Use</div>
-}
-
 const getHermitType = (card: Card): React.ReactNode => {
-	if (card instanceof HermitCard) {
+	if (card.props.category === 'hermit' && card.implementsHasHermitType()) {
 		return (
-			<div className={classNames(css.hermitType, css[card.hermitType])}>
-				{HERMIT_TYPES[card.hermitType] || card.hermitType} Type
+			<div className={classNames(css.hermitType, css[card.props.hermitType])}>
+				{HERMIT_TYPES[card.props.hermitType] || card.props.hermitType} Type
 			</div>
 		)
 	}
@@ -129,34 +115,34 @@ const getHermitType = (card: Card): React.ReactNode => {
 }
 
 const getSidebarDescriptions = (card: Card): React.ReactNode => {
-	return card.sidebarDescriptions.map((description, i) => {
-		if (description.type === 'statusEffect') {
-			const statusEffect = description.name
-			return (
-				<div key={i} className={classNames(css.cardTooltip, css.small)}>
-					<b>
-						<u>{statusEffect.name}</u>
-					</b>
-					<p>{statusEffect.description}</p>
-				</div>
-			)
-		}
-		if (description.type === 'glossary') {
-			const glossaryItem = description.name
-			return (
-				<div key={i} className={classNames(css.cardTooltip, css.small)}>
-					<b>
-						<u>{GLOSSARY[glossaryItem].name}</u>
-					</b>
-					<p>{GLOSSARY[glossaryItem].description}</p>
-				</div>
-			)
-		}
-	})
+	// return card.props.sidebarDescriptions.map((description, i) => {
+	// 	if (description.type === 'statusEffect') {
+	// 		const statusEffect = description.name
+	// 		return (
+	// 			<div key={i} className={classNames(css.cardTooltip, css.small)}>
+	// 				<b>
+	// 					<u>{statusEffect.name}</u>
+	// 				</b>
+	// 				<p>{statusEffect.description}</p>
+	// 			</div>
+	// 		)
+	// 	}
+	// 	if (description.type === 'glossary') {
+	// 		const glossaryItem = description.name
+	// 		return (
+	// 			<div key={i} className={classNames(css.cardTooltip, css.small)}>
+	// 				<b>
+	// 					<u>{GLOSSARY[glossaryItem].name}</u>
+	// 				</b>
+	// 				<p>{GLOSSARY[glossaryItem].description}</p>
+	// 			</div>
+	// 		)
+	// 	}
+	// })
+	return <div></div>
 }
 
 const CardTooltip = ({card}: Props) => {
-	if (card instanceof HealthCard) return null
 	const settings = useSelector(getSettings)
 
 	return (
@@ -168,8 +154,6 @@ const CardTooltip = ({card}: Props) => {
 				<div className={css.topLine}>
 					{getName(card)}
 					{getHermitType(card)}
-					{getAttach(card)}
-					{getSingleUse(card)}
 				</div>
 				<div className={css.description}>
 					{getExpansion(card)}

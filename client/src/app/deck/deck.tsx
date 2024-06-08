@@ -29,7 +29,7 @@ import {
 } from 'logic/saved-decks/saved-decks'
 import {playSound} from 'logic/sound/sound-actions'
 import {MassExportModal} from 'components/import-export/mass-export-modal'
-import {Card, implementsHasHermitType} from 'common/cards/base/card'
+import {Card} from 'common/cards/base/card'
 import {CardCategoryT} from 'common/types/cards'
 
 const TYPE_ORDER: Record<CardCategoryT, number> = {
@@ -45,34 +45,34 @@ export const sortCards = (cards: Array<Card>): Array<Card> => {
 		const cardCostA = getCardCost(cardA)
 		const cardCostB = getCardCost(cardB)
 
-		if (cardA.category !== cardB.category) {
+		if (cardA.props.category !== cardB.props.category) {
 			// seperate by types first
 			return TYPE_ORDER[cardA.category] - TYPE_ORDER[cardB.category]
 		} else if (
 			// then by hermit types
-			implementsHasHermitType(cardA) &&
-			implementsHasHermitType(cardB) &&
-			cardA.hermitType !== cardB.hermitType
+			cardA.implementsHasHermitType() &&
+			cardB.implementsHasHermitType() &&
+			cardA.props.hermitType !== cardB.props.hermitType
 		) {
-			return cardA.hermitType.localeCompare(cardB.hermitType)
+			return cardA.props.hermitType.localeCompare(cardB.props.hermitType)
 		} else if (
-			cardA.category === 'hermit' &&
-			cardB.category === 'hermit' &&
-			cardA.expansion !== cardB.expansion
+			cardA.props.category === 'hermit' &&
+			cardB.props.category === 'hermit' &&
+			cardA.props.expansion !== cardB.props.expansion
 		) {
 			// then by expansion if they are both hermits
-			return cardA.expansion.localeCompare(cardA.expansion)
+			return cardA.props.expansion.localeCompare(cardA.props.expansion)
 		} else if (cardCostA !== cardCostB) {
 			// order by ranks
 			return cardCostA - cardCostB
-		} else if (cardA.name !== cardB.name) {
-			return cardA.name.localeCompare(cardB.name)
+		} else if (cardA.props.name !== cardB.props.name) {
+			return cardA.props.name.localeCompare(cardB.props.name)
 		}
 
 		// rarity is our last hope
 		const rarities = ['common', 'rare', 'ultra_rare']
-		const rarityValueA = rarities.findIndex((s) => s === cardB.rarity) + 1
-		const rarityValueB = rarities.findIndex((s) => s === cardB.rarity) + 1
+		const rarityValueA = rarities.findIndex((s) => s === cardB.props.rarity) + 1
+		const rarityValueB = rarities.findIndex((s) => s === cardB.props.rarity) + 1
 		return rarityValueA - rarityValueB
 	})
 }
@@ -81,9 +81,7 @@ export const cardGroupHeader = (title: string, cards: Card[]) => (
 	<p className={css.cardGroupHeader}>
 		{`${title} `}
 		<span style={{fontSize: '0.9rem'}}>{`(${cards.length}) `}</span>
-		<span className={classNames(css.tokens, css.tokenHeader)}>
-			{getDeckCost(cards.map((card) => card.id))} tokens
-		</span>
+		<span className={classNames(css.tokens, css.tokenHeader)}>{getDeckCost(cards)} tokens</span>
 	</p>
 )
 
@@ -139,7 +137,7 @@ const Deck = ({setMenuSection}: Props) => {
 
 	// MENU LOGIC
 	const backToMenu = () => {
-		if (validateDeck(loadedDeck.cards.map((card) => card.id))) {
+		if (validateDeck(loadedDeck.cards)) {
 			return setShowValidateDeckModal(true)
 		}
 
@@ -247,12 +245,12 @@ const Deck = ({setMenuSection}: Props) => {
 			</li>
 		)
 	})
-	const validationMessage = validateDeck(loadedDeck.cards.map((card) => card.id))
+	const validationMessage = validateDeck(loadedDeck.cards)
 	const selectedCards = {
-		hermits: loadedDeck.cards.filter((card) => card.category === 'hermit'),
-		items: loadedDeck.cards.filter((card) => card.category === 'item'),
-		attachableEffects: loadedDeck.cards.filter((card) => card.category === 'attachable'),
-		singleUseEffects: loadedDeck.cards.filter((card) => card.category === 'single_use'),
+		hermits: loadedDeck.cards.filter((card) => card.props.category === 'hermit'),
+		items: loadedDeck.cards.filter((card) => card.props.category === 'item'),
+		attachableEffects: loadedDeck.cards.filter((card) => card.props.category === 'attachable'),
+		singleUseEffects: loadedDeck.cards.filter((card) => card.props.category === 'single_use'),
 	}
 
 	//MISC
@@ -347,8 +345,8 @@ const Deck = ({setMenuSection}: Props) => {
 									</p>
 									<div className={css.cardCount}>
 										<p className={css.tokens}>
-											{getDeckCost(loadedDeck.cards.map((card) => card.id))}/
-											{CONFIG.limits.maxDeckCost} <span className={css.hideOnMobile}>tokens</span>
+											{getDeckCost(loadedDeck.cards)}/{CONFIG.limits.maxDeckCost}{' '}
+											<span className={css.hideOnMobile}>tokens</span>
 										</p>
 									</div>
 								</div>
@@ -486,7 +484,6 @@ const Deck = ({setMenuSection}: Props) => {
 		switch (mode) {
 			case 'select':
 				return <SelectDeck />
-				break
 			case 'edit':
 				return (
 					<EditDeck
@@ -496,7 +493,6 @@ const Deck = ({setMenuSection}: Props) => {
 						deck={loadedDeck}
 					/>
 				)
-				break
 			case 'create':
 				return (
 					<EditDeck
@@ -510,7 +506,6 @@ const Deck = ({setMenuSection}: Props) => {
 						}}
 					/>
 				)
-				break
 			default:
 				return <SelectDeck />
 		}
