@@ -22,7 +22,10 @@ export abstract class Card<T extends CardProps = CardProps> {
 		this.props = props
 	}
 
-	equals(this: Card<T>, otherCard: Card<T> | null | undefined): boolean {
+	equals<U extends CardProps>(
+		this: Card<T>,
+		otherCard: Card<U> | null | undefined
+	): this is Card<T & U> {
 		if (otherCard === null || otherCard === undefined) return false
 		if (this.instance !== otherCard.instance) return false
 		return true

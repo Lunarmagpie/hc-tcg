@@ -15,7 +15,7 @@ import adventOfTcgSingleUseCards from './advent-of-tcg/single-use'
 
 import {Card} from './base/card'
 
-export const CARDS: Array<Card> = [
+export const CARDS: Array<typeof Card> = [
 	// ...defaultAttachableCards,
 	...defaultHermitCards,
 	...defaultItemCards,
