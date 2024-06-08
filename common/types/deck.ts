@@ -21,3 +21,10 @@ export type PlayerDeckT = {
 		| 'terraform'
 	cards: Array<Card>
 }
+
+// Weird type needed for importing and exporting. Hopefully can be removed when we redo the system.
+export type SavedDeckT = {
+	name: string
+	icon: PlayerDeckT['icon']
+	cards: Array<{id: string}>
+}
