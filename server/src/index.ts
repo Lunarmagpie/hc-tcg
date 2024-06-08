@@ -6,7 +6,6 @@ import cors from 'cors'
 import {CONFIG} from 'common/config'
 import startSocketIO from './sockets'
 import {registerApis} from './api'
-import {Card} from 'common/cards/base/card'
 
 const port = process.env.PORT || CONFIG.port || 9000
 
@@ -46,6 +45,3 @@ app.get('/', (req, res) => {
 server.listen(port, () => {
 	console.log(`Server listening on port ${port}`)
 })
-
-const card = Card.new('cubfan135_rare')
-console.log(card)
