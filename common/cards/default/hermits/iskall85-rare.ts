@@ -4,29 +4,27 @@ import {HasAttach, Card} from '../../base/card'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 
 class Iskall85RareHermitCard extends Card<HermitCard> implements HasAttach {
-	constructor() {
-		super({
-			...hermitCardDefaults,
-			category: 'hermit',
-			id: 'iskall85_rare',
-			numericId: 48,
-			name: 'Iskall',
-			rarity: 'rare',
-			hermitType: 'farm',
-			health: 290,
-			primary: {
-				name: 'Of Doom',
-				cost: ['farm'],
-				damage: 50,
-				power: null,
-			},
-			secondary: {
-				name: 'Bird Poop',
-				cost: ['farm', 'farm'],
-				damage: 80,
-				power: 'Attack damage doubles versus Builder types.',
-			},
-		})
+	override props: HermitCard = {
+		...hermitCardDefaults,
+		category: 'hermit',
+		id: 'iskall85_rare',
+		numericId: 48,
+		name: 'Iskall',
+		rarity: 'rare',
+		hermitType: 'farm',
+		health: 290,
+		primary: {
+			name: 'Of Doom',
+			cost: ['farm'],
+			damage: 50,
+			power: null,
+		},
+		secondary: {
+			name: 'Bird Poop',
+			cost: ['farm', 'farm'],
+			damage: 80,
+			power: 'Attack damage doubles versus Builder types.',
+		},
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {
