@@ -12,13 +12,12 @@ import alterEgosIIHermitCards from './alter-egos-ii/hermits/index'
 import adventOfTcgAttachableCards from './advent-of-tcg/effects'
 import adventOfTcgHermitCards from './advent-of-tcg/hermits'
 import adventOfTcgSingleUseCards from './advent-of-tcg/single-use'
-
 import {Card} from './base/card'
 
-export const CARDS: Array<typeof Card> = [
+const allCardClasses: Array<typeof Card<any>> = [
 	// ...defaultAttachableCards,
 	...defaultHermitCards,
-	...defaultItemCards,
+	// ...defaultItemCards,
 	// ...defaultSingleUseCards,
 	// ...alterEgosAttachableCards,
 	// ...alterEgosHermitCards,
@@ -28,3 +27,13 @@ export const CARDS: Array<typeof Card> = [
 	// ...adventOfTcgHermitCards,
 	// ...adventOfTcgSingleUseCards,
 ]
+
+export const CARDS: Record<string, typeof Card> = allCardClasses.reduce(
+	(result: Record<string, typeof Card>, card) => {
+		const initializedCard = new (card as any)() as Card
+		console.log
+		result[initializedCard.props.id] = card
+		return result
+	},
+	{}
+)
