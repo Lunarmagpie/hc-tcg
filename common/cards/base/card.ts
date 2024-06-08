@@ -14,13 +14,10 @@ import {AttackModel} from '../../models/attack-model'
 import {AttachmentExpression} from './attachable'
 
 export abstract class Card<T extends CardProps = CardProps> {
-	public readonly props: T
+	public static readonly props: CardProps
+	public abstract readonly props: T 
 
 	private instance = Math.random().toString()
-
-	constructor(props: T) {
-		this.props = props
-	}
 
 	equals<U extends CardProps>(
 		this: Card<T>,
