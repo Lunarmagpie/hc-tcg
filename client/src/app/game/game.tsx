@@ -5,7 +5,6 @@ import Board from './board'
 import css from './game.module.scss'
 import {
 	AttackModal,
-	BorrowModal,
 	ChangeHermitModal,
 	ConfirmModal,
 	EndTurnModal,
@@ -41,7 +40,6 @@ const MODAL_COMPONENTS: Record<string, React.FC<any>> = {
 	'unmet-condition': UnmetConditionModal,
 
 	// Custom modals
-	borrow: BorrowModal,
 	copyAttack: CopyAttackModal,
 	selectCards: SelectCardsModal,
 }
@@ -72,7 +70,7 @@ function Game() {
 	if (!gameState || !playerState) return <p>Loading</p>
 	const [gameScale, setGameScale] = useState<number>(1)
 	const filteredCards = DEBUG_CONFIG.unlimitedCards
-		? gameState.hand.filter((c) => c.id.toLowerCase().includes(filter.toLowerCase()))
+		? gameState.hand.filter((c) => c.props.id.toLowerCase().includes(filter.toLowerCase()))
 		: gameState.hand
 
 	const gameWrapperRef = useRef<HTMLDivElement>(null)

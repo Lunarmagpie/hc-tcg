@@ -52,7 +52,7 @@ export const hermitCardDefaults = {
 				(this.secondary.power ? `**${this.secondary.name}**\n*${this.secondary.power}*` : '')
 		)
 	},
-	log: (values: PlayCardLog) => `$p{You|${values.player}}$ placed $p${values.pos.name}$`,
+	log: [(values: PlayCardLog) => `$p{You|${values.player}}$ placed $p${values.pos.name}$`],
 	sidebarDescriptions: [],
 }
 

@@ -5,26 +5,28 @@ import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {HasAttach, Card} from '../../base/card'
 
 class Docm77RareHermitCard extends Card<HermitCard> implements HasAttach {
-	override props: HermitCard = {
-		...hermitCardDefaults,
-		id: 'docm77_rare',
-		numericId: 16,
-		name: 'Docm77',
-		rarity: 'rare',
-		hermitType: 'farm',
-		health: 280,
-		primary: {
-			name: 'Shadow Tech',
-			cost: ['any'],
-			damage: 40,
-			power: null,
-		},
-		secondary: {
-			name: 'World Eater',
-			cost: ['farm', 'farm'],
-			damage: 80,
-			power: 'Flip a Coin.\nIf heads, attack damage doubles.\nIf tails, attack damage is halved.',
-		},
+	constructor() {
+		super({
+			...hermitCardDefaults,
+			id: 'docm77_rare',
+			numericId: 16,
+			name: 'Docm77',
+			rarity: 'rare',
+			hermitType: 'farm',
+			health: 280,
+			primary: {
+				name: 'Shadow Tech',
+				cost: ['any'],
+				damage: 40,
+				power: null,
+			},
+			secondary: {
+				name: 'World Eater',
+				cost: ['farm', 'farm'],
+				damage: 80,
+				power: 'Flip a Coin.\nIf heads, attack damage doubles.\nIf tails, attack damage is halved.',
+			},
+		})
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {

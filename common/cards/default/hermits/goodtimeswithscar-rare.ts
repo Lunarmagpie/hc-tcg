@@ -4,34 +4,37 @@ import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {Card, HasAttach} from '../../base/card'
 
 class GoodTimesWithScarRareHermitCard extends Card<HermitCard> implements HasAttach {
-	override props: HermitCard = {
-		...hermitCardDefaults,
-		id: 'goodtimeswithscar_rare',
-		numericId: 33,
-		name: 'Scar',
-		rarity: 'rare',
-		hermitType: 'builder',
-		health: 270,
-		primary: {
-			name: 'Scarred For Life',
-			cost: ['builder'],
-			damage: 50,
-			power: null,
-		},
-		secondary: {
-			name: 'Deathloop',
-			cost: ['builder', 'any'],
-			damage: 70,
-			power:
-				'If this Hermit is knocked out before the start of your next turn, they are revived with 50hp.\nDoes not count as a knockout. This Hermit can only be revived once using this ability.',
-		},
-		sidebarDescriptions: [
-			{
-				type: 'glossary',
-				name: 'knockout',
+	constructor() {
+		super({
+			...hermitCardDefaults,
+			id: 'goodtimeswithscar_rare',
+			numericId: 33,
+			name: 'Scar',
+			rarity: 'rare',
+			hermitType: 'builder',
+			health: 270,
+			primary: {
+				name: 'Scarred For Life',
+				cost: ['builder'],
+				damage: 50,
+				power: null,
 			},
-		],
+			secondary: {
+				name: 'Deathloop',
+				cost: ['builder', 'any'],
+				damage: 70,
+				power:
+					'If this Hermit is knocked out before the start of your next turn, they are revived with 50hp.\nDoes not count as a knockout. This Hermit can only be revived once using this ability.',
+			},
+			sidebarDescriptions: [
+				{
+					type: 'glossary',
+					name: 'knockout',
+				},
+			],
+		})
 	}
+
 	onAttach(game: GameModel, pos: CardPosModel) {
 		/**
 			const {player, opponentPlayer} = pos
@@ -90,6 +93,7 @@ class GoodTimesWithScarRareHermitCard extends Card<HermitCard> implements HasAtt
 			})
 			*/
 	}
+
 	onDetach(game: GameModel, pos: CardPosModel) {
 		/**
 			const {player, opponentPlayer} = pos

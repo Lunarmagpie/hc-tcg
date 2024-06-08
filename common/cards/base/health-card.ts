@@ -8,7 +8,6 @@ export const HealthIndicator = (): HealthCard => {
 	return {
 		...isCardDefaults,
 		...hasHealthDefaults,
-		canBeAttachedTo: attachableTo.nothing,
 		category: 'health',
 		health: 300,
 		id: 'health',
@@ -21,7 +20,7 @@ export const HealthIndicator = (): HealthCard => {
 		expansion: 'default',
 		palette: 'default',
 		sidebarDescriptions: [],
-		log: null,
+		log: [],
 	}
 }
 

@@ -7,7 +7,6 @@ import {getPlayerId} from 'logic/session/session-selectors'
 import {getPlayerStateById} from 'logic/game/game-selectors'
 import Attack from './attack'
 import {CARDS} from 'common/cards'
-import {implementsCanAttack} from 'common/cards/base/card'
 
 type HermitExtra = {
 	hermitId: string
@@ -31,21 +30,21 @@ function HermitSelector({extraAttacks, handleExtraAttack}: Props) {
 	if (!activeRow || !playerState || !activeRow.hermitCard) return null
 	if (!opponentRow || !opponentRow.hermitCard) return null
 
-	const hermitFullName = activeRow.hermitCard.id.split('_')[0]
+	const hermitFullName = activeRow.hermitCard.props.id.split('_')[0]
 
 	const eaResult = extraAttacks.reduce((agg, extra) => {
 		const [hermitId, action] = extra.split(':')
-		const hermitInfo = CARDS.find((card) => card.id === hermitId)
-		if (!implementsCanAttack(hermitInfo)) throw new Error('Invalid extra attack')
+		const hermitInfo = CARDS.find((card) => card.props.id === hermitId)
+		if (!hermitInfo?.implementsCanAttack()) throw new Error('Invalid extra attack')
 		const type = action === 'PRIMARY_ATTACK' ? 'primary' : 'secondary'
-		const hermitFullName = hermitInfo.id.split('_')[0]
+		const hermitFullName = hermitInfo.props.id.split('_')[0]
 		agg[hermitId] = agg[hermitId] || {}
 		agg[hermitId][type] = (
 			<Attack
 				key={extra}
-				name={hermitInfo[type].name}
+				name={hermitInfo.props[type].name}
 				icon={`/images/hermits-nobg/${hermitFullName}.png`}
-				attackInfo={hermitInfo[type]}
+				attackInfo={hermitInfo.props[type]}
 				onClick={() => handleExtraAttack({hermitId, type})}
 				extra
 			/>
@@ -54,9 +53,9 @@ function HermitSelector({extraAttacks, handleExtraAttack}: Props) {
 	}, {} as Record<string, any>)
 
 	const hermitOptions = Object.keys(eaResult).map((hermitId) => {
-		const hermitInfo = CARDS.find((card) => card.id === hermitId)
+		const hermitInfo = CARDS.find((card) => card.props.id === hermitId)
 		if (!hermitInfo) return <div></div>
-		const hermitFullName = hermitInfo.id.split('_')[0]
+		const hermitFullName = hermitInfo.props.id.split('_')[0]
 		return (
 			<img
 				key={hermitId}
@@ -65,8 +64,8 @@ function HermitSelector({extraAttacks, handleExtraAttack}: Props) {
 					[css.selected]: selectedHermit === hermitId,
 				})}
 				src={`/images/hermits-emoji/${hermitFullName}.png`}
-				alt={hermitInfo.name}
-				title={hermitInfo.name}
+				alt={hermitInfo.props.name}
+				title={hermitInfo.props.name}
 			/>
 		)
 	})
@@ -79,7 +78,7 @@ function HermitSelector({extraAttacks, handleExtraAttack}: Props) {
 				</div>
 				<div className={css.info}>
 					<div className={css.name}>
-						{activeRow.hermitCard.secondary.name}
+						{activeRow.hermitCard.props.secondary.name}
 						<span className={css.select}> Select a hermit...</span>
 					</div>
 					<button className={css.hermitOptions}>{hermitOptions}</button>

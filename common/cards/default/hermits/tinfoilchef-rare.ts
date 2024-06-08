@@ -2,12 +2,11 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {HasAttach, overridesAttachDefaults} from '../../base/card'
+import {HasAttach} from '../../base/card'
 
 const TinFoilChefRareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
-		...overridesAttachDefaults,
 		id: 'tinfoilchef_rare',
 		numericId: 98,
 		name: 'TFC',

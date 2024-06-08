@@ -1,13 +1,12 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
-import {HasAttach, overridesAttachDefaults} from '../../base/card'
+import {HasAttach} from '../../base/card'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 
 const PearlescentMoonRareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
-		...overridesAttachDefaults,
 		category: 'hermit',
 		id: 'pearlescentmoon_rare',
 		numericId: 85,

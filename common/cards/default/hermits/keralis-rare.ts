@@ -1,5 +1,5 @@
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {HasAttach, overridesAttachDefaults} from '../../base/card'
+import {HasAttach} from '../../base/card'
 import {GameModel} from '../../../models/game-model'
 import {CardPosModel} from '../../../models/card-pos-model'
 import {getNonEmptyRows} from '../../../utils/board'
@@ -11,7 +11,6 @@ const KeralisRareHermitCard = (): HermitCard & HasAttach => {
 
 	return {
 		...hermitCardDefaults,
-		...overridesAttachDefaults,
 		id: 'keralis_rare',
 		numericId: 72,
 		name: 'Keralis',

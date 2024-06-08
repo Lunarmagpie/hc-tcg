@@ -1,6 +1,5 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
-import {CardCategoryT, CardRarityT, EnergyT, HermitTypeT} from '../../../types/cards'
 import {HasAttach, Card} from '../../base/card'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 

@@ -1,12 +1,11 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {HasAttach, overridesAttachDefaults} from '../../base/card'
+import {HasAttach} from '../../base/card'
 
 const WelsknightRareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
-		...overridesAttachDefaults,
 		id: 'welsknight_rare',
 		numericId: 107,
 		name: 'Wels',

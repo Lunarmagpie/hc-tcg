@@ -2,13 +2,12 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {HasAttach, overridesAttachDefaults} from '../../base/card'
+import {HasAttach} from '../../base/card'
 import {removeStatusEffect} from '../../../utils/board'
 
 const VintageBeefRareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
-		...overridesAttachDefaults,
 		id: 'vintagebeef_rare',
 		numericId: 103,
 		name: 'Beef',

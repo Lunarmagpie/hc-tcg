@@ -5,27 +5,29 @@ import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {HasAttach, Card} from '../../base/card'
 
 class IJevinRareHermitCard extends Card<HermitCard> implements HasAttach {
-	override props: HermitCard = {
-		...hermitCardDefaults,
-		id: 'ijevin_rare',
-		numericId: 39,
-		name: 'Jevin',
-		rarity: 'rare',
-		hermitType: 'speedrunner',
-		health: 300,
-		primary: {
-			name: 'Your Boi',
-			cost: ['any'],
-			damage: 30,
-			power: null,
-		},
-		secondary: {
-			name: 'Peace Out',
-			cost: ['speedrunner', 'speedrunner', 'any'],
-			damage: 90,
-			power:
-				'After your attack, your opponent must choose an AFK Hermit to set as their active Hermit, unless they have no AFK Hermits.',
-		},
+	constructor() {
+		super({
+			...hermitCardDefaults,
+			id: 'ijevin_rare',
+			numericId: 39,
+			name: 'Jevin',
+			rarity: 'rare',
+			hermitType: 'speedrunner',
+			health: 300,
+			primary: {
+				name: 'Your Boi',
+				cost: ['any'],
+				damage: 30,
+				power: null,
+			},
+			secondary: {
+				name: 'Peace Out',
+				cost: ['speedrunner', 'speedrunner', 'any'],
+				damage: 90,
+				power:
+					'After your attack, your opponent must choose an AFK Hermit to set as their active Hermit, unless they have no AFK Hermits.',
+			},
+		})
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {

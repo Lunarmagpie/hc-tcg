@@ -1,26 +1,29 @@
+import {Card} from '../../base/card'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 
-const ZombieCleoCommonHermitCard = (): HermitCard => {
-	return {
-		...hermitCardDefaults,
-		id: 'zombiecleo_common',
-		numericId: 115,
-		name: 'Cleo',
-		rarity: 'common',
-		hermitType: 'builder',
-		health: 260,
-		primary: {
-			name: "It's Fine",
-			cost: ['builder'],
-			damage: 60,
-			power: null,
-		},
-		secondary: {
-			name: 'Revenge',
-			cost: ['builder', 'builder'],
-			damage: 80,
-			power: null,
-		},
+class ZombieCleoCommonHermitCard extends Card<HermitCard> {
+	constructor() {
+		super({
+			...hermitCardDefaults,
+			id: 'zombiecleo_common',
+			numericId: 115,
+			name: 'Cleo',
+			rarity: 'common',
+			hermitType: 'builder',
+			health: 260,
+			primary: {
+				name: "It's Fine",
+				cost: ['builder'],
+				damage: 60,
+				power: null,
+			},
+			secondary: {
+				name: 'Revenge',
+				cost: ['builder', 'builder'],
+				damage: 80,
+				power: null,
+			},
+		})
 	}
 }
 

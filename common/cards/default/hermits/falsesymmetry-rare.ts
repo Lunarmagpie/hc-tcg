@@ -5,26 +5,28 @@ import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {Card, HasAttach} from '../../base/card'
 
 class FalseSymmetryRareHermitCard extends Card<HermitCard> implements HasAttach {
-	override props: HermitCard = {
-		...hermitCardDefaults,
-		id: 'falsesymmetry_rare',
-		numericId: 23,
-		name: 'False',
-		rarity: 'rare',
-		hermitType: 'builder',
-		health: 250,
-		primary: {
-			name: 'High Noon',
-			cost: ['builder'],
-			damage: 60,
-			power: null,
-		},
-		secondary: {
-			name: 'Supremacy',
-			cost: ['builder', 'any'],
-			damage: 70,
-			power: 'Flip a coin.\nIf heads, heal this Hermit 40hp.',
-		},
+	constructor() {
+		super({
+			...hermitCardDefaults,
+			id: 'falsesymmetry_rare',
+			numericId: 23,
+			name: 'False',
+			rarity: 'rare',
+			hermitType: 'builder',
+			health: 250,
+			primary: {
+				name: 'High Noon',
+				cost: ['builder'],
+				damage: 60,
+				power: null,
+			},
+			secondary: {
+				name: 'Supremacy',
+				cost: ['builder', 'any'],
+				damage: 70,
+				power: 'Flip a coin.\nIf heads, heal this Hermit 40hp.',
+			},
+		})
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {

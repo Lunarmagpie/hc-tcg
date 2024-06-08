@@ -6,33 +6,35 @@ import {Card, HasAttach} from '../../base/card'
 import SleepingStatusEffect from '../../../status-effects/sleeping'
 
 class BdoubleO100RareHermitCard extends Card<HermitCard> implements HasAttach {
-	override props: HermitCard = {
-		...hermitCardDefaults,
-		id: 'bdoubleo100_rare',
-		numericId: 1,
-		name: 'Bdubs',
-		rarity: 'rare',
-		hermitType: 'balanced',
-		health: 260,
-		primary: {
-			name: 'Retexture',
-			cost: ['any'],
-			damage: 60,
-			power: null,
-		},
-		secondary: {
-			name: 'Shreep',
-			cost: ['balanced', 'balanced', 'any'],
-			damage: 0,
-			power:
-				'This Hermit restores all HP, then sleeps for the rest of this turn, and the following two turns, before waking up.',
-		},
-		sidebarDescriptions: [
-			{
-				type: 'statusEffect',
-				name: 'sleeping',
+	constructor() {
+		super({
+			...hermitCardDefaults,
+			id: 'bdoubleo100_rare',
+			numericId: 1,
+			name: 'Bdubs',
+			rarity: 'rare',
+			hermitType: 'balanced',
+			health: 260,
+			primary: {
+				name: 'Retexture',
+				cost: ['any'],
+				damage: 60,
+				power: null,
 			},
-		],
+			secondary: {
+				name: 'Shreep',
+				cost: ['balanced', 'balanced', 'any'],
+				damage: 0,
+				power:
+					'This Hermit restores all HP, then sleeps for the rest of this turn, and the following two turns, before waking up.',
+			},
+			sidebarDescriptions: [
+				{
+					type: 'statusEffect',
+					name: 'sleeping',
+				},
+			],
+		})
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {
@@ -46,7 +48,7 @@ class BdoubleO100RareHermitCard extends Card<HermitCard> implements HasAttach {
 			if (!row) return
 
 			// Add new sleeping statusEffect
-			applyStatusEffect(game, SleepingStatusEffect(this))
+			applyStatusEffect(game, new SleepingStatusEffect(this))
 		})
 	}
 

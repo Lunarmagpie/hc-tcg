@@ -2,14 +2,13 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {HasAttach, overridesAttachDefaults} from '../../base/card'
+import {HasAttach} from '../../base/card'
 /*
 - Beef confirmed that double damage condition includes other rare mumbos.
 */
 const MumboJumboRareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
-		...overridesAttachDefaults,
 		id: 'mumbojumbo_rare',
 		numericId: 81,
 		name: 'Mumbo',

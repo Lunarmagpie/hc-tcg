@@ -7,33 +7,35 @@ import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import FireStatusEffect from '../../../status-effects/fire'
 
 class EthosLabRareHermitCard extends Card<HermitCard> implements HasAttach {
-	override props: HermitCard = {
-		...hermitCardDefaults,
-		id: 'ethoslab_rare',
-		numericId: 20,
-		name: 'Etho',
-		rarity: 'rare',
-		hermitType: 'redstone',
-		health: 280,
-		primary: {
-			name: 'Oh Snappers',
-			cost: ['redstone'],
-			damage: 50,
-			power: null,
-		},
-		secondary: {
-			name: 'Blue Fire',
-			cost: ['redstone', 'redstone'],
-			damage: 80,
-			power: "Flip a coin.\nIf heads, burn your opponent's active Hermit.",
-		},
-
-		sidebarDescriptions: [
-			{
-				type: 'statusEffect',
-				name: 'fire',
+	constructor() {
+		super({
+			...hermitCardDefaults,
+			id: 'ethoslab_rare',
+			numericId: 20,
+			name: 'Etho',
+			rarity: 'rare',
+			hermitType: 'redstone',
+			health: 280,
+			primary: {
+				name: 'Oh Snappers',
+				cost: ['redstone'],
+				damage: 50,
+				power: null,
 			},
-		],
+			secondary: {
+				name: 'Blue Fire',
+				cost: ['redstone', 'redstone'],
+				damage: 80,
+				power: "Flip a coin.\nIf heads, burn your opponent's active Hermit.",
+			},
+
+			sidebarDescriptions: [
+				{
+					type: 'statusEffect',
+					name: 'fire',
+				},
+			],
+		})
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {
@@ -52,7 +54,7 @@ class EthosLabRareHermitCard extends Card<HermitCard> implements HasAttach {
 			const opponentActiveRow = getActiveRow(opponentPlayer)
 			if (!opponentActiveRow || !opponentActiveRow.hermitCard) return
 
-			applyStatusEffect(game, FireStatusEffect(target))
+			applyStatusEffect(game, new FireStatusEffect(target))
 		})
 	}
 

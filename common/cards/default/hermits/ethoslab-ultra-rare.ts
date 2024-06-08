@@ -5,26 +5,28 @@ import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {Card, HasAttach} from '../../base/card'
 
 class EthosLabUltraRareHermitCard extends Card<HermitCard> implements HasAttach {
-	override props: HermitCard = {
-		...hermitCardDefaults,
-		id: 'ethoslab_ultra_rare',
-		numericId: 21,
-		name: 'Etho',
-		rarity: 'ultra_rare',
-		hermitType: 'pvp',
-		health: 250,
-		primary: {
-			name: 'Ladders',
-			cost: ['any'],
-			damage: 30,
-			power: null,
-		},
-		secondary: {
-			name: 'Slab',
-			cost: ['any', 'any'],
-			damage: 70,
-			power: 'Flip a coin 3 times.\nDo an additional 20hp damage for every heads.',
-		},
+	constructor() {
+		super({
+			...hermitCardDefaults,
+			id: 'ethoslab_ultra_rare',
+			numericId: 21,
+			name: 'Etho',
+			rarity: 'ultra_rare',
+			hermitType: 'pvp',
+			health: 250,
+			primary: {
+				name: 'Ladders',
+				cost: ['any'],
+				damage: 30,
+				power: null,
+			},
+			secondary: {
+				name: 'Slab',
+				cost: ['any', 'any'],
+				damage: 70,
+				power: 'Flip a coin 3 times.\nDo an additional 20hp damage for every heads.',
+			},
+		})
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {

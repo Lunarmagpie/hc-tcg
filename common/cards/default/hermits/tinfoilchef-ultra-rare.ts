@@ -4,7 +4,7 @@ import {flipCoin} from '../../../utils/coinFlips'
 import {discardCard} from '../../../utils/movement'
 import {Card} from '../../base/card'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {HasAttach, overridesAttachDefaults} from '../../base/card'
+import {HasAttach} from '../../base/card'
 import {getActiveRow, getSlotPos} from '../../../utils/board'
 
 const TinFoilChefUltraRareHermitCard = (): HermitCard & HasAttach => {

@@ -2,7 +2,7 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {HasAttach, overridesAttachDefaults} from '../../base/card'
+import {HasAttach} from '../../base/card'
 import {CoinFlipT} from '../../../types/game-state'
 
 const ZedaphPlaysRareHermitCard = (): HermitCard & HasAttach => {
@@ -10,7 +10,6 @@ const ZedaphPlaysRareHermitCard = (): HermitCard & HasAttach => {
 
 	return {
 		...hermitCardDefaults,
-		...overridesAttachDefaults,
 		id: 'zedaphplays_rare',
 		numericId: 114,
 		name: 'Zedaph',

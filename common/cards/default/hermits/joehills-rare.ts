@@ -11,7 +11,6 @@ const JoeHillsRareHermitCard = (): HermitCard & HasAttach => {
 
 	return {
 		...hermitCardDefaults,
-		...overridesAttachDefaults,
 		id: 'joehills_rare',
 		numericId: 70,
 		name: 'Joe',

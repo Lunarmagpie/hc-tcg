@@ -1,26 +1,29 @@
+import {Card} from '../../base/card'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 
-const ImpulseSVCommonHermitCard = (): HermitCard => {
-	return {
-		...hermitCardDefaults,
-		id: 'impulsesv_common',
-		numericId: 40,
-		name: 'Impulse',
-		rarity: 'common',
-		hermitType: 'farm',
-		health: 270,
-		primary: {
-			name: 'Shovel Shuffle',
-			cost: ['any'],
-			damage: 30,
-			power: null,
-		},
-		secondary: {
-			name: 'iAttack',
-			cost: ['farm', 'any'],
-			damage: 70,
-			power: null,
-		},
+class ImpulseSVCommonHermitCard extends Card<HermitCard> {
+	constructor() {
+		super({
+			...hermitCardDefaults,
+			id: 'impulsesv_common',
+			numericId: 40,
+			name: 'Impulse',
+			rarity: 'common',
+			hermitType: 'farm',
+			health: 270,
+			primary: {
+				name: 'Shovel Shuffle',
+				cost: ['any'],
+				damage: 30,
+				power: null,
+			},
+			secondary: {
+				name: 'iAttack',
+				cost: ['farm', 'any'],
+				damage: 70,
+				power: null,
+			},
+		})
 	}
 }
 

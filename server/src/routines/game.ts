@@ -20,7 +20,7 @@ import {getCardPos} from 'common/models/card-pos-model'
 import {printHooksState} from '../utils'
 import {buffers} from 'redux-saga'
 import {AttackActionData, PickCardActionData, attackToAttackAction} from 'common/types/action-data'
-import {implementsHasTurnActions, implementsOverridesGetEnergy} from 'common/cards/base/card'
+import {Card} from 'common/cards/base/card'
 
 ////////////////////////////////////////
 // @TODO sort this whole thing out properly
@@ -43,8 +43,8 @@ function getAvailableEnergy(game: GameModel) {
 			if (!card) continue
 			const pos = getCardPos(game, card)
 			if (!pos) continue
-			if (!implementsOverridesGetEnergy(card)) continue
-			availableEnergy.push(...card.energy(game, card, pos))
+			if (!card.implementsOverridesGetEnergy()) continue
+			availableEnergy.push(...card.getEnergy(game, card, pos))
 		}
 
 		// Modify available energy
@@ -119,10 +119,10 @@ function getAvailableActions(game: GameModel, availableEnergy: Array<EnergyT>): 
 
 			// only add attack options if not sleeping
 			if (activeHermit) {
-				if (hasEnoughEnergy(availableEnergy, activeHermit.primary.cost)) {
+				if (hasEnoughEnergy(availableEnergy, activeHermit.props.primary.cost)) {
 					actions.push('PRIMARY_ATTACK')
 				}
-				if (hasEnoughEnergy(availableEnergy, activeHermit.secondary.cost)) {
+				if (hasEnoughEnergy(availableEnergy, activeHermit.props.primary.cost)) {
 					actions.push('SECONDARY_ATTACK')
 				}
 				if (su && !suUsed) {
@@ -144,7 +144,7 @@ function getAvailableActions(game: GameModel, availableEnergy: Array<EnergyT>): 
 		const allDesiredActions: TurnActions = []
 		for (let x = 0; x < handCards.length; x++) {
 			const card = handCards[x]
-			if (!implementsHasTurnActions(card)) continue
+			if (!card.implementsHasTurnActions()) continue
 			const desiredActions: TurnActions = card.getActions(game)
 			for (let i = 0; i < desiredActions.length; i++) {
 				const desiredAction = desiredActions[i]
@@ -516,7 +516,7 @@ function* turnSaga(game: GameModel) {
 	if (result === 'GAME_END') return 'GAME_END'
 
 	// Create card draw array
-	const drawCards: Array<CardT | null> = []
+	const drawCards: Array<Card | null> = []
 
 	// Call turn end hooks
 	currentPlayer.hooks.onTurnEnd.call(drawCards)

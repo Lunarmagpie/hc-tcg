@@ -1,26 +1,29 @@
+import {Card} from '../../base/card'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 
-const PearlescentMoonCommonHermitCard = (): HermitCard => {
-	return {
-		...hermitCardDefaults,
-		id: 'pearlescentmoon_common',
-		numericId: 84,
-		name: 'Pearl',
-		rarity: 'common',
-		hermitType: 'builder',
-		health: 270,
-		primary: {
-			name: '5 AM',
-			cost: ['any'],
-			damage: 40,
-			power: null,
-		},
-		secondary: {
-			name: "What's This?",
-			cost: ['builder', 'builder', 'any'],
-			damage: 90,
-			power: null,
-		},
+class PearlescentMoonCommonHermitCard extends Card<HermitCard> {
+	constructor() {
+		super({
+			...hermitCardDefaults,
+			id: 'pearlescentmoon_common',
+			numericId: 84,
+			name: 'Pearl',
+			rarity: 'common',
+			hermitType: 'builder',
+			health: 270,
+			primary: {
+				name: '5 AM',
+				cost: ['any'],
+				damage: 40,
+				power: null,
+			},
+			secondary: {
+				name: "What's This?",
+				cost: ['builder', 'builder', 'any'],
+				damage: 90,
+				power: null,
+			},
+		})
 	}
 }
 

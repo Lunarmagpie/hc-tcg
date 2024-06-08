@@ -2,14 +2,13 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {flipCoin} from '../../../utils/coinFlips'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {HasAttach, overridesAttachDefaults} from '../../base/card'
+import {HasAttach} from '../../base/card'
 import {applyStatusEffect, getActiveRow} from '../../../utils/board'
 import PoisonStatusEffect from '../../../status-effects/poison'
 
 const XisumavoidRareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
-		...overridesAttachDefaults,
 		id: 'xisumavoid_rare',
 		numericId: 112,
 		name: 'Xisuma',

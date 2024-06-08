@@ -1,14 +1,13 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
-import {HasAttach, overridesAttachDefaults} from '../../base/card'
+import {HasAttach} from '../../base/card'
 import {getActiveRowPos} from '../../../utils/board'
 const XBCraftedRareHermitCard = (): HermitCard & HasAttach => {
 	let ignore: boolean = false
 
 	return {
 		...hermitCardDefaults,
-		...overridesAttachDefaults,
 		id: 'xbcrafted_rare',
 		numericId: 110,
 		name: 'xB',
