@@ -1,5 +1,5 @@
 import {Card} from '../cards/base/card'
-import StatusEffect from '../status-effects/status-effect'
+import {StatusEffect} from '../status-effects/status-effect'
 import {
 	AttackHistory,
 	AttackHistoryType,
@@ -177,7 +177,7 @@ export class AttackModel {
 	public getCreator() {
 		return this.creator
 	}
-	
+
 	/** Updates the log entry*/
 	public updateLog(logEntry: (values: AttackLog) => string) {
 		this.log.push(logEntry)

@@ -120,7 +120,7 @@ class GrianRareHermitCard extends Card<HermitCard> implements HasAttach {
 				() => {
 					// Discard
 					discardCard(game, opponentEffectCard, player)
-				},
+				}
 			)
 		})
 	}

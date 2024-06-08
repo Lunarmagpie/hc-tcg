@@ -1,11 +1,11 @@
-import { AttachableCard } from '../cards/base/attachable-card'
-import {Card, HasAttach} from '../cards/base/card'
+import {AttachableCard} from '../cards/base/attachable-card'
+import {Card} from '../cards/base/card'
 import {HermitCard} from '../cards/base/hermit-card'
-import { ItemCard } from '../cards/base/item-card'
+import {ItemCard} from '../cards/base/item-card'
 import {AttackModel} from '../models/attack-model'
 import {BattleLogModel} from '../models/battle-log-model'
 import {CardPosModel} from '../models/card-pos-model'
-import StatusEffect from '../status-effects/status-effect'
+import {StatusEffect} from '../status-effects/status-effect'
 import {FormattedTextNode} from '../utils/formatting'
 import {HermitAttackType} from './attack'
 import {EnergyT, SlotPos} from './cards'
@@ -72,7 +72,7 @@ export type PlayerState = {
 		blockedActions: WaterfallHook<(blockedActions: TurnActions) => TurnActions>
 
 		/** Hook called when checking if a card can be attached. The result can be modified and will be stored */
-		canAttach: GameHook<(canAttach: CanAttachResult, pos: CardPosModel) => void>
+		canAttach: GameHook<(canAttach: boolean, pos: CardPosModel) => void>
 		/** Hook called when a card is attached */
 		onAttach: GameHook<(instance: Card) => void>
 		/** Hook called when a card is detached */

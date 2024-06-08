@@ -1,4 +1,4 @@
-import { Card } from '../../base/card'
+import {Card} from '../../base/card'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 
 class BdoubleO100CommonHermitCard extends Card<HermitCard> {

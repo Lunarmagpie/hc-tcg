@@ -10,8 +10,8 @@ import ThornsEffectCard from './thorns'
 import LoyaltyEffectCard from './loyalty'
 import WaterBucketEffectCard from './water-bucket'
 import MilkBucketEffectCard from './milk-bucket'
-import { AttachableCard } from '../../base/attachable-card'
-import { Card } from '../../base/card'
+import {AttachableCard} from '../../base/attachable-card'
+import {Card} from '../../base/card'
 
 const effectCardClasses: Array<typeof Card<AttachableCard>> = [
 	BedEffectCard,

@@ -7,7 +7,7 @@ import {formatText} from '../utils/formatting'
 import {DEBUG_CONFIG} from '../config'
 import {Card} from '../cards/base/card'
 import {PickInfo} from '../types/server-requests'
-import StatusEffect from '../status-effects/status-effect'
+import {StatusEffect} from '../status-effects/status-effect'
 
 export class BattleLogModel {
 	private game: GameModel
@@ -24,7 +24,7 @@ export class BattleLogModel {
 		const currentPlayer = this.game.currentPlayer.playerName
 		if (!card) return ''
 
-		return `$p{You|${currentPlayer}}$ used $e${card.name}$ `
+		return `$p{You|${currentPlayer}}$ used $e${card.props.name}$ `
 	}
 
 	private generateCoinFlipDescription(coinFlip: CurrentCoinFlipT): string {
@@ -50,8 +50,8 @@ export class BattleLogModel {
 			const description = this.generateCoinFlipDescription(coinFlip)
 
 			if (coinFlip.opponentFlip) return r
-			if (coinFlip.card.category === 'hermit' && attack.type === 'effect') return r
-			if (coinFlip.card.category === 'single_use' && attack.type !== 'effect') return r
+			if (coinFlip.card.props.category === 'hermit' && attack.type === 'effect') return r
+			if (coinFlip.card.props.category === 'single_use' && attack.type !== 'effect') return r
 
 			return description
 		}, null)
@@ -94,21 +94,21 @@ export class BattleLogModel {
 			rowIndex: number | null | undefined
 		) => {
 			if (!cardId) return invalid
-			if (card.category === 'item') {
-				return `${card.name} ${card.rarity === 'rare' ? ' item x2' : 'item'}`
+			if (card.props.category === 'item') {
+				return `${card.props.name} ${card.props.rarity === 'rare' ? ' item x2' : 'item'}`
 			}
 
 			if (
-				card.category === 'hermit' &&
+				card.props.category === 'hermit' &&
 				player &&
 				player.board.activeRow !== rowIndex &&
 				rowIndex !== null &&
 				rowIndex !== undefined
 			) {
-				return `${card.name} (${rowIndex + 1})`
+				return `${card.props.name} (${rowIndex + 1})`
 			}
 
-			return `${card.name}`
+			return `${card.props.name}`
 		}
 
 		const thisFlip = coinFlips.find((flip) => flip.card === card)
@@ -126,13 +126,13 @@ export class BattleLogModel {
 			player: pos.player.playerName,
 			opponent: pos.opponentPlayer.playerName,
 			coinFlip: thisFlip ? this.generateCoinFlipDescription(thisFlip) : '',
-			defaultLog: `$p{You|${pos.player.playerName}}$ used $e${card.name}$`,
+			defaultLog: `$p{You|${pos.player.playerName}}$ used $e${card.props.name}$`,
 			pos: {
 				rowIndex: pos.rowIndex ? `${pos.rowIndex + 1}` : invalid,
-				id: pos.card ? pos.card.id : invalid,
-				name: pos.card ? getCardName(pos.player, pos.card.id, pos.rowIndex) : invalid,
+				id: pos.card ? pos.card.props.id : invalid,
+				name: pos.card ? getCardName(pos.player, pos.card.props.id, pos.rowIndex) : invalid,
 				hermitCard: pos.row?.hermitCard
-					? getCardName(pos.player, pos.row.hermitCard.id, pos.rowIndex)
+					? getCardName(pos.player, pos.row.hermitCard.props.id, pos.rowIndex)
 					: invalid,
 				slotType: pos.slot.type,
 			},
@@ -198,7 +198,9 @@ export class BattleLogModel {
 				target.player.board.activeRow === target.rowIndex ? '' : `(${target.rowIndex + 1})`
 
 			const attackName =
-				subAttack.type === 'primary' ? attackingHermit.props.primary.name : attackingHermit.props.secondary.name
+				subAttack.type === 'primary'
+					? attackingHermit.props.primary.name
+					: attackingHermit.props.secondary.name
 
 			const logMessage = subAttack.getLog({
 				attacker: `$p${attackingHermit.props.name}$`,
@@ -304,7 +306,7 @@ export class BattleLogModel {
 	public addRemoveStatusEffectEntry(statusEffect: StatusEffect) {
 		this.logMessageQueue.push({
 			player: this.game.currentPlayer.id,
-			description: `$e${statusEffect.name}$ wore off`,
+			description: `$e${statusEffect.props.name}$ wore off`,
 		})
 		this.sendLogs()
 	}

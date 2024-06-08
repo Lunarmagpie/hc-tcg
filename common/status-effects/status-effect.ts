@@ -4,9 +4,9 @@ import {GameModel} from '../models/game-model'
 
 export class StatusEffect<T extends StatusEffectProps = StatusEffectProps> {
 	public readonly props: T
-	
+
 	constructor(defs: T) {
-		 this.props = defs
+		this.props = defs
 	}
 
 	implementsDuration(this: any): this is StatusEffect<T & HasDuration> {
@@ -16,7 +16,7 @@ export class StatusEffect<T extends StatusEffectProps = StatusEffectProps> {
 	implementsCounter(this: any): this is StatusEffect<T & HasCounter> {
 		return 'counter' in this
 	}
-	
+
 	/**
 	 * Called when this statusEffect is applied
 	 */
@@ -25,7 +25,6 @@ export class StatusEffect<T extends StatusEffectProps = StatusEffectProps> {
 	 * Called when the statusEffect is removed, from either timeout or other means
 	 */
 	onRemoval(game: GameModel, pos: CardPosModel): void {}
-	
 }
 
 export interface StatusEffectProps {

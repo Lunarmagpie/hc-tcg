@@ -27,7 +27,7 @@ export abstract class Card<T extends CardProps = CardProps> {
 		if (this.instance !== otherCard.instance) return false
 		return true
 	}
-	
+
 	implementsHermitDisplayInfo(this: any): this is Card<T & HermitDisplayInfo> {
 		return '__hermit_display_info' in this.props
 	}
@@ -74,7 +74,7 @@ export abstract class Card<T extends CardProps = CardProps> {
 	implementsGetAttack(this: any): this is Card<T> & GetAttack {
 		return 'getAttack' in this
 	}
-	
+
 	/** Updates the log entry*/
 	updateLog(this: Card<T>, logEntry: (values: PlayCardLog) => string) {
 		this.props.log.push(logEntry)

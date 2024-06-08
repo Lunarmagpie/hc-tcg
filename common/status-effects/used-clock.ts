@@ -1,4 +1,4 @@
-import {StatusEffect, StatusEffectProps} from './status-effect'
+import {HasDuration, StatusEffect, StatusEffectProps} from './status-effect'
 import {GameModel} from '../models/game-model'
 import {CardPosModel} from '../models/card-pos-model'
 import {removeStatusEffect} from '../utils/board'

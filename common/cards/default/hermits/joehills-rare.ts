@@ -47,9 +47,9 @@ const JoeHillsRareHermitCard = (): HermitCard & HasAttach => {
 				const coinFlip = flipCoin(player, attacker.row.hermitCard, 1)
 				if (coinFlip[0] !== 'heads') return
 
-			attack.updateLog(
-				(values) => ` ${values.previousLog}, then skipped {$o${values.opponent}'s$|your} turn`
-			)
+				attack.updateLog(
+					(values) => ` ${values.previousLog}, then skipped {$o${values.opponent}'s$|your} turn`
+				)
 
 				// This will tell us to block actions at the start of our next turn
 				// Storing the cardInstance of the card that attacked

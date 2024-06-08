@@ -3,8 +3,7 @@ import {GameModel} from '../models/game-model'
 import {BoardSlotTypeT, RowPos, SlotPos} from '../types/cards'
 import {GenericActionResult, PlayerState, RowState, RowStateWithHermit} from '../types/game-state'
 import {PickInfo} from '../types/server-requests'
-import {Card} from '../cards/base/card'
-import StatusEffect from '../status-effects/status-effect'
+import {StatusEffect} from '../status-effects/status-effect'
 
 export function getActiveRow(player: PlayerState) {
 	if (player.board.activeRow === null) return null
@@ -57,10 +56,7 @@ export function rowHasItem(row: RowState): boolean {
 	const itemCards = row.itemCards
 	let total = 0
 	for (const itemCard of itemCards) {
-		if (!itemCard) continue
-		const cardInfo = ITEM_CARDS[itemCard.id]
-		// String
-		if (!cardInfo) continue
+		if (itemCard?.props.category !== 'item') continue
 		total += 1
 	}
 
@@ -126,7 +122,7 @@ export function getAdjacentRows(playerState: PlayerState): Array<RowStateWithHer
 export function hasSingleUse(playerState: PlayerState, id: string, isUsed: boolean = false) {
 	const suCard = playerState.board.singleUseCard
 	const suUsed = playerState.board.singleUseCardUsed
-	return suCard?.id === id && suUsed === isUsed
+	return suCard?.props.id === id && suUsed === isUsed
 }
 
 export function applySingleUse(game: GameModel, pickResult?: PickInfo): GenericActionResult {
@@ -165,7 +161,7 @@ export function applyStatusEffect(
 	game: GameModel,
 	statusEffect: StatusEffect
 ): GenericActionResult {
-	const pos = getCardPos(game, statusEffect.target)
+	const pos = getCardPos(game, statusEffect.props.target)
 	if (!pos) return 'FAILURE_INVALID_DATA'
 	statusEffect.onApply(game, pos)
 	return 'SUCCESS'

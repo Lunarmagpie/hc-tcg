@@ -39,7 +39,7 @@ class HypnotizdRareHermitCard extends Card<HermitCard> implements HasAttach, Get
 	}
 
 	private targetIndex: number | null = null
-	
+
 	getAttack(game: GameModel, pos: CardPosModel, hermitAttackType: HermitAttackType) {
 		const {opponentPlayer} = pos
 		const attack = createHermitAttackModel(this, game, pos, hermitAttackType)

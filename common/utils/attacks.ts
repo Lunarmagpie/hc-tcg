@@ -5,6 +5,7 @@ import {CardPosModel} from '../models/card-pos-model'
 import {EnergyT, RowPos} from '../types/cards'
 import {DEBUG_CONFIG} from '../config'
 import {GameModel} from '../models/game-model'
+import {Card} from '../cards/base/card'
 
 function executeAttack(attack: AttackModel) {
 	const target = attack.getTarget()
@@ -135,10 +136,10 @@ function runAfterDefenceHooks(attacks: Array<AttackModel>) {
 	}
 }
 
-function shouldIgnoreCard(attack: AttackModel, instance: string): boolean {
+function shouldIgnoreCard(attack: AttackModel, card: Card): boolean {
 	for (let i = 0; i < attack.shouldIgnoreCards.length; i++) {
 		const shouldIgnore = attack.shouldIgnoreCards[i]
-		if (shouldIgnore(instance)) return true
+		if (shouldIgnore(card)) return true
 	}
 	return false
 }

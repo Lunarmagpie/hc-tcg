@@ -42,7 +42,7 @@ class PoisonStatusEffect extends StatusEffect<StatusEffectProps> {
 						player: activeRowPos.player,
 						rowIndex: activeRowPos.rowIndex,
 						row: activeRowPos.row,
-					}
+				  }
 				: null
 
 			const targetRow: RowPos = {

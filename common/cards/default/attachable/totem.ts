@@ -5,7 +5,7 @@ import {discardCard} from '../../../utils/movement'
 import {removeStatusEffect} from '../../../utils/board'
 import {AttachableCard, attachableCardDefaults} from '../../base/attachable-card'
 import {Card, HasAttach} from '../../base/card'
-import { AttackModel } from '../../../models/attack-model'
+import {AttackModel} from '../../../models/attack-model'
 
 class TotemEffectCard extends Card<AttachableCard> implements HasAttach {
 	override props: AttachableCard = {

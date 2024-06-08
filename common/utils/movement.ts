@@ -1,7 +1,6 @@
 import {GameModel} from '../models/game-model'
 import {PlayerState} from '../types/game-state'
 import {Card} from '../cards/base/card'
-import {CARDS} from '../cards'
 import {BasicCardPos, CardPosModel, getCardPos} from '../models/card-pos-model'
 import {SlotPos} from '../types/cards'
 import {getSlotPos} from './board'
@@ -68,7 +67,7 @@ export function retrieveCard(game: GameModel, card: Card | null) {
 	for (let playerId in game.state.players) {
 		const player = game.state.players[playerId]
 		const discarded = player.discarded
-		const index = discarded.findIndex((c) => equalCard(c, card))
+		const index = discarded.findIndex((c) => c.equals(card))
 		if (index !== -1) {
 			const retrievedCard = discarded.splice(index, 1)[0]
 			player.hand.push(retrievedCard)
@@ -84,7 +83,7 @@ export function discardSingleUse(game: GameModel, playerState: PlayerState) {
 	const pos = getCardPos(game, singleUseCard)
 	if (!pos) return
 
-	if (implementsHasAttach(singleUseCard)) {
+	if (singleUseCard.implementsAttach()) {
 		singleUseCard.onDetach(game, pos)
 	}
 
@@ -104,7 +103,7 @@ export function discardSingleUse(game: GameModel, playerState: PlayerState) {
 export function discardFromHand(player: PlayerState, card: Card | null) {
 	if (!card) return
 
-	player.hand = player.hand.filter((c) => !equalCard(c, card))
+	player.hand = player.hand.filter((c) => !c.equals(card))
 
 	player.discarded.push(card)
 }
@@ -120,8 +119,7 @@ export function moveCardToHand(game: GameModel, card: Card, playerDiscard?: Play
 	const cardPos = getCardPos(game, card)
 	if (!cardPos) return
 
-	const cardInfo = CARDS[card.id]
-	cardInfo.onDetach(game, card, cardPos)
+	if (card.implementsAttach()) card.onDetach(game, cardPos)
 
 	cardPos.player.hooks.onDetach.call(card)
 
@@ -170,22 +168,15 @@ export function getSlotCard(slotPos: SlotPos): Card | null {
 	return row.itemCards[index]
 }
 
-/** Filters a `CanAttachResult` to remove all `'INVALID_PLAYER'` problems for movement checks */
-function exceptInvalidPlayer(
-	result: CanAttachResult[number]
-): result is Exclude<typeof result, 'INVALID_PLAYER'> {
-	return result !== 'INVALID_PLAYER'
-}
-
 export function canAttachToSlot(
 	game: GameModel,
 	slotPos: SlotPos,
 	card: Card,
 	excludeInvalidPlayer = false
-): CanAttachResult {
+): boolean {
 	const {player, rowIndex, row, slot} = slotPos
 	const opponentPlayerId = game.getPlayerIds().find((id) => id !== slotPos.player.id)
-	if (!opponentPlayerId) return ['UNKNOWN_ERROR']
+	if (!opponentPlayerId) return false
 
 	const basicPos: BasicCardPos = {
 		player,
@@ -197,15 +188,7 @@ export function canAttachToSlot(
 
 	// Create a fake card pos model
 	const pos = new CardPosModel(game, basicPos, card, true)
-
-	const cardInfo = CARDS[card.id]
-	const canAttach = cardInfo.canAttach(game, pos)
-	player.hooks.canAttach.call(canAttach, pos)
-
-	if (excludeInvalidPlayer) {
-		return canAttach.filter(exceptInvalidPlayer)
-	}
-	return canAttach
+	return card.props.canBeAttachedTo(game, pos)
 }
 
 /** Swaps the positions of two cards on the board. Returns whether or not the swap was successful. */
@@ -228,12 +211,12 @@ export function swapSlots(
 	if (cardB) {
 		// Return false if we can't attach for any reason other than wrong player
 		const canAttachResult = canAttachToSlot(game, slotAPos, cardB, true)
-		if (canAttachResult.length > 0) return false
+		if (canAttachResult === false) return false
 	}
 	if (cardA) {
 		// Return false if we can't attach for any reason other than wrong player
 		const canAttachResult = canAttachToSlot(game, slotBPos, cardA, true)
-		if (canAttachResult.length > 0) return false
+		if (canAttachResult === false) return false
 	}
 
 	// make checks for each slot and then detach
@@ -252,15 +235,13 @@ export function swapSlots(
 		const results = cardPos.player.hooks.onSlotChange.call(slot)
 		if (results.includes(false)) return false
 
-		const cardInfo = CARDS[card.id]
-
-		if (!withoutDetach) {
-			cardInfo.onDetach(game, card, cardPos)
+		if (!withoutDetach && card.implementsAttach()) {
+			card.onDetach(game, cardPos)
 
 			cardPos.player.hooks.onDetach.call(card)
 		}
 
-		cardsInfo.push({cardInfo, card})
+		cardsInfo.push(card)
 	}
 
 	// Swap

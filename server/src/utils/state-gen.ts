@@ -186,7 +186,7 @@ export function getPlayerState(player: PlayerModel): PlayerState {
 
 	for (let i = 0; i < DEBUG_CONFIG.extraStartingCards.length; i++) {
 		const id = DEBUG_CONFIG.extraStartingCards[i]
-		const card = CARDS[id]
+		const card = CARDS.find((card) => card.props.id === id)
 		if (!card) {
 			console.log('Invalid extra starting card in debug config:', id)
 			continue

@@ -47,12 +47,14 @@ class PotatoBoyRareHermitCard extends HermitCard {
 				if (!row.hermitCard) return
 				const rowIndex = getBasicCardPos(game, row.hermitCard)?.rowIndex
 				if (!rowIndex) return
-					const maxHealth = Math.max(row.health, row.hermitCard.props.health)
-					row.health = Math.min(row.health + 40, maxHealth)
-					game.battleLog.addEntry(
-						player.id,
-						`$p${row.hermitCard.props.name} (${rowIndex + 1})$ was healed $g40hp$ by $p${activeHermitName}$`
-					)
+				const maxHealth = Math.max(row.health, row.hermitCard.props.health)
+				row.health = Math.min(row.health + 40, maxHealth)
+				game.battleLog.addEntry(
+					player.id,
+					`$p${row.hermitCard.props.name} (${
+						rowIndex + 1
+					})$ was healed $g40hp$ by $p${activeHermitName}$`
+				)
 			})
 		})
 	}

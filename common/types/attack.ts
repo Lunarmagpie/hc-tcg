@@ -1,5 +1,5 @@
 import {Card} from '../cards/base/card'
-import StatusEffect from '../status-effects/status-effect'
+import {StatusEffect} from '../status-effects/status-effect'
 import {RowPos} from './cards'
 
 export type HermitAttackType = 'primary' | 'secondary' | 'single-use'
