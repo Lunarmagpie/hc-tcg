@@ -26,5 +26,5 @@ export type PlayerDeckT = {
 export type SavedDeckT = {
 	name: string
 	icon: PlayerDeckT['icon']
-	cards: Array<{id: string}>
+	cards: Array<{cardId: string}>
 }

@@ -1,4 +1,4 @@
-import { createCard } from 'common/cards'
+import {createCard} from 'common/cards'
 import {Card} from 'common/cards/base/card'
 import {PlayerDeckT, SavedDeckT} from 'common/types/deck'
 import {validateDeck} from 'common/utils/validation'
@@ -28,15 +28,18 @@ export const getSavedDeck = (name: string): PlayerDeckT | null => {
 	savedDeck = JSON.parse(hash)
 	if (savedDeck === null) return null
 
-	const deck = {
+	const deck: PlayerDeckT = {
 		name: savedDeck.name,
 		icon: savedDeck.icon,
-		cards: savedDeck.cards.map((card) => {
-			return createCard(card.id)
-		}),
+		cards: [],
 	}
 
-	console.log("DECK")
+	savedDeck.cards.map((card) => {
+		const createdCard = createCard(card.cardId)
+		if (createdCard) deck.cards.push(createdCard)
+	})
+
+	console.log('DECK')
 	console.log(deck)
 
 	return deck

@@ -1,4 +1,5 @@
-import { Card } from 'common/cards/base/card'
+import {createCard, initializedCards} from 'common/cards'
+import {Card} from 'common/cards/base/card'
 import {encode, decode} from 'js-base64'
 
 export const getDeckFromHash = (hash: string): Array<Card> => {
@@ -11,21 +12,20 @@ export const getDeckFromHash = (hash: string): Array<Card> => {
 	}
 	const deck = []
 	for (let i = 0; i < b64.length; i++) {
-		const cardId = Object.values(CARDS).find((value) => value.numericId === b64[i])?.id
+		const cardId = initializedCards.find((value) => value && value.props.numericId === b64[i])
+			?.props.id
 		if (!cardId) continue
-		deck.push({
-			cardId: cardId,
-			cardInstance: Math.random().toString(),
-		})
+		const card = createCard(cardId)
+		if (!card) continue
+		deck.push(card)
 	}
-	const deckCards = deck.filter((card: CardT) => CARDS[card.id])
-	return deckCards
+	return deck
 }
 
-export const getHashFromDeck = (pickedCards: Array<CardT>): string => {
+export const getHashFromDeck = (pickedCards: Array<Card>): string => {
 	const indicies = []
 	for (let i = 0; i < pickedCards.length; i++) {
-		const id = CARDS[pickedCards[i].cardId].numericId
+		const id = pickedCards[i].props.numericId
 		if (id >= 0) indicies.push(id)
 	}
 	const b64cards = encode(String.fromCharCode.apply(null, indicies))
