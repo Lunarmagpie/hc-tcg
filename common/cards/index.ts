@@ -14,7 +14,7 @@ import adventOfTcgHermitCards from './advent-of-tcg/hermits'
 import adventOfTcgSingleUseCards from './advent-of-tcg/single-use'
 import {Card} from './base/card'
 
-const allCardClasses: Array<typeof Card<any>> = [
+const allCards: Array<typeof Card<any>> = [
 	// ...defaultAttachableCards,
 	...defaultHermitCards,
 	// ...defaultItemCards,
@@ -28,7 +28,7 @@ const allCardClasses: Array<typeof Card<any>> = [
 	// ...adventOfTcgSingleUseCards,
 ]
 
-export const CARDS: Record<string, typeof Card> = allCardClasses.reduce(
+const CARDS: Record<string, typeof Card> = allCards.reduce(
 	(result: Record<string, typeof Card>, card) => {
 		const initializedCard = new (card as any)() as Card
 		console.log
@@ -37,3 +37,11 @@ export const CARDS: Record<string, typeof Card> = allCardClasses.reduce(
 	},
 	{}
 )
+
+export function createCard(id: string): Card {
+	const index = CARDS[id]
+	const card = new (index as any)() as Card
+	return card
+}
+
+export const initializedCards = Object.keys(CARDS).map((id) => createCard(id))

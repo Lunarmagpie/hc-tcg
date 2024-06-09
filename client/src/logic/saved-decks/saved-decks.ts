@@ -1,3 +1,4 @@
+import { createCard } from 'common/cards'
 import {Card} from 'common/cards/base/card'
 import {PlayerDeckT, SavedDeckT} from 'common/types/deck'
 import {validateDeck} from 'common/utils/validation'
@@ -29,7 +30,7 @@ export const getSavedDeck = (name: string): PlayerDeckT | null => {
 		name: savedDeck.name,
 		icon: savedDeck.icon,
 		cards: savedDeck.cards.map((card) => {
-			return Card.new(card.id)
+			return createCard(card.id)
 		}),
 	}
 

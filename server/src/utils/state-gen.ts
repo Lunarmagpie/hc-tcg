@@ -1,4 +1,3 @@
-import {CARDS} from 'common/cards'
 import {STRENGTHS} from 'common/const/strengths'
 import {CONFIG, DEBUG_CONFIG, EXPANSIONS} from 'common/config'
 import {
@@ -18,6 +17,7 @@ import {Card} from 'common/cards/base/card'
 import {CardPosModel} from 'common/models/card-pos-model'
 import {HermitAttackType} from 'common/types/attack'
 import {getCardCost, getCardRank} from 'common/utils/ranks'
+import { initializedCards } from 'common/cards'
 
 ////////////////////////////////////////
 // @TODO sort this whole thing out properly
@@ -142,7 +142,7 @@ export function getEmptyRow(): RowState {
 }
 
 export function getPlayerState(player: PlayerModel): PlayerState {
-	const allCards = Object.values(CARDS).map(
+	const allCards = initializedCards.map(
 		(card: Card): CardT => ({
 			cardId: card.id,
 			cardInstance: card.id,

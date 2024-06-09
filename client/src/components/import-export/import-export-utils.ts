@@ -1,8 +1,7 @@
-import {CardT} from 'common/types/game-state'
-import {CARDS} from 'common/cards'
+import { Card } from 'common/cards/base/card'
 import {encode, decode} from 'js-base64'
 
-export const getDeckFromHash = (hash: string): Array<CardT> => {
+export const getDeckFromHash = (hash: string): Array<Card> => {
 	try {
 		var b64 = decode(hash)
 			.split('')

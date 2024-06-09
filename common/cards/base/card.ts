@@ -13,17 +13,6 @@ import {HermitAttackType} from '../../types/attack'
 import {AttackModel} from '../../models/attack-model'
 import {AttachmentExpression} from './attachable'
 
-import defaultAttachableCards from '../default/attachable'
-import defaultHermitCards from '../default/hermits'
-import defaultItemCards from '../default/items'
-import defaultSingleUseCards from '../default/single-use'
-import alterEgosAttachableCards from '../alter-egos/attachable'
-import alterEgosHermitCards from '../alter-egos/hermits'
-import alterEgosSingleUseCards from '../alter-egos/single-use'
-import alterEgosIIHermitCards from '../alter-egos-ii/hermits/index'
-import adventOfTcgAttachableCards from '../advent-of-tcg/effects'
-import adventOfTcgHermitCards from '../advent-of-tcg/hermits'
-import adventOfTcgSingleUseCards from '../advent-of-tcg/single-use'
 import {CARDS} from '..'
 
 export abstract class Card<T extends CardProps = CardProps> {
@@ -33,12 +22,6 @@ export abstract class Card<T extends CardProps = CardProps> {
 
 	constructor(props: T) {
 		this.props = props
-	}
-
-	public static new(id: string): Card {
-		const index = CARDS[id]
-		const card = new (index as any)() as Card
-		return card
 	}
 
 	equals<U extends CardProps>(

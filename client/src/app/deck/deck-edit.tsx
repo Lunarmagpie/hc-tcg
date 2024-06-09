@@ -4,7 +4,6 @@ import classNames from 'classnames'
 import {sortCards, cardGroupHeader} from './deck'
 import css from './deck.module.scss'
 import DeckLayout from './layout'
-import {CARDS} from 'common/cards'
 import {PlayerDeckT} from 'common/types/deck'
 import CardList from 'components/card-list'
 import Accordion from 'components/accordion'
@@ -18,7 +17,8 @@ import {getCardRank, getDeckCost} from 'common/utils/ranks'
 import {validateDeck} from 'common/utils/validation'
 import {getSettings} from 'logic/local-settings/local-settings-selectors'
 import {setSetting} from 'logic/local-settings/local-settings-actions'
-import {Card, implementsHasHermitType} from 'common/cards/base/card'
+import {Card} from 'common/cards/base/card'
+import {initializedCards} from 'common/cards'
 
 const RANK_NAMES = ['any', ...Object.keys(RANKS.ranks)]
 const DECK_ICONS = [
@@ -38,8 +38,8 @@ const DECK_ICONS = [
 const EXPANSION_NAMES = [
 	'any',
 	...Object.keys(EXPANSIONS.expansions).filter((expansion) => {
-		return Object.values(CARDS).some(
-			(card) => card.expansion === expansion && !EXPANSIONS.disabled.includes(expansion)
+		return initializedCards.some(
+			(card) => card.props.expansion === expansion && !EXPANSIONS.disabled.includes(expansion)
 		)
 	}),
 ]
@@ -129,7 +129,7 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 	//MISC
 	const initialDeckState = deck
 
-	const filteredCards = CARDS.filter(
+	const filteredCards = initializedCards.filter(
 		(card) =>
 			// Card Name Filter
 			card.props.name.toLowerCase().includes(deferredTextQuery.toLowerCase()) &&

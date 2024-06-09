@@ -6,13 +6,11 @@ import {getPlayerId} from 'logic/session/session-selectors'
 import {getAvailableActions, getPlayerStateById} from 'logic/game/game-selectors'
 import {startAttack} from 'logic/game/game-actions'
 import Attack from './attack'
-import HermitSelector from './hermit-selector'
 
 type Props = {
 	closeModal: () => void
 }
 function AttackModal({closeModal}: Props) {
-	// TODO - This whole file needs to be rafactored
 	const dispatch = useDispatch()
 	const activeRow = useSelector(getPlayerActiveRow)
 	const opponentRow = useSelector(getOpponentActiveRow)
@@ -25,20 +23,10 @@ function AttackModal({closeModal}: Props) {
 	if (!opponentRow || !opponentRow.hermitCard) return null
 	if (availableActions.includes('WAIT_FOR_TURN')) return null
 
-	if (!activeRow.hermitCard) return null // Armor Stand
-
-	const hermitFullName = activeRow.hermitCard.id.split('_')[0]
+	const hermitFullName = activeRow.hermitCard.props.id.split('_')[0]
 
 	const handleAttack = (type: 'single-use' | 'primary' | 'secondary') => {
 		dispatch(startAttack(type))
-		closeModal()
-	}
-
-	const handleExtraAttack = (hermitExtra: any) => {
-		const extra = {
-			[activeRow.hermitCard.id]: hermitExtra,
-		}
-		dispatch(startAttack('secondary', extra))
 		closeModal()
 	}
 
@@ -51,8 +39,8 @@ function AttackModal({closeModal}: Props) {
 		attacks.push(
 			<Attack
 				key="single-use"
-				name={singleUseCard.name}
-				icon={`/images/effects/${singleUseCard?.id}.png`}
+				name={singleUseCard.props.name}
+				icon={`/images/effects/${singleUseCard.props.id}.png`}
 				attackInfo={null}
 				onClick={effectAttack}
 			/>
@@ -63,34 +51,22 @@ function AttackModal({closeModal}: Props) {
 		attacks.push(
 			<Attack
 				key="primary"
-				name={activeRow.hermitCard.primary.name}
+				name={activeRow.hermitCard.props.primary.name}
 				icon={`/images/hermits-nobg/${hermitFullName}.png`}
-				attackInfo={activeRow.hermitCard.primary}
+				attackInfo={activeRow.hermitCard.props.primary}
 				onClick={primaryAttack}
 			/>
 		)
 	}
 
-	const extraAttacks = availableActions.filter((a) => a.includes(':'))
-
-	if (!extraAttacks.length && availableActions.includes('SECONDARY_ATTACK')) {
+	if (availableActions.includes('SECONDARY_ATTACK')) {
 		attacks.push(
 			<Attack
 				key="secondary"
-				name={activeRow.hermitCard.secondary.name}
+				name={activeRow.hermitCard.props.secondary.name}
 				icon={`/images/hermits-nobg/${hermitFullName}.png`}
-				attackInfo={activeRow.hermitCard.secondary}
+				attackInfo={activeRow.hermitCard.props.secondary}
 				onClick={secondaryAttack}
-			/>
-		)
-	}
-
-	if (extraAttacks.length) {
-		attacks.push(
-			<HermitSelector
-				key="hermit-selector"
-				extraAttacks={extraAttacks}
-				handleExtraAttack={handleExtraAttack}
 			/>
 		)
 	}
