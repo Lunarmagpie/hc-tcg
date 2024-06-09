@@ -26,20 +26,19 @@ import adventOfTcgHermitCards from '../advent-of-tcg/hermits'
 import adventOfTcgSingleUseCards from '../advent-of-tcg/single-use'
 import {CARDS} from '..'
 
-export class Card<T extends CardProps = CardProps> {
+export abstract class Card<T extends CardProps = CardProps> {
 	public readonly props: T
 
 	private instance = Math.random().toString()
 
-	constructor(props: T | string) {
-		if (typeof props === 'string') {
-			const index = CARDS[props]
-			const card = new (index as any)() as Card
-			Object.assign(this, card)
-			this.props = card.props as T
-		} else {
-			this.props = props
-		}
+	constructor(props: T) {
+		this.props = props
+	}
+
+	public static new(id: string): Card {
+		const index = CARDS[id]
+		const card = new (index as any)() as Card
+		return card
 	}
 
 	equals<U extends CardProps>(
