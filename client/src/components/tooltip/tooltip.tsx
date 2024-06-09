@@ -73,10 +73,9 @@ const Tooltip = memo(({children, tooltip, showAboveModal}: Props) => {
 
 	return (
 		<>
-			{React.cloneElement(children, {
-				ref: refs.setReference,
-				...getReferenceProps(),
-			})}
+			<div ref={refs.setReference} {...getReferenceProps()}>
+				{children}
+			</div>
 			{floatingPortal}
 		</>
 	)
