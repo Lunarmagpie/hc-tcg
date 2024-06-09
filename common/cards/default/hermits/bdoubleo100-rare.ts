@@ -2,7 +2,7 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {applyStatusEffect, getActiveRow} from '../../../utils/board'
-import {Card, HasAttach} from '../../base/card'
+import {Card, CardProps, HasAttach} from '../../base/card'
 import SleepingStatusEffect from '../../../status-effects/sleeping'
 
 class BdoubleO100RareHermitCard extends Card<HermitCard> implements HasAttach {

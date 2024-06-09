@@ -17,8 +17,6 @@ type CardListProps = {
 const CardList = (props: CardListProps) => {
 	const {wrap, onClick, cards, disabled, selected, picked} = props
 
-	console.log(cards)
-
 	const cardsOutput = cards.map((card) => {
 		const info = card
 		const isSelected = selected ? selected.some((selectedCard) => card === selectedCard) : false

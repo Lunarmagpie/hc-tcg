@@ -18,7 +18,7 @@ import {validateDeck} from 'common/utils/validation'
 import {getSettings} from 'logic/local-settings/local-settings-selectors'
 import {setSetting} from 'logic/local-settings/local-settings-actions'
 import {Card} from 'common/cards/base/card'
-import {initializedCards} from 'common/cards'
+import {createCard, initializedCards} from 'common/cards'
 
 const RANK_NAMES = ['any', ...Object.keys(RANKS.ranks)]
 const DECK_ICONS = [
@@ -39,7 +39,7 @@ const EXPANSION_NAMES = [
 	'any',
 	...Object.keys(EXPANSIONS.expansions).filter((expansion) => {
 		return initializedCards.some(
-			(card) => card.props.expansion === expansion && !EXPANSIONS.disabled.includes(expansion)
+			(card) => card && card.props.expansion === expansion && !EXPANSIONS.disabled.includes(expansion)
 		)
 	}),
 ]
@@ -129,9 +129,10 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 	//MISC
 	const initialDeckState = deck
 
+	//@TODO fix typecasting
 	const filteredCards = initializedCards.filter(
 		(card) =>
-			card &&
+		card && card !== null &&
 			// Card Name Filter
 			card.props.name.toLowerCase().includes(deferredTextQuery.toLowerCase()) &&
 			// Card Type Filter
@@ -142,7 +143,7 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 			(expansionQuery === '' || card.props.expansion === expansionQuery) &&
 			// Don't show disabled cards
 			!EXPANSIONS.disabled.includes(card.props.expansion)
-	)
+	) as Array<Card<any>>
 
 	const selectedCards = {
 		hermits: loadedDeck.cards.filter((card) => card.props.category === 'hermit'),
@@ -156,15 +157,23 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 		setLoadedDeck({...loadedDeck, cards: []})
 	}
 	const addCard = (card: Card) => {
-		setLoadedDeck((loadedDeck) => ({
-			...loadedDeck,
-			card,
-		}))
+		setLoadedDeck((loadedDeck) => 
+			{
+				const newCard = createCard(card.props.id)
+				if (!newCard) return loadedDeck
+				return {
+					...loadedDeck,
+					cards: [...loadedDeck.cards, newCard]
+				}
+			}
+			
+		
+		)
 	}
 	const removeCard = (card: Card) => {
 		setLoadedDeck((loadedDeck) => ({
 			...loadedDeck,
-			cards: loadedDeck.cards.filter((pickedCard) => pickedCard.props.id !== card.props.id),
+			cards: loadedDeck.cards.filter((pickedCard) => !pickedCard.equals(card)),
 		}))
 	}
 

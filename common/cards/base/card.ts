@@ -13,8 +13,6 @@ import {HermitAttackType} from '../../types/attack'
 import {AttackModel} from '../../models/attack-model'
 import {AttachmentExpression} from './attachable'
 
-import {CARDS} from '..'
-
 export abstract class Card<T extends CardProps = CardProps> {
 	public readonly props: T
 

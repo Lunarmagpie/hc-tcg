@@ -21,8 +21,6 @@ export const isActiveDeckValid = () => {
 export const getSavedDeck = (name: string): PlayerDeckT | null => {
 	const hash = localStorage.getItem('Deck_' + name)
 
-	console.log(hash)
-
 	let savedDeck: SavedDeckT | null = null
 	if (hash === null) return null
 	savedDeck = JSON.parse(hash)
@@ -39,15 +37,20 @@ export const getSavedDeck = (name: string): PlayerDeckT | null => {
 		if (createdCard) deck.cards.push(createdCard)
 	})
 
-	console.log('DECK')
-	console.log(deck)
-
 	return deck
 }
 
 export const saveDeck = (deck: PlayerDeckT) => {
 	const hash = 'Deck_' + deck.name
-	localStorage.setItem(hash, JSON.stringify(deck))
+	const deckToSave: SavedDeckT = {
+		name: deck.name,
+		icon: deck.icon,
+		cards: deck.cards.map((card) => {
+			return {cardId: card.props.id}
+		}),
+	}
+
+	localStorage.setItem(hash, JSON.stringify(deckToSave))
 }
 
 export const deleteDeck = (name: string) => {

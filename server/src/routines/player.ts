@@ -70,6 +70,7 @@ function* updateDeckSaga(action: any) {
 	let newDeck = action.payload
 	const player = root.players[playerId]
 	if (!player) return
+
 	player.setPlayerDeck(newDeck)
 
 	player.socket?.emit('NEW_DECK', {
