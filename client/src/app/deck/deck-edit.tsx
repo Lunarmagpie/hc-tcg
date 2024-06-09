@@ -131,6 +131,7 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 
 	const filteredCards = initializedCards.filter(
 		(card) =>
+			card &&
 			// Card Name Filter
 			card.props.name.toLowerCase().includes(deferredTextQuery.toLowerCase()) &&
 			// Card Type Filter
@@ -340,7 +341,7 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 					<Accordion header={'Attachable Effects'}>
 						<CardList
 							cards={sortCards(filteredCards).filter(
-								(card) => card.props.category === 'attachable'
+								(card) => card && card.props.category === 'attachable'
 							)}
 							wrap={true}
 							onClick={addCard}
@@ -349,7 +350,7 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 					<Accordion header={'Single Use Effects'}>
 						<CardList
 							cards={sortCards(filteredCards).filter(
-								(card) => card.props.category === 'single_use'
+								(card) => card && card.props.category === 'single_use'
 							)}
 							wrap={true}
 							onClick={addCard}

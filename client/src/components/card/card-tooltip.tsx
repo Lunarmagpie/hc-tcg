@@ -151,11 +151,11 @@ const CardTooltip = ({card}: Props) => {
 				<div className={css.tooltipBelow}>{getSidebarDescriptions(card)}</div>
 			)}
 			<div className={css.cardTooltip}>
-				<div className={css.topLine}>
+				<div className={css.topLine} key={0}>
 					{getName(card)}
 					{getHermitType(card)}
 				</div>
-				<div className={css.description}>
+				<div className={css.description} key={1}>
 					{getExpansion(card)}
 					{getRank(card)}
 					{getStrengthsAndWeaknesses(card)}

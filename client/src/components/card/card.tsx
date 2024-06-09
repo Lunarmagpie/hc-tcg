@@ -21,7 +21,7 @@ interface CardProps
 }
 
 const CardComponent = (props: CardProps) => {
-	const {category} = props.card
+	const {category} = props.card.props
 	const {onClick, selected, picked, ...otherProps} = props
 	let card = null
 	if (category === 'hermit') card = <HermitCardModule {...(otherProps as HermitCardProps)} />

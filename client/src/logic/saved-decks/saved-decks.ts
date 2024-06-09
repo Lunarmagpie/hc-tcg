@@ -21,6 +21,8 @@ export const isActiveDeckValid = () => {
 export const getSavedDeck = (name: string): PlayerDeckT | null => {
 	const hash = localStorage.getItem('Deck_' + name)
 
+	console.log(hash)
+
 	let savedDeck: SavedDeckT | null = null
 	if (hash === null) return null
 	savedDeck = JSON.parse(hash)
@@ -33,6 +35,9 @@ export const getSavedDeck = (name: string): PlayerDeckT | null => {
 			return createCard(card.id)
 		}),
 	}
+
+	console.log("DECK")
+	console.log(deck)
 
 	return deck
 }

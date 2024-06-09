@@ -38,8 +38,9 @@ const CARDS: Record<string, typeof Card> = allCards.reduce(
 	{}
 )
 
-export function createCard(id: string): Card {
+export function createCard(id: string): Card | null {
 	const index = CARDS[id]
+	if (!index) return null
 	const card = new (index as any)() as Card
 	return card
 }
