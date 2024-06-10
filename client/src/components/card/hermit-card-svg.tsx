@@ -21,16 +21,12 @@ const COST_X = [
 ]
 
 const HermitCardModule = ({card}: HermitCardProps) => {
-	const cardWithFunctions = createCard(card.props.id)
-
-	if (!cardWithFunctions.implementsHermitDisplayInfo()) return <svg></svg>
-
 	const hermitFullName = card.props.id.split('_')[0]
 	const rank = getCardRank(card.props.id)
 	const palette = card.props.palette
-	const backgroundName = cardWithFunctions.props.getBackground()
+	const backgroundName = card.props.getBackground()
 	const showCost = !useSelector(getGameState)
-	const name = cardWithFunctions.props.getShortName() || card.props.name
+	const name = card.props.getShortName() || card.props.name
 	const nameLength = name.length
 	const disabled = EXPANSIONS.disabled.includes(card.props.expansion) ? 'disabled' : 'enabled'
 

@@ -7,6 +7,7 @@ import {Card} from 'common/cards/base/card'
 import StatusEffectComponent from 'components/status-effects/status-effect'
 import CardComponent from 'components/card'
 import {StatusEffect} from 'common/status-effects/status-effect'
+import {createCard} from 'common/cards'
 
 export type SlotProps = {
 	type: SlotTypeT
@@ -99,7 +100,7 @@ const SlotComponent = ({
 		>
 			{cardInfo ? (
 				<div className={css.cardWrapper}>
-					<CardComponent card={cardInfo} />
+					<CardComponent card={createCard(cardInfo.props.id)} />
 					{type === 'health'
 						? renderStatusEffects(hermitStatusEffects)
 						: type === 'effect'

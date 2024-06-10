@@ -3,6 +3,7 @@ import CardComponent from 'components/card'
 import css from './card-list.module.scss'
 import {CSSTransition, TransitionGroup} from 'react-transition-group'
 import {Card} from 'common/cards/base/card'
+import {createCard} from 'common/cards'
 
 type CardListProps = {
 	cards: Array<Card>
@@ -18,7 +19,7 @@ const CardList = (props: CardListProps) => {
 	const {wrap, onClick, cards, disabled, selected, picked} = props
 
 	const cardsOutput = cards.map((card) => {
-		const info = card
+		const info = createCard(card.props.id)
 		const isSelected = selected ? selected.some((selectedCard) => card === selectedCard) : false
 		const isPicked = !!picked?.find((pickedCard) => card === pickedCard)
 		const isDisabled = !!disabled?.find((id) => card.props.id === id)
