@@ -8,6 +8,7 @@ import {applySingleUse, removeStatusEffect} from '../../../utils/board'
 import {Card, HasAttach} from '../../base/card'
 import attachableTo from '../../base/attachable'
 
+<<<<<<< HEAD:common/cards/default/attachable/water-bucket.ts
 class WaterBucketEffectCard extends Card<AttachableCard> implements HasAttach {
 	override props: AttachableCard = {
 		...attachableCardDefaults,
@@ -23,6 +24,23 @@ class WaterBucketEffectCard extends Card<AttachableCard> implements HasAttach {
 				return `${values.defaultLog} on $p${values.pick.name}$`
 			return `$p{You|${values.player}}$ attached $e${this.props.name}$ to $p${values.pos.hermitCard}$`
 		},
+=======
+class WaterBucketEffectCard extends EffectCard {
+	constructor() {
+		super({
+			id: 'water_bucket',
+			numericId: 105,
+			name: 'Water Bucket',
+			rarity: 'common',
+			description:
+				'Remove burn and String from one of your Hermits.\nIf attached, prevents the Hermit this card is attached to from being burned.',
+			log: (values) => {
+				if (values.pos.slotType === 'single_use')
+					return `${values.defaultLog} on $p${values.pick.name}$`
+				return `$p{You|${values.player}}$ attached $e${this.name}$ to $p${values.pos.hermitCard}$`
+			},
+		})
+>>>>>>> upstream/dev:common/cards/default/effects/water-bucket.ts
 	}
 
 	onAttach(game: GameModel, pos: CardPosModel) {

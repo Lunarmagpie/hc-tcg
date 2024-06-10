@@ -33,18 +33,25 @@ class GeminiTayRareHermitCard extends Card<HermitCard> implements HasAttach {
 	onAttach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 
+<<<<<<< HEAD
 		player.hooks.afterAttack.add(this, (attack) => {
 			if (attack.getCreator() !== this || attack.type !== 'secondary') return
+=======
+		player.hooks.onAttack.add(instance, (attack) => {
+			if (attack.id !== this.getInstanceKey(instance) || attack.type !== 'secondary') return
+>>>>>>> upstream/dev
 
-			// To keep this simple gem will discard the single use card, if it's used
-			if (player.board.singleUseCardUsed) {
+			player.hooks.afterAttack.add(instance, (attack) => {
+				// Discard the single-use card.
 				discardSingleUse(game, player)
-			}
 
-			// We are hooking into afterAttack, so we just remove the blocks on actions
-			// The beauty of this is that there is no need to replicate any of the existing logic anymore
-			game.removeCompletedActions('SINGLE_USE_ATTACK', 'PLAY_SINGLE_USE_CARD')
-			game.removeBlockedActions('game', 'PLAY_SINGLE_USE_CARD')
+				// We are hooking into afterAttack, so we just remove the blocks on actions
+				// The beauty of this is that there is no need to replicate any of the existing logic anymore
+				game.removeCompletedActions('SINGLE_USE_ATTACK', 'PLAY_SINGLE_USE_CARD')
+				game.removeBlockedActions('game', 'PLAY_SINGLE_USE_CARD')
+
+				player.hooks.afterAttack.remove(instance)
+			})
 		})
 	}
 
@@ -52,7 +59,11 @@ class GeminiTayRareHermitCard extends Card<HermitCard> implements HasAttach {
 		const {player} = pos
 
 		// Remove hook
+<<<<<<< HEAD
 		player.hooks.afterAttack.remove(this)
+=======
+		player.hooks.onAttack.remove(instance)
+>>>>>>> upstream/dev
 	}
 }
 

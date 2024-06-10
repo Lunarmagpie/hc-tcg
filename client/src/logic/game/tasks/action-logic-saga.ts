@@ -4,21 +4,10 @@ import {SagaIterator} from 'redux-saga'
 import {LocalGameState} from 'common/types/game-state'
 import {getPlayerId} from 'logic/session/session-selectors'
 import {setOpenedModal, applyEffect, modalRequest} from 'logic/game/game-actions'
-import { Card } from 'common/cards/base/card'
-
-function* borrowSaga(): SagaIterator {
-	yield put(setOpenedModal('borrow'))
-	const result = yield* take(['BORROW_ATTACH', 'BORROW_DISCARD'])
-	if (result.type === 'BORROW_DISCARD') {
-		yield put(modalRequest({modalResult: {attach: false}}))
-		return
-	}
-
-	yield put(modalRequest({modalResult: {attach: true}}))
-}
+import {Card} from 'common/cards/base/card'
 
 function* singleUseSaga(card: Card): SagaIterator {
-	if (cardInfo.category === 'single_use' && cardInfo.canApply()) {
+	if (card.props.category === 'single_use' && card.canApply()) {
 		yield put(setOpenedModal('confirm'))
 	}
 }
@@ -30,11 +19,7 @@ function* actionLogicSaga(gameState: LocalGameState): SagaIterator {
 
 	if (gameState.currentModalData && gameState.currentModalData.modalId) {
 		const id = gameState.currentModalData?.modalId
-		if (id === 'grian_rare') {
-			yield fork(borrowSaga)
-		} else {
-			yield put(setOpenedModal(id))
-		}
+		yield put(setOpenedModal(id))
 	} else if (
 		lastActionResult?.action === 'PLAY_SINGLE_USE_CARD' &&
 		lastActionResult?.result === 'SUCCESS' &&

@@ -4,8 +4,12 @@ import {RowPos} from '../types/cards'
 import {AttackModel} from '../models/attack-model'
 import {getActiveRowPos, removeStatusEffect} from '../utils/board'
 import {executeExtraAttacks} from '../utils/attacks'
+<<<<<<< HEAD
 import {Card} from '../cards/base/card'
 import {CardPosModel, getBasicCardPos, getCardPos} from '../models/card-pos-model'
+=======
+import {CARDS} from '../cards'
+>>>>>>> upstream/dev
 
 class FireStatusEffect extends StatusEffect<StatusEffectProps> {
 	constructor(target: Card) {
@@ -31,8 +35,17 @@ class FireStatusEffect extends StatusEffect<StatusEffectProps> {
 		game.state.statusEffects.push(this)
 		game.battleLog.addEntry(player.id, `$p${this.props.target.props.name}$ was $eBurned$`)
 
+<<<<<<< HEAD
 		opponentPlayer.hooks.onTurnEnd.add(this, () => {
 			const targetPos = getBasicCardPos(game, this.props.target)
+=======
+		if (pos.card) {
+			game.battleLog.addEntry(player.id, `$p${CARDS[pos.card.cardId].name}$ was $eBurned$`)
+		}
+
+		opponentPlayer.hooks.onTurnEnd.add(statusEffectInfo.statusEffectInstance, () => {
+			const targetPos = getBasicCardPos(game, statusEffectInfo.targetInstance)
+>>>>>>> upstream/dev
 			if (!targetPos || !targetPos.row || targetPos.rowIndex === null) return
 			if (!targetPos.row.hermitCard || !targetPos.row.health) return
 

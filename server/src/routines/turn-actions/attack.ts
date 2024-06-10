@@ -25,6 +25,8 @@ function getAttack(
 	let nextAttack = getHermitsAttack(hermitCard, game, attackPos, hermitAttackType)
 	if (nextAttack) attacks.push(nextAttack)
 
+	if (nextAttack) attacks.push(nextAttack)
+
 	// all other attacks
 	const otherAttacks = currentPlayer.hooks.getAttack.call()
 	otherAttacks.forEach((otherAttack) => {
@@ -51,7 +53,7 @@ function* attackSaga(
 
 	const hermitAttackType = attackActionToAttack[turnAction.type]
 	const {currentPlayer, opponentPlayer, state} = game
-	const activeInstance = getActiveRow(currentPlayer)?.hermitCard?.cardInstance
+	const activeInstance = getActiveRow(currentPlayer)?.hermitCard
 	if (!activeInstance) return 'FAILURE_CANNOT_COMPLETE'
 
 	if (checkForRequests) {
@@ -74,7 +76,7 @@ function* attackSaga(
 
 	const attackRow = playerBoard.rows[attackIndex]
 	if (!attackRow.hermitCard) return 'FAILURE_CANNOT_COMPLETE'
-	const attackPos = getCardPos(game, attackRow.hermitCard.cardInstance)
+	const attackPos = getCardPos(game, attackRow.hermitCard)
 	if (!attackPos) return 'FAILURE_UNKNOWN_ERROR'
 
 	// Defender

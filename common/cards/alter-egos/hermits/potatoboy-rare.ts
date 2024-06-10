@@ -38,13 +38,20 @@ class PotatoBoyRareHermitCard extends HermitCard {
 
 			const rows = player.board.rows
 
+<<<<<<< HEAD
 			const activeHermitName = getActiveRow(player)?.hermitCard.props.name
 			if (!activeHermitName) return
+=======
+			const activeHermit = getActiveRow(player)?.hermitCard
+			if (!activeHermit) return
+			const activeHermitName = HERMIT_CARDS[activeHermit.cardId].name
+>>>>>>> upstream/dev
 
 			const targetRows = [rows[activeRow - 1], rows[activeRow + 1]].filter(Boolean)
 
 			targetRows.forEach((row) => {
 				if (!row.hermitCard) return
+<<<<<<< HEAD
 				const rowIndex = getBasicCardPos(game, row.hermitCard)?.rowIndex
 				if (!rowIndex) return
 				const maxHealth = Math.max(row.health, row.hermitCard.props.health)
@@ -55,6 +62,19 @@ class PotatoBoyRareHermitCard extends HermitCard {
 						rowIndex + 1
 					})$ was healed $g40hp$ by $p${activeHermitName}$`
 				)
+=======
+				const hermitInfo = HERMIT_CARDS[row.hermitCard.cardId]
+				const rowIndex = getBasicCardPos(game, row.hermitCard.cardInstance)?.rowIndex
+				if (!rowIndex) return
+				if (hermitInfo) {
+					const maxHealth = Math.max(row.health, hermitInfo.health)
+					row.health = Math.min(row.health + 40, maxHealth)
+					game.battleLog.addEntry(
+						player.id,
+						`$p${hermitInfo.name} (${rowIndex + 1})$ was healed $g40hp$ by $p${activeHermitName}$`
+					)
+				}
+>>>>>>> upstream/dev
 			})
 		})
 	}

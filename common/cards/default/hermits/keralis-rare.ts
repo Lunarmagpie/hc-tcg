@@ -2,8 +2,12 @@ import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {HasAttach} from '../../base/card'
 import {GameModel} from '../../../models/game-model'
 import {CardPosModel} from '../../../models/card-pos-model'
+<<<<<<< HEAD
 import {getNonEmptyRows} from '../../../utils/board'
 import {PlayerState} from '../../../types/game-state'
+=======
+import {getActiveRow, getNonEmptyRows} from '../../../utils/board'
+>>>>>>> upstream/dev
 
 const KeralisRareHermitCard = (): HermitCard & HasAttach => {
 	let chosenPlayer: PlayerState | null = null
@@ -86,9 +90,29 @@ const KeralisRareHermitCard = (): HermitCard & HasAttach => {
 				const pickedRow = chosenPlayer.board.rows[pickedRowIndex]
 				if (!pickedRow || !pickedRow.hermitCard) return
 
+<<<<<<< HEAD
 				// Heal
 				const maxHealth = Math.max(pickedRow.health, pickedRow.hermitCard.health)
 				pickedRow.health = Math.min(pickedRow.health + 100, maxHealth)
+=======
+			const pickedHermitInfo = HERMIT_CARDS[pickedRow.hermitCard.cardId]
+			const activeHermit = getActiveRow(player)?.hermitCard
+			if (!activeHermit) return
+			const activeHermitName = HERMIT_CARDS[activeHermit.cardId].name
+
+			if (pickedHermitInfo && activeHermitName) {
+				// Heal
+				const maxHealth = Math.max(pickedRow.health, pickedHermitInfo.health)
+				pickedRow.health = Math.min(pickedRow.health + 100, maxHealth)
+
+				game.battleLog.addEntry(
+					player.id,
+					`$p${pickedHermitInfo.name} (${
+						pickedRowIndex + 1
+					})$ was healed $g100hp$ by $p${activeHermitName}$`
+				)
+			}
+>>>>>>> upstream/dev
 
 				game.battleLog.addEntry(
 					player.id,

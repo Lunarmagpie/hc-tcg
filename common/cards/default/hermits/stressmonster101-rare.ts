@@ -4,6 +4,7 @@ import {GameModel} from '../../../models/game-model'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {HasAttach} from '../../base/card'
 
+<<<<<<< HEAD
 const StressMonster101RareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
@@ -28,6 +29,32 @@ const StressMonster101RareHermitCard = (): HermitCard & HasAttach => {
 		},
 		onAttach(game: GameModel, pos: CardPosModel) {
 			const {player} = pos
+=======
+class StressMonster101RareHermitCard extends HermitCard {
+	constructor() {
+		super({
+			id: 'stressmonster101_rare',
+			numericId: 93,
+			name: 'Stress',
+			rarity: 'rare',
+			hermitType: 'prankster',
+			health: 300,
+			primary: {
+				name: 'Plonker',
+				cost: ['prankster'],
+				damage: 50,
+				power: null,
+			},
+			secondary: {
+				name: 'Yolo',
+				cost: ['prankster', 'prankster', 'prankster'],
+				damage: 0,
+				power:
+					"You and your opponent's active Hermit take damage equal to your active Hermit's health.\nAny damage this Hermit takes due to this ability can not be redirected.",
+			},
+		})
+	}
+>>>>>>> upstream/dev
 
 			player.hooks.onAttack.add(this, (attack) => {
 				if (attack.getCreator() !== this || attack.type !== 'secondary') return
@@ -46,7 +73,17 @@ const StressMonster101RareHermitCard = (): HermitCard & HasAttach => {
 				attack.addDamage(this.id, attackDamage)
 				backlashAttack.addDamage(this.id, attackDamage)
 
+<<<<<<< HEAD
 				attack.addNewAttack(backlashAttack)
+=======
+			const backlashAttack = new AttackModel({
+				id: this.getInstanceKey(instance, 'selfAttack'),
+				attacker,
+				target: attacker,
+				type: 'secondary',
+				isBacklash: true,
+				log: (values) => ` and took ${values.damage} backlash damage`,
+>>>>>>> upstream/dev
 			})
 		},
 		onDetach(game: GameModel, pos: CardPosModel) {

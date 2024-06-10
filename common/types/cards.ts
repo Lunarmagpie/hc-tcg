@@ -1,5 +1,6 @@
 import {AttackLog} from './attack'
 import {PlayerState, RowState, RowStateWithHermit} from './game-state'
+import {PickInfo} from './server-requests'
 
 export type CardRarityT = 'common' | 'rare' | 'ultra_rare'
 

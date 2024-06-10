@@ -33,15 +33,32 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, GetAtt
 		},
 	}
 
+<<<<<<< HEAD
 	private imitatingCard: Card<CardProps> | null = null
 	private attackType: HermitAttackType | null = null
 
 	getAttack(game: GameModel, pos: CardPosModel, hermitAttackType: HermitAttackType) {
 		const attack = createHermitAttackModel(this, game, pos, hermitAttackType)
+=======
+	override getAttack(
+		game: GameModel,
+		instance: string,
+		pos: CardPosModel,
+		hermitAttackType: HermitAttackType
+	) {
+		const {player} = pos
+		const pickedAttackKey = this.getInstanceKey(instance, 'pickedAttack')
+		const imitatingCardKey = this.getInstanceKey(instance, 'imitatingCard')
+		const attack = super.getAttack(game, instance, pos, hermitAttackType)
+
+		if (!attack || attack.type !== 'secondary') return attack
+		if (attack.id !== this.getInstanceKey(instance)) return attack
+>>>>>>> upstream/dev
 
 		if (!attack || attack.type !== 'secondary') return attack
 		if (attack.getCreator() !== this) return attack
 
+<<<<<<< HEAD
 		if (!this.imitatingCard) return null
 		if (!this.imitatingCard.implementsCanAttack()) return null
 		if (!this.attackType) return null
@@ -53,11 +70,35 @@ class RendogRareHermitCard extends Card<HermitCard> implements HasAttach, GetAtt
 
 		const attackName =
 			newAttack.type === 'primary' ? this.props.primary.name : this.props.secondary.name
+=======
+		if (!imitatingCard) return null
+
+		// No loops please
+		if (imitatingCard.cardId === this.id) return null
+
+		const hermitInfo = HERMIT_CARDS[imitatingCard.cardId]
+		if (!hermitInfo) return null
+
+		const attackType = player.custom[pickedAttackKey]
+		if (!attackType) return null
+		// Delete the stored data about the attack we chose
+		delete player.custom[pickedAttackKey]
+
+		// Return the attack we picked from the card we picked
+		const newAttack = hermitInfo.getAttack(game, imitatingCard.cardInstance, pos, attackType)
+		if (!newAttack) return null
+		const attackName =
+			newAttack.type === 'primary' ? hermitInfo.primary.name : hermitInfo.secondary.name
+>>>>>>> upstream/dev
 		newAttack.updateLog(
 			(values) =>
 				`${values.attacker} ${values.coinFlip ? values.coinFlip + ', then ' : ''} attacked ${
 					values.target
+<<<<<<< HEAD
 				} with $v${imitatingCardName}'s ${attackName}$ for ${values.damage} damage`
+=======
+				} with $v${hermitInfo.name}'s ${attackName}$ for ${values.damage} damage`
+>>>>>>> upstream/dev
 		)
 		return newAttack
 	}

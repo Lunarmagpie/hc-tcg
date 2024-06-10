@@ -72,6 +72,7 @@ class GrianRareHermitCard extends Card<HermitCard> implements HasAttach {
 				return
 			}
 
+<<<<<<< HEAD
 			game.addModalRequest(
 				player.id,
 				{
@@ -80,6 +81,18 @@ class GrianRareHermitCard extends Card<HermitCard> implements HasAttach {
 						modalName: 'Grian - Borrow',
 						modalDescription: `Would you like to attach or discard your opponent's ${opponentEffectCard.props.name} card?`,
 						cards: [player.pile[0]],
+=======
+			game.addModalRequest({
+				playerId: player.id,
+				data: {
+					modalId: 'selectCards',
+					payload: {
+						modalName: 'Grian - Borrow',
+						modalDescription: `Would you like to attach or discard your opponent's ${
+							CARDS[opponentEffectCard.cardId].name
+						} card?`,
+						cards: [opponentEffectCard],
+>>>>>>> upstream/dev
 						selectionSize: 0,
 						primaryButton: {
 							text: 'Attach',
@@ -91,10 +104,15 @@ class GrianRareHermitCard extends Card<HermitCard> implements HasAttach {
 						},
 					},
 				},
+<<<<<<< HEAD
 				(modalResult) => {
 					if (!modalResult || modalResult.attach === undefined) return 'FAILURE_INVALID_DATA'
+=======
+				onResult(modalResult) {
+					if (!modalResult || modalResult.result === undefined) return 'FAILURE_INVALID_DATA'
+>>>>>>> upstream/dev
 
-					if (modalResult.attach) {
+					if (modalResult.result) {
 						// Discard our current attached card if there is one
 						discardCard(game, row.effectCard)
 

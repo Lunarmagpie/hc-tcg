@@ -6,7 +6,10 @@ import {
 	TurnActions,
 	PlayerState,
 	Message,
+<<<<<<< HEAD
 	ModalData,
+=======
+>>>>>>> upstream/dev
 } from '../types/game-state'
 import {getGameState} from '../utils/state-gen'
 import {ModalRequest, PickInfo, PickRequest} from '../types/server-requests'

@@ -4,6 +4,7 @@ import {flipCoin} from '../../../utils/coinFlips'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {HasAttach} from '../../base/card'
 
+<<<<<<< HEAD
 const TinFoilChefRareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
@@ -27,6 +28,31 @@ const TinFoilChefRareHermitCard = (): HermitCard & HasAttach => {
 		},
 		onAttach(game: GameModel, pos: CardPosModel) {
 			const {player} = pos
+=======
+class TinFoilChefRareHermitCard extends HermitCard {
+	constructor() {
+		super({
+			id: 'tinfoilchef_rare',
+			numericId: 98,
+			name: 'TFC',
+			rarity: 'rare',
+			hermitType: 'miner',
+			health: 300,
+			primary: {
+				name: 'True Hermit',
+				cost: ['any'],
+				damage: 40,
+				power: null,
+			},
+			secondary: {
+				name: 'Branch Mine',
+				cost: ['miner', 'miner'],
+				damage: 80,
+				power: 'Flip a coin.\nIf heads, you draw an extra card at the end of your turn.',
+			},
+		})
+	}
+>>>>>>> upstream/dev
 
 			player.hooks.onAttack.add(this, (attack) => {
 				const attacker = attack.getAttacker()

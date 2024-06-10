@@ -147,8 +147,13 @@ class IskallmanRareHermitCard extends HermitCard {
 			})
 			attack.addNewAttack(backlashAttack)
 
+<<<<<<< HEAD
 			const attackerInfo = HERMIT_CARDS[attacker.row.hermitCard.id]
 			const hermitInfo = HERMIT_CARDS[pickedRow.hermitCard.id]
+=======
+			const attackerInfo = HERMIT_CARDS[attacker.row.hermitCard.cardId]
+			const hermitInfo = HERMIT_CARDS[pickedRow.hermitCard.cardId]
+>>>>>>> upstream/dev
 			if (hermitInfo) {
 				const maxHealth = Math.max(pickedRow.health, hermitInfo.health)
 				pickedRow.health = Math.min(pickedRow.health + 50, maxHealth)

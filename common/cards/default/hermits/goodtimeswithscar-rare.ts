@@ -1,7 +1,13 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
+<<<<<<< HEAD
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {Card, HasAttach} from '../../base/card'
+=======
+import HermitCard from '../../base/hermit-card'
+import {removeStatusEffect} from '../../../utils/board'
+import {HERMIT_CARDS} from '../..'
+>>>>>>> upstream/dev
 
 class GoodTimesWithScarRareHermitCard extends Card<HermitCard> implements HasAttach {
 	constructor() {
@@ -45,6 +51,7 @@ class GoodTimesWithScarRareHermitCard extends Card<HermitCard> implements HasAtt
 			player.hooks.onAttack.add(instance, (attack) => {
 				if (attack.id !== this.getInstanceKey(instance) || attack.type !== 'secondary') return
 
+<<<<<<< HEAD
 				const attackerInstance = attack.getAttacker()?.row.hermitCard.cardInstance
 				if (!attackerInstance) return
 				// If this instance is not blocked from reviving, make possible next turn
@@ -57,6 +64,39 @@ class GoodTimesWithScarRareHermitCard extends Card<HermitCard> implements HasAtt
 				if (!targetInstance || !canRevives[targetInstance]) return
 				const row = attack.getTarget()?.row
 				if (!row || row.health === null || row.health > 0) return
+=======
+			const attackerInstance = attack.getAttacker()?.row.hermitCard.cardInstance
+			if (!attackerInstance) return
+			// If this instance is not blocked from reviving, make possible next turn
+			if (canRevives[attackerInstance] === undefined) canRevives[attackerInstance] = true
+		})
+
+		// Add before so health can be checked reliably
+		opponentPlayer.hooks.afterAttack.addBefore(instance, (attack) => {
+			const targetInstance = attack.getTarget()?.row.hermitCard.cardInstance
+			if (!targetInstance || !canRevives[targetInstance]) return
+			const row = attack.getTarget()?.row
+			if (!row || row.health === null || row.health > 0) return
+
+			row.health = 50
+
+			const revivedHermit = HERMIT_CARDS[row.hermitCard.cardId].name
+
+			game.state.statusEffects.forEach((ail) => {
+				if (ail.targetInstance === targetInstance) {
+					removeStatusEffect(game, pos, ail.statusEffectInstance)
+				}
+			})
+
+			game.battleLog.addEntry(
+				player.id,
+				`Using $vDeathloop$, $p${revivedHermit}$ revived with $g50hp$`
+			)
+
+			// Prevents hermits from being revived more than once by Deathloop
+			canRevives[targetInstance] = false
+		})
+>>>>>>> upstream/dev
 
 				row.health = 50
 
