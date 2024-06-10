@@ -2,12 +2,12 @@ import classnames from 'classnames'
 import {RowState} from 'common/types/game-state'
 import css from './board.module.scss'
 import {SlotTypeT} from 'common/types/cards'
-import {HealthIndicator} from 'common/cards/base/health-card'
 import {Card} from 'common/cards/base/card'
 import StatusEffectComponent from 'components/status-effects/status-effect'
 import CardComponent from 'components/card'
 import {StatusEffect} from 'common/status-effects/status-effect'
 import {createCard} from 'common/cards'
+import HealthCard from 'common/cards/base/health-card'
 
 export type SlotProps = {
 	type: SlotTypeT
@@ -29,8 +29,8 @@ const SlotComponent = ({
 }: SlotProps) => {
 	let cardInfo: Card | null = card
 	if (type === 'health' && rowState?.health) {
-		cardInfo = HealthIndicator()
-		if (!cardInfo.implementsHasHealth()) return null
+		cardInfo = new HealthCard()
+		if (!cardInfo || !cardInfo.implementsHasHealth()) return null
 		cardInfo.props.health = rowState.health
 	}
 

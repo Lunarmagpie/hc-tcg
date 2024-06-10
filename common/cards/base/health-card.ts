@@ -2,9 +2,7 @@ import {HasHealth, hasHealthDefaults, isCardDefaults, CardProps, Card} from './c
 import {TextNode} from '../../utils/formatting'
 import attachableTo from './attachable'
 
-export type HealthCard = CardProps & HasHealth
-
-class HealthIndicator extends Card<HealthCard> {
+class HealthCard extends Card<CardProps & HasHealth> {
 	constructor() {
 		super({
 			...isCardDefaults,
