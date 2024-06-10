@@ -23,6 +23,7 @@ import {getCardRank, getDeckCost} from 'common/utils/ranks'
 import {validateDeck} from 'common/utils/validation'
 import {getSettings} from 'logic/local-settings/local-settings-selectors'
 import {setSetting} from 'logic/local-settings/local-settings-actions'
+import LargeCardList from 'components/large-card-list/large-card-list'
 
 const RANK_NAMES = ['any', ...Object.keys(RANKS.ranks)]
 const DECK_ICONS = [
@@ -346,46 +347,7 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 						</>
 					}
 				>
-					<Accordion header={'Hermits'}>
-						<CardList
-							cards={sortCards(filteredCards).filter(
-								(card) => TYPED_CARDS[card.cardId].type === 'hermit'
-							)}
-							enableAnimations={false}
-							wrap={true}
-							onClick={addCard}
-						/>
-					</Accordion>
-					<Accordion header={'Attachable Effects'}>
-						<CardList
-							cards={sortCards(filteredCards).filter(
-								(card) => TYPED_CARDS[card.cardId].type === 'effect'
-							)}
-							enableAnimations={false}
-							wrap={true}
-							onClick={addCard}
-						/>
-					</Accordion>
-					<Accordion header={'Single Use Effects'}>
-						<CardList
-							cards={sortCards(filteredCards).filter(
-								(card) => TYPED_CARDS[card.cardId].type === 'single_use'
-							)}
-							enableAnimations={false}
-							wrap={true}
-							onClick={addCard}
-						/>
-					</Accordion>
-					<Accordion header={'Items'}>
-						<CardList
-							cards={sortCards(filteredCards).filter(
-								(card) => TYPED_CARDS[card.cardId].type === 'item'
-							)}
-							enableAnimations={false}
-							wrap={true}
-							onClick={addCard}
-						/>
-					</Accordion>
+					<LargeCardList cards={filteredCards} />
 				</DeckLayout.Main>
 				<DeckLayout.Sidebar
 					width="half"
