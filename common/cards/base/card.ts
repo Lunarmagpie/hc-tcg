@@ -13,6 +13,44 @@ import {HermitAttackType} from '../../types/attack'
 import {AttackModel} from '../../models/attack-model'
 import {AttachmentExpression} from './attachable'
 
+/**
+ * `Card` is the base class for all card types in hermitcraft TCG. Cards should inherit from `Card` and should
+ * pass thier props into the constructor. This way the super can be constructed without any arguments.
+ *
+ * For example a hermit card declaration could look like this:
+ * ```ts
+ * class MyCard extends Card<HermitCard> {
+ *     constructor() {
+ *         super({ the dictionary with the values of`HermitCard` })
+ *     }
+ * }
+ * ```
+ * See a card such as BdoubleCommon for a full example of all properties.
+ *
+ * Some cards may need to do actions when added to the board. The `HasAttach` interface can be used for this
+ * purpose.
+ *
+ * ```ts
+ * class MyCard extends Card<HermitCard> implements HasAttach {
+ *    constructor { snip }
+ *
+ *		onAttach(game: GameModel, pos: CardPosModel) {
+ *	      const {player} = pos
+ *	  		player.hooks.beforeAttack.add(this, (attack) => {
+ *	  	      const target = attack.getTarget()
+ *	  		    if (attack.getCreator() !== this || attack.type !== 'secondary' || !target) return
+ *	  		    if (target.row.hermitCard.props.hermitType !== 'builder') return
+ *	  		    attack.multiplyDamage(this.props.id, 2)
+ *	  	  })
+ *    }
+ *
+ *	  onDetach(game: GameModel, pos: CardPosModel) {
+ *	   	 const {player} = pos
+ *	  	 player.hooks.beforeAttack.remove(this)
+ *	  }
+ * }
+ * ```
+ */
 export abstract class Card<T extends CardProps = CardProps> {
 	public readonly props: T
 
