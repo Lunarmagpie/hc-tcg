@@ -17,7 +17,7 @@ export type PlayerDeckT = {
 	cards: Array<Card>
 }
 
-type TransferCardT = {
+export type TransferCardT = {
 	cardId: string
 	instance: string
 }

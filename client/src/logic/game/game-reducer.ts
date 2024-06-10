@@ -1,5 +1,6 @@
 import {AnyAction} from 'redux'
 import {LocalGameRoot} from 'common/types/game-state'
+import {createCard} from 'common/cards'
 
 const defaultState: LocalGameRoot = {
 	localGameState: null,
@@ -45,9 +46,10 @@ const gameReducer = (state = defaultState, action: AnyAction): LocalGameRoot => 
 			}
 
 		case 'SET_SELECTED_CARD':
+			const payloadCard = createCard(action.payload.cardId, action.payload.instance)
 			return {
 				...state,
-				selectedCard: equalCard(action.payload, state.selectedCard) ? null : action.payload,
+				selectedCard: payloadCard.equals(state.selectedCard) ? null : action.payload,
 			}
 		case 'SET_OPENED_MODAL':
 			return {
