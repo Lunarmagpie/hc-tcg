@@ -19,6 +19,7 @@ const CardList = (props: CardListProps) => {
 	const {wrap, onClick, cards, disabled, selected, picked} = props
 
 	const cardsOutput = cards.map((card) => {
+		//@TODO Make this not needed
 		const info = createCard(card.props.id)
 		const isSelected = selected ? selected.some((selectedCard) => card === selectedCard) : false
 		const isPicked = !!picked?.find((pickedCard) => card === pickedCard)
