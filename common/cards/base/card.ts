@@ -27,29 +27,7 @@ import {AttachmentExpression} from './attachable'
  * ```
  * See a card such as BdoubleCommon for a full example of all properties.
  *
- * Some cards may need to do actions when added to the board. The `HasAttach` interface can be used for this
- * purpose.
- *
- * ```ts
- * class MyCard extends Card<HermitCard> implements HasAttach {
- *    constructor { snip }
- *
- *		onAttach(game: GameModel, pos: CardPosModel) {
- *	      const {player} = pos
- *	  		player.hooks.beforeAttack.add(this, (attack) => {
- *	  	      const target = attack.getTarget()
- *	  		    if (attack.getCreator() !== this || attack.type !== 'secondary' || !target) return
- *	  		    if (target.row.hermitCard.props.hermitType !== 'builder') return
- *	  		    attack.multiplyDamage(this.props.id, 2)
- *	  	  })
- *    }
- *
- *	  onDetach(game: GameModel, pos: CardPosModel) {
- *	   	 const {player} = pos
- *	  	 player.hooks.beforeAttack.remove(this)
- *	  }
- * }
- * ```
+ * Interfaces: HasAttach, GetAttack
  */
 export abstract class Card<T extends CardProps = CardProps> {
 	public readonly props: T
@@ -207,6 +185,32 @@ export interface HasTurnActions {
 }
 export const hasTurnActionsDefaults = {__has_turn_actions: undefined}
 
+/**
+ * An interface that allows cards to run code when added or removed from the board.
+ *
+ * ```ts
+ * class MyCard extends Card<HermitCard> implements HasAttach {
+ *    constructor { snip }
+ *
+ *    // Code to run when the card is added to the board.
+ *		onAttach(game: GameModel, pos: CardPosModel) {
+ *	      const {player} = pos
+ *	  		player.hooks.beforeAttack.add(this, (attack) => {
+ *	  	      const target = attack.getTarget()
+ *	  		    if (attack.getCreator() !== this || attack.type !== 'secondary' || !target) return
+ *	  		    if (target.row.hermitCard.props.hermitType !== 'builder') return
+ *	  		    attack.multiplyDamage(this.props.id, 2)
+ *	  	  })
+ *    }
+ *
+ *    // Code to run when the card is removed to the board.
+ *	  onDetach(game: GameModel, pos: CardPosModel) {
+ *	   	 const {player} = pos
+ *	  	 player.hooks.beforeAttack.remove(this)
+ *	  }
+ * }
+ * ```
+ */
 export interface HasAttach {
 	onAttach(game: GameModel, pos: CardPosModel): void
 	onDetach(game: GameModel, pos: CardPosModel): void
@@ -231,11 +235,6 @@ export interface CanAttack {
 	__can_attack: undefined
 	primary: HermitAttackInfo
 	secondary: HermitAttackInfo
-	// getAttack: (
-	// 	game: GameModel,
-	// 	pos: CardPosModel,
-	// 	hermitAttackType: HermitAttackType
-	// ) => AttackModel | null
 }
 export const canAttackDefaults = {
 	__can_attack: undefined,
@@ -263,6 +262,7 @@ export const hasDescriptionDefaults = {__has_description: undefined}
 export interface OverridesGetEnergy {}
 export const overridesGetEnergy = {__overrides_get_energy: undefined}
 
+/* An interface used for implementing a custom function to generate the attack for a hermit */
 export interface GetAttack {
 	getAttack: (
 		game: GameModel,
