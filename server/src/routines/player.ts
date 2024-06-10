@@ -1,6 +1,8 @@
 import {takeEvery, put, take, race, delay} from 'typed-redux-saga'
 import {PlayerModel} from 'common/models/player-model'
 import root from '../serverRoot'
+import {Card} from 'common/cards/base/card'
+import {createCard} from 'common/cards'
 
 const KEEP_PLAYER_AFTER_DISCONNECT_MS = 1000 * 30
 
@@ -13,7 +15,12 @@ function* playerConnectedSaga(action: any) {
 
 		if (validPlayer) {
 			existingPlayer.socket = socket
-			if (deck) existingPlayer.setPlayerDeck(deck)
+			if (deck)
+				existingPlayer.setPlayerDeck({
+					name: deck.name,
+					icon: deck.icon,
+					cards: deck.cards.map((card: Card) => createCard(card.props.id)),
+				})
 			yield* put({type: 'PLAYER_RECONNECTED', payload: existingPlayer})
 			socket.emit('PLAYER_RECONNECTED', {
 				type: 'PLAYER_RECONNECTED',
@@ -26,7 +33,12 @@ function* playerConnectedSaga(action: any) {
 	}
 
 	const newPlayer = new PlayerModel(playerName, minecraftName, socket)
-	if (deck) newPlayer.setPlayerDeck(deck)
+	if (deck)
+		newPlayer.setPlayerDeck({
+			name: deck.name,
+			icon: deck.icon,
+			cards: deck.cards.map((card: Card) => createCard(card.props.id)),
+		})
 	root.addPlayer(newPlayer)
 
 	root.hooks.playerJoined.call(newPlayer)
@@ -71,7 +83,11 @@ function* updateDeckSaga(action: any) {
 	const player = root.players[playerId]
 	if (!player) return
 
-	player.setPlayerDeck(newDeck)
+	player.setPlayerDeck({
+		name: newDeck.name,
+		icon: newDeck.icon,
+		cards: newDeck.cards.map((card: Card) => createCard(card.props.id)),
+	})
 
 	player.socket?.emit('NEW_DECK', {
 		type: 'NEW_DECK',

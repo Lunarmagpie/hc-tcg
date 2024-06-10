@@ -30,6 +30,7 @@ import {playSound} from 'logic/sound/sound-actions'
 import {MassExportModal} from 'components/import-export/mass-export-modal'
 import {Card} from 'common/cards/base/card'
 import {CardCategoryT} from 'common/types/cards'
+import {createCard} from 'common/cards'
 
 const TYPE_ORDER: Record<CardCategoryT, number> = {
 	hermit: 0,
@@ -94,6 +95,12 @@ const Deck = ({setMenuSection}: Props) => {
 	const playerDeck = useSelector(getPlayerDeck)
 	const settings = useSelector(getSettings)
 
+	const updatedPlayerDeck = {
+		name: playerDeck.name,
+		icon: playerDeck.icon,
+		cards: playerDeck.cards.map((card) => createCard(card.props.id)),
+	}
+
 	// STATE
 	const [mode, setMode] = useState<'select' | 'edit' | 'create'>('select')
 	const [savedDecks, setSavedDecks] = useState<Array<string>>(getSavedDecks)
@@ -111,7 +118,7 @@ const Deck = ({setMenuSection}: Props) => {
 	const [showMassExportModal, setShowMassExportModal] = useState<boolean>(false)
 	const [showValidateDeckModal, setShowValidateDeckModal] = useState<boolean>(false)
 	const [showOverwriteModal, setShowOverwriteModal] = useState<boolean>(false)
-	const [loadedDeck, setLoadedDeck] = useState<PlayerDeckT>({...playerDeck})
+	const [loadedDeck, setLoadedDeck] = useState<PlayerDeckT>({...updatedPlayerDeck})
 
 	// TOASTS
 	const dispatchToast = (toast: ToastT) => dispatch({type: 'SET_TOAST', payload: toast})
@@ -130,8 +137,8 @@ const Deck = ({setMenuSection}: Props) => {
 	const lastValidDeckToast: ToastT = {
 		open: true,
 		title: 'Deck Selected!',
-		description: `${playerDeck.name} is now your active deck`,
-		image: `images/types/type-${playerDeck.icon}.png`,
+		description: `${updatedPlayerDeck.name} is now your active deck`,
+		image: `images/types/type-${updatedPlayerDeck.icon}.png`,
 	}
 
 	// MENU LOGIC
@@ -139,7 +146,7 @@ const Deck = ({setMenuSection}: Props) => {
 		if (validateDeck(loadedDeck.cards)) {
 			return setShowValidateDeckModal(true)
 		}
-		
+
 		setActiveDeck(loadedDeck.name)
 		dispatchToast(selectedDeckToast)
 
@@ -150,7 +157,7 @@ const Deck = ({setMenuSection}: Props) => {
 		setMenuSection('mainmenu')
 	}
 	const handleInvalidDeck = () => {
-		saveDeck(playerDeck)
+		saveDeck(updatedPlayerDeck)
 		setMenuSection('mainmenu')
 		dispatchToast(lastValidDeckToast)
 	}

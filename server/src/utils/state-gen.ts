@@ -17,7 +17,7 @@ import {Card} from 'common/cards/base/card'
 import {CardPosModel} from 'common/models/card-pos-model'
 import {HermitAttackType} from 'common/types/attack'
 import {getCardCost, getCardRank} from 'common/utils/ranks'
-import { initializedCards } from 'common/cards'
+import {createCard, initializedCards} from 'common/cards'
 
 ////////////////////////////////////////
 // @TODO sort this whole thing out properly
@@ -142,28 +142,15 @@ export function getEmptyRow(): RowState {
 }
 
 export function getPlayerState(player: PlayerModel): PlayerState {
-	const allCards = initializedCards.map(
-		(card: Card): CardT => ({
-			cardId: card.id,
-			cardInstance: card.id,
-		})
-	)
+	const allCards = initializedCards
 	let pack = DEBUG_CONFIG.unlimitedCards ? allCards : player.deck.cards
 
 	// shuffle cards
 	!DEBUG_CONFIG.unlimitedCards && pack.sort(() => 0.5 - Math.random())
 
-	// randomize instances
-	pack = pack.map((card) => {
-		return {
-			cardId: card.id,
-			cardInstance: Math.random().toString(),
-		}
-	})
-
 	// ensure a hermit in first 5 cards
 	const hermitIndex = pack.findIndex((card) => {
-		return card.category === 'hermit'
+		return card.props.category === 'hermit'
 	})
 	if (hermitIndex > 5) {
 		;[pack[0], pack[hermitIndex]] = [pack[hermitIndex], pack[0]]
@@ -175,18 +162,14 @@ export function getPlayerState(player: PlayerModel): PlayerState {
 
 	for (let i = 0; i < DEBUG_CONFIG.extraStartingCards.length; i++) {
 		const id = DEBUG_CONFIG.extraStartingCards[i]
-		const card = CARDS.find((card) => card.props.id === id)
+		const card = createCard(id)
 		if (!card) {
 			console.log('Invalid extra starting card in debug config:', id)
 			continue
 		}
 
-		const cardInfo = {
-			cardId: id,
-			cardInstance: Math.random().toString(),
-		}
-		pack.push(cardInfo)
-		hand.unshift(cardInfo)
+		pack.push(card)
+		hand.unshift(card)
 	}
 
 	const TOTAL_ROWS = 5
@@ -282,9 +265,9 @@ export function getLocalGameState(game: GameModel, player: PlayerModel): LocalGa
 		// Once there are no modal requests, send pick requests
 		currentPickMessage = currentPickRequest.message
 		// Add the card name before the request
-		const cardInfo = CARDS[currentPickRequest.id]
+		const cardInfo = createCard(currentPickRequest.id)
 		if (cardInfo) {
-			currentPickMessage = `${cardInfo.name}: ${currentPickMessage}`
+			currentPickMessage = `${cardInfo.props.name}: ${currentPickMessage}`
 		}
 	}
 

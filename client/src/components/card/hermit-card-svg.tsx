@@ -6,6 +6,7 @@ import {getGameState} from 'logic/game/game-selectors'
 import {getCardRank} from 'common/utils/ranks'
 import {EXPANSIONS} from 'common/config'
 import {Card, CardProps} from 'common/cards/base/card'
+import {createCard} from 'common/cards'
 
 export type HermitCardProps = {
 	card: Card<CardProps & HermitCard>
@@ -20,13 +21,16 @@ const COST_X = [
 ]
 
 const HermitCardModule = ({card}: HermitCardProps) => {
-	const hermitFullName = card.props.id.split('_')[0]
+	const cardWithFunctions = createCard(card.props.id)
 
+	if (!cardWithFunctions.implementsHermitDisplayInfo()) return <svg></svg>
+
+	const hermitFullName = card.props.id.split('_')[0]
 	const rank = getCardRank(card.props.id)
 	const palette = card.props.palette
-	const backgroundName = card.props.getBackground()
+	const backgroundName = cardWithFunctions.props.getBackground()
 	const showCost = !useSelector(getGameState)
-	const name = card.props.getShortName() || card.props.name
+	const name = cardWithFunctions.props.getShortName() || card.props.name
 	const nameLength = name.length
 	const disabled = EXPANSIONS.disabled.includes(card.props.expansion) ? 'disabled' : 'enabled'
 
