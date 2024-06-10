@@ -44,11 +44,7 @@ class FalseSymmetryRareHermitCard extends Card<HermitCard> implements HasAttach 
 			const maxHealth = Math.max(attacker.row.health, attacker.row.hermitCard.props.health)
 			attacker.row.health = Math.min(attacker.row.health + 40, maxHealth)
 
-<<<<<<< HEAD
 			game.battleLog.addEntry(player.id, `$p${attacker.row.hermitCard.props.name}$ healed $g40hp$`)
-=======
-			game.battleLog.addEntry(player.id, `$p${hermitInfo.name}$ healed $g40hp$`)
->>>>>>> upstream/dev
 		})
 	}
 

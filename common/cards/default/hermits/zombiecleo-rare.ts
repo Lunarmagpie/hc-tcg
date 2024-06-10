@@ -9,11 +9,6 @@ import {GameModel} from '../../../models/game-model'
 import {CardPosModel, getBasicCardPos} from '../../../models/card-pos-model'
 import {HermitAttackType} from '../../../types/attack'
 import {getNonEmptyRows} from '../../../utils/board'
-<<<<<<< HEAD
-=======
-import {formatText} from '../../../utils/formatting'
-import HermitCard from '../../base/hermit-card'
->>>>>>> upstream/dev
 
 class ZombieCleoRareHermitCard extends Card<HermitCard> implements HasAttach, GetAttack {
 	override props: HermitCard = {
@@ -38,25 +33,11 @@ class ZombieCleoRareHermitCard extends Card<HermitCard> implements HasAttach, Ge
 		},
 	}
 
-<<<<<<< HEAD
 	private imitatingCard: Card<CardProps> | null = null
 	private attackType: HermitAttackType | null = null
 
 	getAttack(game: GameModel, pos: CardPosModel, hermitAttackType: HermitAttackType) {
 		const attack = createHermitAttackModel(this, game, pos, hermitAttackType)
-=======
-	override getAttack(
-		game: GameModel,
-		instance: string,
-		pos: CardPosModel,
-		hermitAttackType: HermitAttackType
-	) {
-		const {player} = pos
-		const pickedCardKey = this.getInstanceKey(instance, 'pickedCard')
-		const attack = super.getAttack(game, instance, pos, hermitAttackType)
-
-		if (!attack || attack.type !== 'secondary') return attack
->>>>>>> upstream/dev
 
 		if (!attack || attack.type !== 'secondary') return attack
 		if (attack.getCreator() !== this) return attack
@@ -65,7 +46,6 @@ class ZombieCleoRareHermitCard extends Card<HermitCard> implements HasAttach, Ge
 		if (!this.imitatingCard.implementsCanAttack()) return null
 		if (!this.attackType) return null
 
-<<<<<<< HEAD
 		// Return the attack we picked from the card we picked
 		const newAttack = getHermitsAttack(this.imitatingCard, game, pos, this.attackType)
 		const imitatingCardName = this.imitatingCard.props.name
@@ -73,30 +53,11 @@ class ZombieCleoRareHermitCard extends Card<HermitCard> implements HasAttach, Ge
 
 		const attackName =
 			newAttack.type === 'primary' ? this.props.primary.name : this.props.secondary.name
-=======
-		if (!pickedCard || !attackType) return null
-
-		// No loops please
-		if (pickedCard.cardId === this.id) return null
-
-		const hermitInfo = HERMIT_CARDS[pickedCard.cardId]
-		if (!hermitInfo) return null
-
-		// Return that cards secondary attack
-		const newAttack = hermitInfo.getAttack(game, pickedCard.cardInstance, pos, attackType)
-		if (!newAttack) return null
-		const attackName =
-			newAttack.type === 'primary' ? hermitInfo.primary.name : hermitInfo.secondary.name
->>>>>>> upstream/dev
 		newAttack.updateLog(
 			(values) =>
 				`${values.attacker} ${values.coinFlip ? values.coinFlip + ', then ' : ''} attacked ${
 					values.target
-<<<<<<< HEAD
 				} with $v${imitatingCardName}'s ${attackName}$ for ${values.damage} damage`
-=======
-				} with $v${hermitInfo.name}'s ${attackName}$ for ${values.damage} damage`
->>>>>>> upstream/dev
 		)
 		return newAttack
 	}

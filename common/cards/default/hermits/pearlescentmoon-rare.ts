@@ -4,7 +4,6 @@ import {flipCoin} from '../../../utils/coinFlips'
 import {HasAttach} from '../../base/card'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 
-<<<<<<< HEAD
 const PearlescentMoonRareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
@@ -32,32 +31,6 @@ const PearlescentMoonRareHermitCard = (): HermitCard & HasAttach => {
 			const {player, opponentPlayer} = pos
 			let status: 'none' | 'missed' | 'heads' | 'tails' = 'none'
 			status = 'none'
-=======
-class PearlescentMoonRareHermitCard extends HermitCard {
-	constructor() {
-		super({
-			id: 'pearlescentmoon_rare',
-			numericId: 85,
-			name: 'Pearl',
-			rarity: 'rare',
-			hermitType: 'terraform',
-			health: 300,
-			primary: {
-				name: 'Cleaning Lady',
-				cost: ['terraform'],
-				damage: 60,
-				power: null,
-			},
-			secondary: {
-				name: 'Aussie Ping',
-				cost: ['terraform', 'any'],
-				damage: 70,
-				power:
-					'If your opponent attacks on their next turn, flip a coin.\nIf heads, their attack $kmisses$. Your opponent can not miss due to this ability on consecutive turns.',
-			},
-		})
-	}
->>>>>>> upstream/dev
 
 			player.hooks.onAttack.add(this, (attack) => {
 				const attacker = attack.getAttacker()

@@ -33,15 +33,10 @@ class GeminiTayRareHermitCard extends Card<HermitCard> implements HasAttach {
 	onAttach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 
-<<<<<<< HEAD
 		player.hooks.afterAttack.add(this, (attack) => {
 			if (attack.getCreator() !== this || attack.type !== 'secondary') return
-=======
-		player.hooks.onAttack.add(instance, (attack) => {
-			if (attack.id !== this.getInstanceKey(instance) || attack.type !== 'secondary') return
->>>>>>> upstream/dev
 
-			player.hooks.afterAttack.add(instance, (attack) => {
+			player.hooks.afterAttack.add(this, (attack) => {
 				// Discard the single-use card.
 				discardSingleUse(game, player)
 
@@ -50,7 +45,7 @@ class GeminiTayRareHermitCard extends Card<HermitCard> implements HasAttach {
 				game.removeCompletedActions('SINGLE_USE_ATTACK', 'PLAY_SINGLE_USE_CARD')
 				game.removeBlockedActions('game', 'PLAY_SINGLE_USE_CARD')
 
-				player.hooks.afterAttack.remove(instance)
+				player.hooks.afterAttack.remove(this)
 			})
 		})
 	}
@@ -59,11 +54,7 @@ class GeminiTayRareHermitCard extends Card<HermitCard> implements HasAttach {
 		const {player} = pos
 
 		// Remove hook
-<<<<<<< HEAD
 		player.hooks.afterAttack.remove(this)
-=======
-		player.hooks.onAttack.remove(instance)
->>>>>>> upstream/dev
 	}
 }
 

@@ -1,32 +1,13 @@
-<<<<<<< HEAD
 import {CurrentCoinFlipT, PlayerState, RowStateWithHermit, BattleLogT} from '../types/game-state'
-=======
-import {CARDS, HERMIT_CARDS, SINGLE_USE_CARDS} from '../cards'
-import {
-	CurrentCoinFlipT,
-	PlayerState,
-	RowStateWithHermit,
-	CardT,
-	BattleLogT,
-} from '../types/game-state'
->>>>>>> upstream/dev
 import {broadcast} from '../../server/src/utils/comm'
 import {AttackModel} from './attack-model'
 import {CardPosModel} from './card-pos-model'
 import {GameModel} from './game-model'
-<<<<<<< HEAD
 import {formatText} from '../utils/formatting'
 import {DEBUG_CONFIG} from '../config'
 import {Card} from '../cards/base/card'
 import {PickInfo} from '../types/server-requests'
 import {StatusEffect} from '../status-effects/status-effect'
-=======
-import {LineNode, formatText} from '../utils/formatting'
-import {DEBUG_CONFIG} from '../config'
-import Card from '../cards/base/card'
-import {PickInfo} from '../types/server-requests'
-import StatusEffect from '../status-effects/status-effect'
->>>>>>> upstream/dev
 
 export class BattleLogModel {
 	private game: GameModel
@@ -39,20 +20,11 @@ export class BattleLogModel {
 		this.logMessageQueue = []
 	}
 
-<<<<<<< HEAD
 	private generateEffectEntryHeader(card: Card | null): string {
 		const currentPlayer = this.game.currentPlayer.playerName
 		if (!card) return ''
 
 		return `$p{You|${currentPlayer}}$ used $e${card.props.name}$ `
-=======
-	private generateEffectEntryHeader(card: CardT | null): string {
-		const currentPlayer = this.game.currentPlayer.playerName
-		if (!card) return ''
-		const cardInfo = CARDS[card.cardId]
-
-		return `$p{You|${currentPlayer}}$ used $e${cardInfo.name}$ `
->>>>>>> upstream/dev
 	}
 
 	private generateCoinFlipDescription(coinFlip: CurrentCoinFlipT): string {
@@ -78,13 +50,8 @@ export class BattleLogModel {
 			const description = this.generateCoinFlipDescription(coinFlip)
 
 			if (coinFlip.opponentFlip) return r
-<<<<<<< HEAD
 			if (coinFlip.card.props.category === 'hermit' && attack.type === 'effect') return r
 			if (coinFlip.card.props.category === 'single_use' && attack.type !== 'effect') return r
-=======
-			if (HERMIT_CARDS[coinFlip.cardId] && attack.type === 'effect') return r
-			if (SINGLE_USE_CARDS[coinFlip.cardId] && attack.type !== 'effect') return r
->>>>>>> upstream/dev
 
 			return description
 		}, null)
@@ -127,28 +94,17 @@ export class BattleLogModel {
 			rowIndex: number | null | undefined
 		) => {
 			if (!cardId) return invalid
-<<<<<<< HEAD
 			if (card.props.category === 'item') {
 				return `${card.props.name} ${card.props.rarity === 'rare' ? ' item x2' : 'item'}`
 			}
 
 			if (
 				card.props.category === 'hermit' &&
-=======
-			const cardInfo = CARDS[cardId]
-			if (cardInfo.type === 'item') {
-				return `${cardInfo.name} ${cardInfo.rarity === 'rare' ? ' item x2' : 'item'}`
-			}
-
-			if (
-				cardInfo.type === 'hermit' &&
->>>>>>> upstream/dev
 				player &&
 				player.board.activeRow !== rowIndex &&
 				rowIndex !== null &&
 				rowIndex !== undefined
 			) {
-<<<<<<< HEAD
 				return `${card.props.name} (${rowIndex + 1})`
 			}
 
@@ -156,15 +112,6 @@ export class BattleLogModel {
 		}
 
 		const thisFlip = coinFlips.find((flip) => flip.card === card)
-=======
-				return `${cardInfo.name} (${rowIndex + 1})`
-			}
-
-			return `${cardInfo.name}`
-		}
-
-		const thisFlip = coinFlips.find((flip) => flip.cardId === card.id)
->>>>>>> upstream/dev
 		const invalid = '$bINVALID VALUE$'
 
 		const pickInfoPlayer = () => {
@@ -179,7 +126,6 @@ export class BattleLogModel {
 			player: pos.player.playerName,
 			opponent: pos.opponentPlayer.playerName,
 			coinFlip: thisFlip ? this.generateCoinFlipDescription(thisFlip) : '',
-<<<<<<< HEAD
 			defaultLog: `$p{You|${pos.player.playerName}}$ used $e${card.props.name}$`,
 			pos: {
 				rowIndex: pos.rowIndex ? `${pos.rowIndex + 1}` : invalid,
@@ -187,40 +133,21 @@ export class BattleLogModel {
 				name: pos.card ? getCardName(pos.player, pos.card.props.id, pos.rowIndex) : invalid,
 				hermitCard: pos.row?.hermitCard
 					? getCardName(pos.player, pos.row.hermitCard.props.id, pos.rowIndex)
-=======
-			defaultLog: `$p{You|${pos.player.playerName}}$ used $e${card.name}$`,
-			pos: {
-				rowIndex: pos.rowIndex !== null ? `${pos.rowIndex + 1}` : invalid,
-				id: pos.card ? pos.card.cardId : invalid,
-				name: pos.card ? getCardName(pos.player, pos.card.cardId, pos.rowIndex) : invalid,
-				hermitCard: pos.row?.hermitCard
-					? getCardName(pos.player, pos.row.hermitCard.cardId, pos.rowIndex)
->>>>>>> upstream/dev
 					: invalid,
 				slotType: pos.slot.type,
 			},
 			pick: {
 				rowIndex:
 					pickInfo && pickInfo.rowIndex !== undefined ? `${pickInfo.rowIndex + 1}` : invalid,
-<<<<<<< HEAD
 				id: pickInfo?.card ? pickInfo.card.props.id : invalid,
 				name: pickInfo?.card
 					? getCardName(pickedPlayer, pickInfo.card.props.id, pickInfo.rowIndex)
-=======
-				id: pickInfo?.card ? pickInfo.card.cardId : invalid,
-				name: pickInfo?.card
-					? getCardName(pickedPlayer, pickInfo.card.cardId, pickInfo.rowIndex)
->>>>>>> upstream/dev
 					: invalid,
 				hermitCard:
 					pickInfo && pickInfo.rowIndex !== null && pickInfo.rowIndex !== undefined && pickedPlayer
 						? getCardName(
 								pickedPlayer,
-<<<<<<< HEAD
 								pickedPlayer.board.rows[pickInfo.rowIndex].hermitCard?.props.id,
-=======
-								pickedPlayer.board.rows[pickInfo.rowIndex].hermitCard?.cardId,
->>>>>>> upstream/dev
 								pickInfo.rowIndex
 						  )
 						: invalid,
@@ -228,11 +155,6 @@ export class BattleLogModel {
 			},
 		})
 
-<<<<<<< HEAD
-=======
-		if (logMessage.length === 0) return
-
->>>>>>> upstream/dev
 		this.logMessageQueue.unshift({
 			player: pos.player.id,
 			description: logMessage,
@@ -244,11 +166,7 @@ export class BattleLogModel {
 	public addAttackEntry(
 		attack: AttackModel,
 		coinFlips: Array<CurrentCoinFlipT>,
-<<<<<<< HEAD
 		singleUse: Card | null
-=======
-		singleUse: CardT | null
->>>>>>> upstream/dev
 	) {
 		const attacker = attack.getAttacker()
 		if (!attacker) return
@@ -271,13 +189,8 @@ export class BattleLogModel {
 
 			if (subAttack.getDamage() === 0) return reducer
 
-<<<<<<< HEAD
 			const attackingHermit = attacker.row.hermitCard
 			const targetHermit = target.row.hermitCard
-=======
-			const attackingHermitInfo = HERMIT_CARDS[attacker.row.hermitCard.cardId]
-			const targetHermitInfo = CARDS[target.row.hermitCard.cardId]
->>>>>>> upstream/dev
 
 			const targetFormatting = target.player.id === playerId ? 'p' : 'o'
 
@@ -286,7 +199,6 @@ export class BattleLogModel {
 
 			const attackName =
 				subAttack.type === 'primary'
-<<<<<<< HEAD
 					? attackingHermit.props.primary.name
 					: attackingHermit.props.secondary.name
 
@@ -295,16 +207,6 @@ export class BattleLogModel {
 				player: attacker.player.playerName,
 				opponent: target.player.playerName,
 				target: `$${targetFormatting}${targetHermit.props.name} ${rowNumberString}$`,
-=======
-					? attackingHermitInfo.primary.name
-					: attackingHermitInfo.secondary.name
-
-			const logMessage = subAttack.getLog({
-				attacker: `$p${attackingHermitInfo.name}$`,
-				player: attacker.player.playerName,
-				opponent: target.player.playerName,
-				target: `$${targetFormatting}${targetHermitInfo.name} ${rowNumberString}$`,
->>>>>>> upstream/dev
 				attackName: `$v${attackName}$`,
 				damage: `$b${subAttack.calculateDamage()}hp$`,
 				defaultLog: this.generateEffectEntryHeader(singleUse),
@@ -320,11 +222,7 @@ export class BattleLogModel {
 
 		log += DEBUG_CONFIG.logAttackHistory
 			? attack.getHistory().reduce((reduce, hist) => {
-<<<<<<< HEAD
 					return reduce + `\n\t${hist.source} → ${hist.type} ${hist.value}`
-=======
-					return reduce + `\n\t${hist.sourceId} → ${hist.type} ${hist.value}`
->>>>>>> upstream/dev
 			  }, '')
 			: ''
 
@@ -338,11 +236,7 @@ export class BattleLogModel {
 		const player = this.game.currentPlayer
 		// Opponent coin flips
 		coinFlips.forEach((coinFlip) => {
-<<<<<<< HEAD
 			const cardName = coinFlip.card.props.name
-=======
-			const cardName = CARDS[coinFlip.cardId].name
->>>>>>> upstream/dev
 			if (!coinFlip.opponentFlip) return
 
 			this.logMessageQueue.push({
@@ -364,7 +258,6 @@ export class BattleLogModel {
 	public addChangeRowEntry(
 		player: PlayerState,
 		newRow: number,
-<<<<<<< HEAD
 		oldHermit: Card | null,
 		newHermit: Card | null
 	) {
@@ -375,31 +268,12 @@ export class BattleLogModel {
 				player: player.id,
 				description: `$p{You|${player.playerName}}$ swapped $p${oldHermit.props.name}$ for $p${
 					newHermit.props.name
-=======
-		oldHermit: CardT | null,
-		newHermit: CardT | null
-	) {
-		if (!newHermit) return
-		const newHermitInfo = CARDS[newHermit.cardId]
-
-		if (oldHermit) {
-			const oldHermitInfo = CARDS[oldHermit.cardId]
-
-			this.logMessageQueue.push({
-				player: player.id,
-				description: `$p{You|${player.playerName}}$ swapped $p${oldHermitInfo.name}$ for $p${
-					newHermitInfo.name
->>>>>>> upstream/dev
 				} (${newRow + 1})$`,
 			})
 		} else {
 			this.logMessageQueue.push({
 				player: player.id,
-<<<<<<< HEAD
 				description: `$p{You|${player.playerName}}$ activated $p${newHermit.props.name} (${
-=======
-				description: `$p{You|${player.playerName}}$ activated $p${newHermitInfo.name} (${
->>>>>>> upstream/dev
 					newRow + 1
 				})$`,
 			})
@@ -413,11 +287,7 @@ export class BattleLogModel {
 
 		this.logMessageQueue.push({
 			player: player.id,
-<<<<<<< HEAD
 			description: `$p${card.props.name}$ was knocked out, and $p{you|${player.playerName}}$ now {have|has} $b${livesRemaining}$ remaining`,
-=======
-			description: `$p${cardName}$ was knocked out, and $p{you|${player.playerName}}$ now {have|has} $b${livesRemaining}$ remaining`,
->>>>>>> upstream/dev
 		})
 		this.sendLogs()
 	}
@@ -436,11 +306,7 @@ export class BattleLogModel {
 	public addRemoveStatusEffectEntry(statusEffect: StatusEffect) {
 		this.logMessageQueue.push({
 			player: this.game.currentPlayer.id,
-<<<<<<< HEAD
 			description: `$e${statusEffect.props.name}$ wore off`,
-=======
-			description: `$e${statusEffect.name}$ wore off`,
->>>>>>> upstream/dev
 		})
 		this.sendLogs()
 	}

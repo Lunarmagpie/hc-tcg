@@ -5,35 +5,8 @@ import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {HasAttach} from '../../base/card'
 import {CoinFlipT} from '../../../types/game-state'
 
-<<<<<<< HEAD
 const ZedaphPlaysRareHermitCard = (): HermitCard & HasAttach => {
 	let coinFlipResult: CoinFlipT | null = null
-=======
-class ZedaphPlaysRareHermitCard extends HermitCard {
-	constructor() {
-		super({
-			id: 'zedaphplays_rare',
-			numericId: 114,
-			name: 'Zedaph',
-			rarity: 'rare',
-			hermitType: 'explorer',
-			health: 290,
-			primary: {
-				name: 'Sheep Stare',
-				cost: ['explorer'],
-				damage: 50,
-				power:
-					"Flip a coin.\nIf heads, on your opponent's next turn, flip a coin.\nIf heads, your opponent's active Hermit attacks themselves.",
-			},
-			secondary: {
-				name: 'Get Dangled',
-				cost: ['explorer', 'explorer'],
-				damage: 80,
-				power: null,
-			},
-		})
-	}
->>>>>>> upstream/dev
 
 	return {
 		...hermitCardDefaults,

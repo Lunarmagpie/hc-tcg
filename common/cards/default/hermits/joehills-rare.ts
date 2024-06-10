@@ -6,35 +6,8 @@ import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {Card, HasAttach} from '../../base/card'
 import UsedClockStatusEffect from '../../../status-effects/used-clock'
 
-<<<<<<< HEAD
 const JoeHillsRareHermitCard = (): HermitCard & HasAttach => {
 	let skipped: Card | null = null
-=======
-class JoeHillsRareHermitCard extends HermitCard {
-	constructor() {
-		super({
-			id: 'joehills_rare',
-			numericId: 70,
-			name: 'Joe',
-			rarity: 'rare',
-			hermitType: 'farm',
-			health: 270,
-			primary: {
-				name: 'Grow Hills',
-				cost: ['farm'],
-				damage: 50,
-				power: null,
-			},
-			secondary: {
-				name: 'Time Skip',
-				cost: ['farm', 'farm', 'any'],
-				damage: 90,
-				power:
-					'Flip a coin.\nIf heads, your opponent skips their next turn. "Time Skip" can not be used consecutively if successful.',
-			},
-		})
-	}
->>>>>>> upstream/dev
 
 	return {
 		...hermitCardDefaults,
@@ -73,34 +46,8 @@ class JoeHillsRareHermitCard extends HermitCard {
 				const coinFlip = flipCoin(player, attacker.row.hermitCard, 1)
 				if (coinFlip[0] !== 'heads') return
 
-<<<<<<< HEAD
 				attack.updateLog(
 					(values) => ` ${values.previousLog}, then skipped {$o${values.opponent}'s$|your} turn`
-=======
-			attack.updateLog(
-				(values) => ` ${values.previousLog}, then skipped {$o${values.opponent}'s$|your} turn`
-			)
-
-			// This will tell us to block actions at the start of our next turn
-			// Storing the cardInstance of the card that attacked
-			player.custom[skippedKey] = attacker.row.hermitCard.cardInstance
-
-			applyStatusEffect(game, 'used-clock', getActiveRow(player)?.hermitCard.cardInstance)
-
-			// Block all actions of opponent for one turn
-			opponentPlayer.hooks.onTurnStart.add(instance, () => {
-				game.addBlockedActions(
-					this.id,
-					'APPLY_EFFECT',
-					'REMOVE_EFFECT',
-					'SINGLE_USE_ATTACK',
-					'PRIMARY_ATTACK',
-					'SECONDARY_ATTACK',
-					'PLAY_HERMIT_CARD',
-					'PLAY_ITEM_CARD',
-					'PLAY_SINGLE_USE_CARD',
-					'PLAY_EFFECT_CARD'
->>>>>>> upstream/dev
 				)
 
 				// This will tell us to block actions at the start of our next turn

@@ -4,7 +4,6 @@ import {getNonEmptyRows} from '../../../utils/board'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {HasAttach} from '../../base/card'
 
-<<<<<<< HEAD
 const TangoTekRareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
@@ -29,32 +28,6 @@ const TangoTekRareHermitCard = (): HermitCard & HasAttach => {
 		},
 		onAttach(game: GameModel, pos: CardPosModel) {
 			const {player, opponentPlayer} = pos
-=======
-class TangoTekRareHermitCard extends HermitCard {
-	constructor() {
-		super({
-			id: 'tangotek_rare',
-			numericId: 95,
-			name: 'Tango',
-			rarity: 'rare',
-			hermitType: 'farm',
-			health: 290,
-			primary: {
-				name: 'Skadoodle',
-				cost: ['farm'],
-				damage: 50,
-				power: null,
-			},
-			secondary: {
-				name: 'Extra Flee',
-				cost: ['farm', 'farm', 'farm'],
-				damage: 100,
-				power:
-					'After your attack, both players must choose an AFK Hermit to set as their active Hermit, unless they have no AFK Hermits.\nYour opponent chooses their active Hermit first.',
-			},
-		})
-	}
->>>>>>> upstream/dev
 
 			player.hooks.afterAttack.add(this, (attack) => {
 				if (attack.getCreator() !== this || attack.type !== 'secondary' || !attack.getTarget())

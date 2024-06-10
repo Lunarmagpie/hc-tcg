@@ -5,7 +5,6 @@ import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {HasAttach} from '../../base/card'
 import {removeStatusEffect} from '../../../utils/board'
 
-<<<<<<< HEAD
 const VintageBeefRareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
@@ -30,32 +29,6 @@ const VintageBeefRareHermitCard = (): HermitCard & HasAttach => {
 		},
 		onAttach(game: GameModel, pos: CardPosModel) {
 			const {player} = pos
-=======
-class VintageBeefRareHermitCard extends HermitCard {
-	constructor() {
-		super({
-			id: 'vintagebeef_rare',
-			numericId: 103,
-			name: 'Beef',
-			rarity: 'rare',
-			hermitType: 'builder',
-			health: 290,
-			primary: {
-				name: 'Pojk',
-				cost: ['any'],
-				damage: 40,
-				power: null,
-			},
-			secondary: {
-				name: 'Beefy Tunes',
-				cost: ['builder', 'builder'],
-				damage: 80,
-				power:
-					'Flip a coin.\nIf heads, all status effects are removed from your active and AFK Hermits.',
-			},
-		})
-	}
->>>>>>> upstream/dev
 
 			player.hooks.onAttack.add(this, (attack) => {
 				const attacker = attack.getAttacker()

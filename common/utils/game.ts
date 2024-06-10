@@ -5,19 +5,17 @@ export function hasActive(playerState: PlayerState): boolean {
 	return playerState.board.activeRow !== null
 }
 
-export function getFormattedName(cardId: string, opponent: boolean) {
-	const cardInfo = CARDS[cardId]
-
-	const getFormatting = (cardInfo: Card, opponent: boolean): string | null => {
-		if (cardInfo.props.category === 'hermit') return opponent ? '$o' : '$p'
-		if (cardInfo.props.category === 'single_use') return '$e'
-		if (cardInfo.props.category === 'attachable') return '$e'
-		if (cardInfo.props.category === 'item') return '$m'
+export function getFormattedName(card: Card, opponent: boolean) {
+	const getFormatting = (card: Card, opponent: boolean): string | null => {
+		if (card.props.category === 'hermit') return opponent ? '$o' : '$p'
+		if (card.props.category === 'single_use') return '$e'
+		if (card.props.category === 'attachable') return '$e'
+		if (card.props.category === 'item') return '$m'
 		return null
 	}
 
-	const formatting = getFormatting(cardInfo, opponent)
+	const formatting = getFormatting(card, opponent)
 	if (!formatting) return ''
 
-	return `${formatting}${cardInfo.name}$`
+	return `${formatting}${card.props.name}$`
 }

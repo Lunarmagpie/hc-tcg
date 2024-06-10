@@ -38,7 +38,6 @@ class HypnotizdRareHermitCard extends Card<HermitCard> implements HasAttach, Get
 		})
 	}
 
-<<<<<<< HEAD
 	private targetIndex: number | null = null
 
 	getAttack(game: GameModel, pos: CardPosModel, hermitAttackType: HermitAttackType) {
@@ -55,41 +54,12 @@ class HypnotizdRareHermitCard extends Card<HermitCard> implements HasAttach, Get
 
 		// Change attack target
 		attack.setTarget(this.props.id, {
-=======
-	override getAttack(
-		game: GameModel,
-		instance: string,
-		pos: CardPosModel,
-		hermitAttackType: HermitAttackType
-	) {
-		const {player, opponentPlayer} = pos
-		const attack = super.getAttack(game, instance, pos, hermitAttackType)
-
-		if (!attack || attack.type !== 'secondary') return attack
-
-		const targetKey = this.getInstanceKey(instance, 'target')
-		const targetIndex: number | undefined = player.custom[targetKey]
-		if (targetIndex === undefined) return attack
-		if (targetIndex === opponentPlayer.board.activeRow) return attack
-
-		const targetRow = opponentPlayer.board.rows[targetIndex]
-		if (!targetRow.hermitCard) return attack
-
-		// Change attack target
-		attack.setTarget(this.id, {
->>>>>>> upstream/dev
 			player: opponentPlayer,
 			rowIndex: this.targetIndex,
 			row: targetRow,
 		})
 
 		const newAttacks = attack
-<<<<<<< HEAD
-=======
-
-		// Delete the target info now
-		delete player.custom[targetKey]
->>>>>>> upstream/dev
 
 		return newAttacks
 	}

@@ -6,7 +6,6 @@ import {HasAttach} from '../../base/card'
 import {applyStatusEffect, getActiveRow} from '../../../utils/board'
 import PoisonStatusEffect from '../../../status-effects/poison'
 
-<<<<<<< HEAD
 const XisumavoidRareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
@@ -30,31 +29,6 @@ const XisumavoidRareHermitCard = (): HermitCard & HasAttach => {
 		},
 		onAttach(game: GameModel, pos: CardPosModel) {
 			const {player, opponentPlayer} = pos
-=======
-class XisumavoidRareHermitCard extends HermitCard {
-	constructor() {
-		super({
-			id: 'xisumavoid_rare',
-			numericId: 112,
-			name: 'Xisuma',
-			rarity: 'rare',
-			hermitType: 'redstone',
-			health: 280,
-			primary: {
-				name: 'Goodness Me',
-				cost: ['redstone'],
-				damage: 60,
-				power: null,
-			},
-			secondary: {
-				name: 'Cup of Tea',
-				cost: ['redstone', 'redstone'],
-				damage: 80,
-				power: "Flip a coin.\nIf heads, poison your opponent's active Hermit.",
-			},
-		})
-	}
->>>>>>> upstream/dev
 
 			player.hooks.onAttack.add(this, (attack) => {
 				const attacker = attack.getAttacker()

@@ -1,14 +1,6 @@
-<<<<<<< HEAD
 import {HasHealth, Card, hasHealthDefaults, isCardDefaults} from './card'
 import {TextNode} from '../../utils/formatting'
 import attachableTo from './attachable'
-=======
-import {GameModel} from '../../models/game-model'
-import {CardRarityT} from '../../types/cards'
-import Card from './card'
-import {CardPosModel} from '../../models/card-pos-model'
-import {FormattedTextNode, formatText} from '../../utils/formatting'
->>>>>>> upstream/dev
 
 export type HealthCard = Card & HasHealth
 

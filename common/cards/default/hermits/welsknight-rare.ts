@@ -3,7 +3,6 @@ import {GameModel} from '../../../models/game-model'
 import {HermitCard, hermitCardDefaults} from '../../base/hermit-card'
 import {HasAttach} from '../../base/card'
 
-<<<<<<< HEAD
 const WelsknightRareHermitCard = (): HermitCard & HasAttach => {
 	return {
 		...hermitCardDefaults,
@@ -28,32 +27,6 @@ const WelsknightRareHermitCard = (): HermitCard & HasAttach => {
 		},
 		onAttach(game: GameModel, pos: CardPosModel) {
 			const {player} = pos
-=======
-class WelsknightRareHermitCard extends HermitCard {
-	constructor() {
-		super({
-			id: 'welsknight_rare',
-			numericId: 107,
-			name: 'Wels',
-			rarity: 'rare',
-			hermitType: 'pvp',
-			health: 280,
-			primary: {
-				name: "Knight's Blade",
-				cost: ['any'],
-				damage: 40,
-				power: null,
-			},
-			secondary: {
-				name: 'Vengeance',
-				cost: ['pvp', 'pvp', 'pvp'],
-				damage: 100,
-				power:
-					"If this Hermit's HP is orange (190-100), do an additional 20hp damage.\nIf this Hermit's HP is red (90 or lower), do an additional 40hp damage.",
-			},
-		})
-	}
->>>>>>> upstream/dev
 
 			player.hooks.onAttack.add(this, (attack) => {
 				if (attack.getCreator() !== this || attack.type !== 'secondary') return

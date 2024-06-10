@@ -9,7 +9,6 @@ import {
 	CardProps,
 } from './card'
 import attachableTo from './attachable'
-import {CARDS} from '..'
 import {GameModel} from '../../models/game-model'
 import {PlayCardLog, CardRarityT, CardCategoryT} from '../../types/cards'
 import {CardPosModel} from '../../models/card-pos-model'

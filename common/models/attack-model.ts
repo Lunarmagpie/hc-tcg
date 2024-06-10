@@ -173,14 +173,11 @@ export class AttackModel {
 		return this
 	}
 
-<<<<<<< HEAD
 	/** Get the creator for this attack */
 	public getCreator() {
 		return this.creator
 	}
 
-=======
->>>>>>> upstream/dev
 	/** Updates the log entry*/
 	public updateLog(logEntry: (values: AttackLog) => string) {
 		this.log.push(logEntry)
