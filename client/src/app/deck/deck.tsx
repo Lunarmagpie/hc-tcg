@@ -8,7 +8,7 @@ import Accordion from 'components/accordion'
 import DeckLayout from './layout'
 import {getPlayerDeck} from 'logic/session/session-selectors'
 import {getSettings} from 'logic/local-settings/local-settings-selectors'
-import {PlayerDeckT} from 'common/types/deck'
+import {PlayerDeckT, TransferDeckT} from 'common/types/deck'
 import EditDeck from './deck-edit'
 import Button from 'components/button'
 import AlertModal from 'components/alert-modal'
@@ -92,14 +92,13 @@ type Props = {
 const Deck = ({setMenuSection}: Props) => {
 	// REDUX
 	const dispatch = useDispatch()
-	const playerDeck = useSelector(getPlayerDeck)
+	const savedDeck = useSelector(getPlayerDeck)
 	const settings = useSelector(getSettings)
 
-	const updatedPlayerDeck = {
-		name: playerDeck.name,
-		icon: playerDeck.icon,
-		cards: playerDeck.cards.map((card) => createCard(card.props.id)),
-	}
+	console.log(savedDeck)
+
+	let playerDeck = getSavedDeck(savedDeck.name)
+	if (!playerDeck) return <div></div>
 
 	// STATE
 	const [mode, setMode] = useState<'select' | 'edit' | 'create'>('select')
@@ -118,7 +117,7 @@ const Deck = ({setMenuSection}: Props) => {
 	const [showMassExportModal, setShowMassExportModal] = useState<boolean>(false)
 	const [showValidateDeckModal, setShowValidateDeckModal] = useState<boolean>(false)
 	const [showOverwriteModal, setShowOverwriteModal] = useState<boolean>(false)
-	const [loadedDeck, setLoadedDeck] = useState<PlayerDeckT>({...updatedPlayerDeck})
+	const [loadedDeck, setLoadedDeck] = useState<PlayerDeckT>({...playerDeck})
 
 	// TOASTS
 	const dispatchToast = (toast: ToastT) => dispatch({type: 'SET_TOAST', payload: toast})
@@ -137,8 +136,8 @@ const Deck = ({setMenuSection}: Props) => {
 	const lastValidDeckToast: ToastT = {
 		open: true,
 		title: 'Deck Selected!',
-		description: `${updatedPlayerDeck.name} is now your active deck`,
-		image: `images/types/type-${updatedPlayerDeck.icon}.png`,
+		description: `${playerDeck.name} is now your active deck`,
+		image: `images/types/type-${playerDeck.icon}.png`,
 	}
 
 	// MENU LOGIC
@@ -152,12 +151,19 @@ const Deck = ({setMenuSection}: Props) => {
 
 		dispatch({
 			type: 'UPDATE_DECK',
-			payload: loadedDeck,
+			payload: {
+				name: loadedDeck.name,
+				icon: loadedDeck.icon,
+				cards: loadedDeck.cards.map((card) => ({
+					cardId: card.props.id,
+					instance: card.getInstance(),
+				})),
+			} as TransferDeckT,
 		})
 		setMenuSection('mainmenu')
 	}
 	const handleInvalidDeck = () => {
-		saveDeck(updatedPlayerDeck)
+		if (playerDeck) saveDeck(playerDeck)
 		setMenuSection('mainmenu')
 		dispatchToast(lastValidDeckToast)
 	}

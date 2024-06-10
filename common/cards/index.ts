@@ -13,6 +13,7 @@ import adventOfTcgAttachableCards from './advent-of-tcg/effects'
 import adventOfTcgHermitCards from './advent-of-tcg/hermits'
 import adventOfTcgSingleUseCards from './advent-of-tcg/single-use'
 import {Card} from './base/card'
+import EthosLabRareHermitCard from './default/hermits/ethoslab-rare'
 
 const allCards: Array<typeof Card<any>> = [
 	// ...defaultAttachableCards,
@@ -38,10 +39,11 @@ const CARDS: Record<string, typeof Card> = allCards.reduce(
 	{}
 )
 
-export function createCard(id: string): Card {
+export function createCard(id: string, instance?: string): Card {
 	const index = CARDS[id]
-	if (!index) return null
+	if (!index) return new EthosLabRareHermitCard()
 	const card = new (index as any)() as Card
+	if (instance) card.setInstance(instance)
 	return card
 }
 

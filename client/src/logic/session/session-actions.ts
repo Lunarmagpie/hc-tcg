@@ -1,4 +1,4 @@
-import {PlayerDeckT} from 'common/types/deck'
+import {PlayerDeckT, TransferDeckT} from 'common/types/deck'
 
 export const login = (playerName: string) => ({
 	type: 'LOGIN',
@@ -27,7 +27,7 @@ export const logout = () => ({
 	type: 'LOGOUT' as const,
 })
 
-export const setNewDeck = (newDeck: PlayerDeckT) => ({
+export const setNewDeck = (newDeck: TransferDeckT) => ({
 	type: 'SET_NEW_DECK',
 	payload: newDeck,
 })

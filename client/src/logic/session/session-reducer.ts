@@ -1,5 +1,5 @@
 import {AnyAction} from 'redux'
-import {PlayerDeckT} from 'common/types/deck'
+import {TransferDeckT} from 'common/types/deck'
 import {ToastT} from 'common/types/app'
 
 type SessionState = {
@@ -7,7 +7,7 @@ type SessionState = {
 	minecraftName: string
 	playerId: string
 	playerSecret: string
-	playerDeck: PlayerDeckT
+	playerDeck: TransferDeckT
 	connecting: boolean
 	errorType?: 'invalid_name' | 'invalid_version' | 'session_expired' | 'timeout' | string
 	toast: ToastT

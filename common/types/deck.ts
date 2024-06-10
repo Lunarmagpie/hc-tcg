@@ -1,10 +1,5 @@
 import {Card} from '../cards/base/card'
 
-type DeckCardT = {
-	id: string
-	instance: string
-}
-
 export type PlayerDeckT = {
 	name: string
 	icon:
@@ -22,9 +17,12 @@ export type PlayerDeckT = {
 	cards: Array<Card>
 }
 
-// Weird type needed for importing and exporting. Hopefully can be removed when we redo the system.
-export type SavedDeckT = {
+type TransferCardT = {
+	cardId: string
+	instance: string
+}
+export type TransferDeckT = {
 	name: string
 	icon: PlayerDeckT['icon']
-	cards: Array<{cardId: string}>
+	cards: Array<TransferCardT>
 }

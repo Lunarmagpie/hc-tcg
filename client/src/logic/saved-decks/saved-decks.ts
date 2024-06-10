@@ -1,6 +1,6 @@
 import {createCard} from 'common/cards'
 import {Card} from 'common/cards/base/card'
-import {PlayerDeckT, SavedDeckT} from 'common/types/deck'
+import {PlayerDeckT, TransferDeckT} from 'common/types/deck'
 import {validateDeck} from 'common/utils/validation'
 
 export const getActiveDeckName = () => {
@@ -21,7 +21,7 @@ export const isActiveDeckValid = () => {
 export const getSavedDeck = (name: string): PlayerDeckT | null => {
 	const hash = localStorage.getItem('Deck_' + name)
 
-	let savedDeck: SavedDeckT | null = null
+	let savedDeck: TransferDeckT | null = null
 	if (hash === null) return null
 	savedDeck = JSON.parse(hash)
 	if (savedDeck === null) return null
@@ -42,11 +42,11 @@ export const getSavedDeck = (name: string): PlayerDeckT | null => {
 
 export const saveDeck = (deck: PlayerDeckT) => {
 	const hash = 'Deck_' + deck.name
-	const deckToSave: SavedDeckT = {
+	const deckToSave: TransferDeckT = {
 		name: deck.name,
 		icon: deck.icon,
 		cards: deck.cards.map((card) => {
-			return {cardId: card.props.id}
+			return {cardId: card.props.id, instance: card.getInstance()}
 		}),
 	}
 

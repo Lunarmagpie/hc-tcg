@@ -31,6 +31,15 @@ export abstract class Card<T extends CardProps = CardProps> {
 		return true
 	}
 
+	getInstance() {
+		return this.instance
+	}
+
+	// Set the instance of the card. Do not use lightly.
+	setInstance(instance: string) {
+		this.instance = instance
+	}
+
 	implementsHermitDisplayInfo(this: any): this is Card<T & HermitDisplayInfo> {
 		return '__hermit_display_info' in this.props
 	}

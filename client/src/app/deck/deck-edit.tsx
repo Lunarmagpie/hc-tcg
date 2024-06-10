@@ -39,7 +39,8 @@ const EXPANSION_NAMES = [
 	'any',
 	...Object.keys(EXPANSIONS.expansions).filter((expansion) => {
 		return initializedCards.some(
-			(card) => card && card.props.expansion === expansion && !EXPANSIONS.disabled.includes(expansion)
+			(card) =>
+				card && card.props.expansion === expansion && !EXPANSIONS.disabled.includes(expansion)
 		)
 	}),
 ]
@@ -132,7 +133,8 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 	//@TODO fix typecasting
 	const filteredCards = initializedCards.filter(
 		(card) =>
-		card && card !== null &&
+			card &&
+			card !== null &&
 			// Card Name Filter
 			card.props.name.toLowerCase().includes(deferredTextQuery.toLowerCase()) &&
 			// Card Type Filter
@@ -157,18 +159,14 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 		setLoadedDeck({...loadedDeck, cards: []})
 	}
 	const addCard = (card: Card) => {
-		setLoadedDeck((loadedDeck) => 
-			{
-				const newCard = createCard(card.props.id)
-				if (!newCard) return loadedDeck
-				return {
-					...loadedDeck,
-					cards: [...loadedDeck.cards, newCard]
-				}
+		setLoadedDeck((loadedDeck) => {
+			const newCard = createCard(card.props.id)
+			if (!newCard) return loadedDeck
+			return {
+				...loadedDeck,
+				cards: [...loadedDeck.cards, newCard],
 			}
-			
-		
-		)
+		})
 	}
 	const removeCard = (card: Card) => {
 		setLoadedDeck((loadedDeck) => ({

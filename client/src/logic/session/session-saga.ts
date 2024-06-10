@@ -19,9 +19,7 @@ import {
 	setActiveDeck,
 } from 'logic/saved-decks/saved-decks'
 import {validateDeck} from 'common/utils/validation'
-import {PlayerDeckT} from '../../../../common/types/deck'
-import {createCard} from 'common/cards'
-import {Card} from 'common/cards/base/card'
+import {PlayerDeckT, TransferDeckT} from '../../../../common/types/deck'
 
 type PlayerInfoT = {
 	playerName: string
@@ -182,12 +180,12 @@ export function* logoutSaga(): SagaIterator {
 export function* newDeckSaga(): SagaIterator {
 	while (true) {
 		const result = yield call(receiveMsg, 'NEW_DECK')
-		const deck = result.payload
+		const deck = result.payload as TransferDeckT
 		yield put(
 			setNewDeck({
 				name: deck.name,
 				icon: deck.icon,
-				cards: deck.cards.map((card: Card) => createCard(card.props.id)),
+				cards: deck.cards,
 			})
 		)
 	}
