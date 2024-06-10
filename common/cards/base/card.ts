@@ -13,6 +13,22 @@ import {HermitAttackType} from '../../types/attack'
 import {AttackModel} from '../../models/attack-model'
 import {AttachmentExpression} from './attachable'
 
+/**
+ * `Card` is the base class for all card types in hermitcraft TCG. Cards should inherit from `Card` and should
+ * pass thier props into the constructor. This way the super can be constructed without any arguments.
+ *
+ * For example a hermit card declaration could look like this:
+ * ```ts
+ * class MyCard extends Card<HermitCard> {
+ *     constructor() {
+ *         super({ the dictionary with the values of`HermitCard` })
+ *     }
+ * }
+ * ```
+ * See a card such as BdoubleCommon for a full example of all properties.
+ *
+ * Interfaces: HasAttach, GetAttack
+ */
 export abstract class Card<T extends CardProps = CardProps> {
 	public readonly props: T
 
@@ -178,6 +194,32 @@ export interface HasTurnActions {
 }
 export const hasTurnActionsDefaults = {__has_turn_actions: undefined}
 
+/**
+ * An interface that allows cards to run code when added or removed from the board.
+ *
+ * ```ts
+ * class MyCard extends Card<HermitCard> implements HasAttach {
+ *    constructor { snip }
+ *
+ *    // Code to run when the card is added to the board.
+ *		onAttach(game: GameModel, pos: CardPosModel) {
+ *	      const {player} = pos
+ *	  		player.hooks.beforeAttack.add(this, (attack) => {
+ *	  	      const target = attack.getTarget()
+ *	  		    if (attack.getCreator() !== this || attack.type !== 'secondary' || !target) return
+ *	  		    if (target.row.hermitCard.props.hermitType !== 'builder') return
+ *	  		    attack.multiplyDamage(this.props.id, 2)
+ *	  	  })
+ *    }
+ *
+ *    // Code to run when the card is removed to the board.
+ *	  onDetach(game: GameModel, pos: CardPosModel) {
+ *	   	 const {player} = pos
+ *	  	 player.hooks.beforeAttack.remove(this)
+ *	  }
+ * }
+ * ```
+ */
 export interface HasAttach {
 	onAttach(game: GameModel, pos: CardPosModel): void
 	onDetach(game: GameModel, pos: CardPosModel): void
@@ -202,11 +244,6 @@ export interface CanAttack {
 	__can_attack: undefined
 	primary: HermitAttackInfo
 	secondary: HermitAttackInfo
-	// getAttack: (
-	// 	game: GameModel,
-	// 	pos: CardPosModel,
-	// 	hermitAttackType: HermitAttackType
-	// ) => AttackModel | null
 }
 export const canAttackDefaults = {
 	__can_attack: undefined,
@@ -234,6 +271,7 @@ export const hasDescriptionDefaults = {__has_description: undefined}
 export interface OverridesGetEnergy {}
 export const overridesGetEnergy = {__overrides_get_energy: undefined}
 
+/* An interface used for implementing a custom function to generate the attack for a hermit */
 export interface GetAttack {
 	getAttack: (
 		game: GameModel,
