@@ -66,7 +66,7 @@ abstract class Card<Props extends CardProps = CardProps> {
 	public instance: string
 	private log: Array<(values: PlayCardLog) => string>
 
-	constructor(props: Props) {
+	constructor() {
 		this.instance = Math.random().toString()
 		this._attachCondition = slot.nothing
 		this.log = []
