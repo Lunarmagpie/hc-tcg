@@ -1,3 +1,4 @@
+import Card from '../cards/base/card'
 import {
 	AttackHistory,
 	AttackHistoryType,
@@ -33,6 +34,8 @@ export class AttackModel {
 
 	/** Unique id for this attack */
 	public id: string | null = null
+	/** The creator of this attack */
+	public creator: Card
 	/** The attack type */
 	public type: AttackType
 	/** Attacks to perform after this attack */
@@ -46,6 +49,7 @@ export class AttackModel {
 
 	constructor(defs: AttackDefs) {
 		this.id = Math.random().toString()
+		this.creator = defs.creator
 		this.type = defs.type
 		this.isBacklash = defs.isBacklash || false
 
@@ -62,9 +66,9 @@ export class AttackModel {
 	// Helpers
 
 	/** Adds a change to the attack's history */
-	private addHistory(sourceId: string, type: AttackHistoryType, value?: any) {
+	private addHistory(source: Card, type: AttackHistoryType, value?: any) {
 		this.history.push({
-			sourceId,
+			source,
 			type,
 			value,
 		})
@@ -109,46 +113,46 @@ export class AttackModel {
 	// Setters / modifier methods
 
 	/** Increases the damage the attack does */
-	public addDamage(sourceId: string, amount: number) {
+	public addDamage(source: Card, amount: number) {
 		if (this.damageLocked) return this
 		this.damage += amount
 
-		this.addHistory(sourceId, 'add_damage', amount)
+		this.addHistory(source, 'add_damage', amount)
 
 		return this
 	}
 
 	/** Reduces the damage the attack does */
-	public reduceDamage(sourceId: string, amount: number) {
+	public reduceDamage(source: Card, amount: number) {
 		if (this.damageLocked) return this
 		this.damageReduction += amount
 
-		this.addHistory(sourceId, 'reduce_damage', amount)
+		this.addHistory(source, 'reduce_damage', amount)
 
 		return this
 	}
 
 	/** Multiplies the damage the attack does */
-	public multiplyDamage(sourceId: string, multiplier: number) {
+	public multiplyDamage(source: Card, multiplier: number) {
 		if (this.damageLocked) return this
 		this.damageMultiplier = Math.max(this.damageMultiplier * multiplier, 0)
 
-		this.addHistory(sourceId, 'multiply_damage', multiplier)
+		this.addHistory(source, 'multiply_damage', multiplier)
 		return this
 	}
 
 	/** Sets the attacker for this attack */
-	public setAttacker(sourceId: string, attacker: RowPos | null) {
+	public setAttacker(source: Card, attacker: RowPos | null) {
 		this.attacker = attacker
 
-		this.addHistory(sourceId, 'set_attacker', attacker)
+		this.addHistory(source, 'set_attacker', attacker)
 		return this
 	}
 	/** Sets the target for this attack */
-	public setTarget(sourceId: string, target: RowPos | null) {
+	public setTarget(source: Card, target: RowPos | null) {
 		this.target = target
 
-		this.addHistory(sourceId, 'set_target', target)
+		this.addHistory(source, 'set_target', target)
 		return this
 	}
 
@@ -157,10 +161,10 @@ export class AttackModel {
 	 *
 	 * WARNING: Do not use lightly!
 	 */
-	public lockDamage(sourceId: string) {
+	public lockDamage(source: Card) {
 		this.damageLocked = true
 
-		this.addHistory(sourceId, 'lock_damage')
+		this.addHistory(source, 'lock_damage')
 		return this
 	}
 

@@ -123,6 +123,7 @@ abstract class Card<Props extends CardProps = CardProps> {
 
 		// Create an attack with default damage
 		const attack = new AttackModel({
+			creator: this,
 			attacker: {
 				player: pos.player,
 				rowIndex: pos.rowIndex,
@@ -142,9 +143,9 @@ abstract class Card<Props extends CardProps = CardProps> {
 		})
 
 		if (attack.type === 'primary') {
-			attack.addDamage(this.props.id, this.props.primary.damage)
+			attack.addDamage(this, this.props.primary.damage)
 		} else if (attack.type === 'secondary') {
-			attack.addDamage(this.props.id, this.props.secondary.damage)
+			attack.addDamage(this, this.props.secondary.damage)
 		}
 
 		return attack

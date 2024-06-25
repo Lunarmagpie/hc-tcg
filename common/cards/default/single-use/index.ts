@@ -10,7 +10,7 @@ import CrossbowSingleUseCard from './crossbow'
 import IronSwordSingleUseCard from './iron-sword'
 import DiamondSwordSingleUseCard from './diamond-sword'
 import NetheriteSwordSingleUseCard from './netherite-sword'
-import GoldenAxeSingleUseCard from './golden-axe'
+import GoldenAxe from './golden-axe'
 import TNTSingleUseCard from './tnt'
 import ChorusFruitSingleUseCard from './chorus-fruit'
 import InvisibilityPotionSingleUseCard from './invisibility-potion'
@@ -41,7 +41,7 @@ const singleUseCardClasses: Array<SingleUseCard> = [
 	new TNTSingleUseCard(),
 	new CrossbowSingleUseCard(),
 	new DiamondSwordSingleUseCard(),
-	new GoldenAxeSingleUseCard(),
+	new GoldenAxe(),
 	new LavaBucketSingleUseCard(),
 	new SplashPotionOfPoisonSingleUseCard(),
 	new NetheriteSwordSingleUseCard(),

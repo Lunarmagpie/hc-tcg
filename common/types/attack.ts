@@ -1,3 +1,4 @@
+import Card from '../cards/base/card'
 import {SlotCondition} from '../slot'
 import {RowPos} from './cards'
 
@@ -35,6 +36,7 @@ export type AttackLog = {
 }
 
 export type AttackDefs = {
+	creator: Card
 	attacker?: RowPos | null
 	target?: RowPos | null
 	type: AttackType
@@ -53,7 +55,7 @@ export type AttackHistoryType =
 	| 'set_target'
 
 export type AttackHistory = {
-	sourceId: string
+	source: Card
 	type: AttackHistoryType
 	value?: any
 }
