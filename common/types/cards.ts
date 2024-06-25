@@ -4,7 +4,7 @@ import {PlayerState, RowState, RowStateWithHermit} from './game-state'
 export type CardRarityT = 'common' | 'rare' | 'ultra_rare'
 
 export type RankT = {
-	name: string
+	name: HermitTypeT
 	cost: number
 }
 

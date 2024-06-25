@@ -1,21 +1,18 @@
-import {CARDS} from '../cards'
-import Card, {Effect, Hermit, HermitSlot, Item, SingleUse} from '../cards/base/card'
+import Card, {Attachable, HasHealth, Item, SingleUse} from '../cards/base/card'
 import {AttackModel} from '../models/attack-model'
 import {BattleLogModel} from '../models/battle-log-model'
 import {SlotCondition} from '../slot'
 import {FormattedTextNode} from '../utils/formatting'
 import {HermitAttackType} from './attack'
-import {EnergyT, SlotInfo} from './cards'
+import { EnergyT } from './cards'
 import {GameHook, WaterfallHook} from './hooks'
 import {ModalRequest, PickInfo, PickRequest} from './server-requests'
 
 export type PlayerId = string
 
-type HermitL = Hermit(Card)
-
 export type RowStateWithHermit = {
-	hermitCard: Card<HermitSlot>
-	effectCard: Card<Effect> | null
+	hermitCard: Card<HasHealth>
+	effectCard: Card<Attachable> | null
 	itemCards: Array<Card<Item> | null>
 	health: number
 }
@@ -29,22 +26,7 @@ export type RowStateWithoutHermit = {
 
 export function healHermit(row: RowState | null, amount: number) {
 	if (!row || !row?.hermitCard) return
-
-	const hermitInfo = HERMIT_CARDS[row.hermitCard.cardId]
-
-	let maxHealth: number
-	if (hermitInfo !== undefined) maxHealth = hermitInfo.health
-	else {
-		// This is a hack so armor stand can be healed
-		// This will be fixed once cards are reworked to use a composition based system
-		if (cardInfo.id === 'armor_stand') {
-			maxHealth = 50
-		} else {
-			return
-		}
-	}
-
-	row.health = Math.min(row.health + amount, maxHealth)
+	row.health = Math.min(row.health + amount, row.hermitCard.props.health)
 }
 
 export type RowState = RowStateWithHermit | RowStateWithoutHermit
@@ -159,7 +141,7 @@ export type PlayerState = {
 		 */
 		onTurnStart: GameHook<() => void>
 		/** Hook called at the end of the turn */
-		onTurnEnd: GameHook<(drawCards: Array<Card | null>) => void>
+		onTurnEnd: GameHook<(drawCards: Array<Card>) => void>
 
 		/** Hook called when the player flips a coin */
 		onCoinFlip: GameHook<(card: Card, coinFlips: Array<CoinFlipT>) => Array<CoinFlipT>>

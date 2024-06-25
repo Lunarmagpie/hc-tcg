@@ -6,7 +6,7 @@ import {slot} from '../../../slot'
 import Card, {Attachable, SingleUse, attachable, singleUse} from '../../base/card'
 import {formatText} from '../../../utils/formatting'
 
-class WaterBucket extends Card {
+class WaterBucketEffectCard extends Card {
 	props: Attachable & SingleUse = {
 		...attachable,
 		...singleUse,
@@ -15,9 +15,8 @@ class WaterBucket extends Card {
 		numericId: 105,
 		name: 'Water Bucket',
 		rarity: 'common',
-		description: formatText(
-			'Remove burn and String from one of your Hermits.\nIf attached, prevents the Hermit this card is attached to from being burned.'
-		),
+		description:
+			'Remove burn and String from one of your Hermits.\nIf attached, prevents the Hermit this card is attached to from being burned.',
 		attachCondition: slot.some(attachable.attachCondition, singleUse.attachCondition),
 		log: (values) => {
 			if (values.pos.slotType === 'single_use')
@@ -98,4 +97,4 @@ class WaterBucket extends Card {
 	}
 }
 
-export default WaterBucket
+export default WaterBucketEffectCard

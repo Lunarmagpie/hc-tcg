@@ -1,5 +1,5 @@
-import BuilderCommonItem from './builder-common'
-import BuilderRareItem from './builder-rare'
+import BuilderCommonItemCard from './builder-common'
+import BuilderRareItemCard from './builder-rare'
 // import BalancedCommonItemCard from './balanced-common'
 // import BalancedRareItemCard from './balanced-rare'
 // import RedstoneCommonItemCard from './redstone-common'
@@ -22,8 +22,8 @@ import BuilderRareItem from './builder-rare'
 import Card, { Item } from '../../base/card'
 
 const itemCardClasses: Array<typeof Card<any>> = [
-	BuilderCommonItem,
-	BuilderRareItem,
+	BuilderCommonItemCard,
+	BuilderRareItemCard,
 	// BalancedCommonItemCard,
 	// BalancedRareItemCard,
 	// RedstoneCommonItemCard,

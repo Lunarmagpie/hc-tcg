@@ -43,7 +43,7 @@ abstract class ItemCard extends Card {
 	)
 
 	public override getFormattedDescription(): FormattedTextNode {
-		return this.rarity === 'rare' ? formatText('*Counts as 2 Item cards.*') : formatText('')
+		return this.props.rarity === 'rare' ? formatText('*Counts as 2 Item cards.*') : formatText('')
 	}
 
 	// Item cards can only be played once per turn, so they block the action when attached

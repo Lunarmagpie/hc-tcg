@@ -39,7 +39,7 @@ import GoodTimesWithScarRareHermitCard from './goodtimeswithscar-rare'
 import HypnotizdRareHermitCard from './hypnotizd-rare'
 import IJevinRareHermitCard from './ijevin-rare'
 import ImpulseSVRareHermitCard from './impulsesv-rare'
-import Iskall85Rare from './iskall85-rare'
+import Iskall85RareHermitCard from './iskall85-rare'
 import JoeHillsRareHermitCard from './joehills-rare'
 import KeralisRareHermitCard from './keralis-rare'
 import MumboJumboRareHermitCard from './mumbojumbo-rare'
@@ -85,7 +85,7 @@ const hermitCardClasses: Array<typeof Card<Hermit>> = [
 	// new ImpulseSVCommonHermitCard(),
 	// new ImpulseSVRareHermitCard(),
 	// new Iskall85CommonHermitCard(),
-	new Iskall85Rare(),
+	new Iskall85RareHermitCard(),
 	// new JoeHillsCommonHermitCard(),
 	// new JoeHillsRareHermitCard(),
 	// new KeralisCommonHermitCard(),

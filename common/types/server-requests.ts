@@ -1,23 +1,15 @@
 import Card from '../cards/base/card'
 import {SlotCondition} from '../slot'
+import {FormattedTextNode} from '../utils/formatting'
 import {CardRarityT, CardTypeT, ExpansionT, SlotInfo, SlotTypeT} from './cards'
 import {ActionResult, ModalData} from './game-state'
 
 export type PickedSlotType = SlotTypeT | 'hand'
 
-export type CardInfo = {
-	instance: string
-	type: CardTypeT
-	expansion: ExpansionT
-	name: string
-	rarity: CardRarityT
-	sidebarDescriptions?: Array<{type: string; name: string}>
-}
-
 export type PickInfo = {
 	playerId: string
 	rowIndex: number | null // This will be null for the hand
-	card: CardInfo | null
+	card: Card | null
 	type: SlotTypeT
 	index: number | null
 }

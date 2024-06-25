@@ -3,7 +3,6 @@ import {STRENGTHS} from 'common/const/strengths'
 import {CONFIG, DEBUG_CONFIG, EXPANSIONS} from 'common/config'
 import {
 	TurnActions,
-	CardT,
 	CoinFlipT,
 	LocalGameState,
 	LocalPlayerState,
@@ -20,7 +19,7 @@ import HermitCard from 'common/cards/base/hermit-card'
 import ItemCard from 'common/cards/base/item-card'
 import EffectCard from 'common/cards/base/effect-card'
 import {CardPosModel} from 'common/models/card-pos-model'
-import {getCardCost, getCardRank} from 'common/utils/ranks'
+import {getCardRank} from 'common/utils/ranks'
 import {HermitAttackType} from 'common/types/attack'
 import {SlotCondition} from 'common/slot'
 import {PickInfo} from 'common/types/server-requests'
@@ -32,16 +31,6 @@ import {PickInfo} from 'common/types/server-requests'
 function randomBetween(min: number, max: number) {
 	return Math.floor(Math.random() * (max - min + 1) + min)
 }
-
-const isHermitOrItem: (cardInfo: Card) => cardInfo is HermitCard | ItemCard = (
-	cardInfo
-): cardInfo is HermitCard | ItemCard => ['hermit', 'item'].includes(cardInfo.type)
-
-const isHermit: (cardInfo: Card) => cardInfo is HermitCard = (cardInfo): cardInfo is HermitCard =>
-	cardInfo.type === 'hermit'
-
-const isEffect: (cardInfo: Card) => cardInfo is EffectCard = (cardInfo): cardInfo is EffectCard =>
-	['effect', 'single_use'].includes(cardInfo.type)
 
 export function getStarterPack() {
 	const limits = CONFIG.limits
@@ -228,13 +217,13 @@ export function getPlayerState(player: PlayerModel): PlayerState {
 			availableEnergy: new WaterfallHook<(availableEnergy: Array<EnergyT>) => Array<EnergyT>>(),
 			blockedActions: new WaterfallHook<(blockedActions: TurnActions) => TurnActions>(),
 
-			onAttach: new GameHook<(instance: string) => void>(),
-			onDetach: new GameHook<(instance: string) => void>(),
+			onAttach: new GameHook<(instance: Card) => void>(),
+			onDetach: new GameHook<(instance: Card) => void>(),
 			beforeApply: new GameHook<() => void>(),
 			onApply: new GameHook<() => void>(),
 			afterApply: new GameHook<() => void>(),
 			getAttackRequests: new GameHook<
-				(activeInstance: string, hermitAttackType: HermitAttackType) => void
+				(activeInstance: Card, hermitAttackType: HermitAttackType) => void
 			>(),
 			getAttack: new GameHook<() => AttackModel | null>(),
 			beforeAttack: new GameHook<(attack: AttackModel) => void>(),
@@ -244,8 +233,8 @@ export function getPlayerState(player: PlayerModel): PlayerState {
 			afterAttack: new GameHook<(attack: AttackModel) => void>(),
 			afterDefence: new GameHook<(attack: AttackModel) => void>(),
 			onTurnStart: new GameHook<() => void>(),
-			onTurnEnd: new GameHook<(drawCards: Array<CardT>) => void>(),
-			onCoinFlip: new GameHook<(card: CardT, coinFlips: Array<CoinFlipT>) => Array<CoinFlipT>>(),
+			onTurnEnd: new GameHook<(drawCards: Array<Card>) => void>(),
+			onCoinFlip: new GameHook<(card: Card, coinFlips: Array<CoinFlipT>) => Array<CoinFlipT>>(),
 			beforeActiveRowChange: new GameHook<
 				(oldRow: number | null, newRow: number | null) => boolean
 			>(),
@@ -300,9 +289,8 @@ export function getLocalGameState(game: GameModel, player: PlayerModel): LocalGa
 		// Once there are no modal requests, send pick requests
 		currentPickMessage = currentPickRequest.message
 		// Add the card name before the request
-		const cardInfo = CARDS[currentPickRequest.id]
-		if (cardInfo) {
-			currentPickMessage = `${cardInfo.name}: ${currentPickMessage}`
+		if (currentPickRequest.creator) {
+			currentPickMessage = `${currentPickRequest.creator.props.name}: ${currentPickMessage}`
 		}
 		// We also want to highlight the slots for the player that must select a slot
 		if (currentPickRequest.playerId == player.id) {

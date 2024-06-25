@@ -2,7 +2,7 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import Card, {Hermit, hermit} from '../../base/card'
 
-class Iskall85Rare extends Card {
+class Iskall85RareHermitCard extends Card {
 	props: Hermit = {
 		...hermit,
 		id: 'iskall85_rare',
@@ -10,6 +10,7 @@ class Iskall85Rare extends Card {
 		numericId: 48,
 		name: 'Iskall',
 		rarity: 'rare',
+		tokens: 0,
 		hermitType: 'farm',
 		health: 290,
 		primary: {
@@ -48,4 +49,4 @@ class Iskall85Rare extends Card {
 	}
 }
 
-export default Iskall85Rare
+export default Iskall85RareHermitCard

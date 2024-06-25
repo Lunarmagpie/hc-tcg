@@ -8,7 +8,7 @@ import {
 } from '../../types/cards'
 import {GameModel} from '../../models/game-model'
 import {CardPosModel} from '../../models/card-pos-model'
-import {FormattedTextNode} from '../../utils/formatting'
+import {FormattedTextNode, formatText} from '../../utils/formatting'
 import {slot, SlotCondition} from '../../slot'
 import {HermitAttackType} from '../../types/attack'
 import {AttackModel} from '../../models/attack-model'
@@ -28,6 +28,7 @@ export type CardProps = {
 	numericId: number
 	name: string
 	rarity: CardRarityT
+	tokens: number,
 	sidebarDescriptions?: Array<{type: string; name: string}>
 	/** The battle log attached to this card */
 	/** Set to string when the card should generate a log when played or applied, and null otherwise */
@@ -247,6 +248,10 @@ abstract class Card<Props extends CardProps = CardProps> {
 	 */
 	public sidebarDescriptions(): Array<Record<string, string>> {
 		return []
+	}
+
+	public getFormattedDescription(this: Card<Attachable | SingleUse>): FormattedTextNode {
+		return formatText(this.props.description)
 	}
 
 	/** Updates the log entry*/

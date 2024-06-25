@@ -2,7 +2,7 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import Card, {Item, item} from '../../base/card'
 
-class BuilderRareItem extends Card {
+class BuilderRareItemCard extends Card {
 	props: Item = {
 		...item,
 		id: 'item_builder_common',
@@ -10,6 +10,7 @@ class BuilderRareItem extends Card {
 		numericId: 51,
 		name: 'Builder',
 		rarity: 'rare',
+		tokens: 2,
 		hermitType: 'builder',
 	}
 
@@ -18,4 +19,4 @@ class BuilderRareItem extends Card {
 	}
 }
 
-export default BuilderRareItem
+export default BuilderRareItemCard
