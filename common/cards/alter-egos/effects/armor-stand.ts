@@ -3,7 +3,7 @@ import {GameModel} from '../../../models/game-model'
 import {CardPosModel} from '../../../models/card-pos-model'
 import {hermitCardBattleLog} from '../../base/hermit-card'
 import {slot} from '../../../slot'
-import Card, {Effect, HermitSlot} from '../../base/card'
+import Card  from '../../base/card'
 import {formatText} from '../../../utils/formatting'
 
 class ArmorStandEffectCard extends Card<HermitSlot & Effect> {

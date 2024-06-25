@@ -2,20 +2,11 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {slot} from '../../../slot'
 import {applySingleUse} from '../../../utils/board'
+import {formatText} from '../../../utils/formatting'
+import Card, {SingleUse, singleUse} from '../../base/card'
 import SingleUseCard from '../../base/single-use-card'
 
-class LadderSingleUseCard extends SingleUseCard {
-	constructor() {
-		super({
-			id: 'ladder',
-			numericId: 143,
-			name: 'Ladder',
-			rarity: 'ultra_rare',
-			description:
-				'Before your attack, swap your active Hermit card with one of your adjacent AFK Hermit cards.\nAll cards attached to both Hermits, including health, remain in place. Your active Hermit remains active after swapping.',
-		})
-	}
-
+class LadderSingleUseCard extends Card {
 	pickCondition = slot.every(
 		slot.player,
 		slot.hermitSlot,
@@ -23,17 +14,27 @@ class LadderSingleUseCard extends SingleUseCard {
 		slot.adjacentTo(slot.activeRow)
 	)
 
-	override _attachCondition = slot.every(
-		super.attachCondition,
-		slot.someSlotFulfills(this.pickCondition)
-	)
+	props: SingleUse = {
+		...singleUse,
+		id: 'ladder',
+		expansion: 'alter_egos',
+		numericId: 143,
+		name: 'Ladder',
+		rarity: 'ultra_rare',
+		description:
+			'Before your attack, swap your active Hermit card with one of your adjacent AFK Hermit cards.\nAll cards attached to both Hermits, including health, remain in place. Your active Hermit remains active after swapping.',
+		attachCondition: slot.every(
+			singleUse.attachCondition,
+			slot.someSlotFulfills(this.pickCondition)
+		),
+	}
 
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player} = pos
 
 		game.addPickRequest({
+			creator: this,
 			playerId: player.id,
-			id: this.id,
 			message: 'Pick an AFK Hermit adjacent to your active Hermit',
 			canPick: this.pickCondition,
 			onResult(pickedSlot) {
@@ -47,10 +48,6 @@ class LadderSingleUseCard extends SingleUseCard {
 				game.changeActiveRow(player, pickedSlot.rowIndex)
 			},
 		})
-	}
-
-	override getExpansion() {
-		return 'alter_egos'
 	}
 }
 

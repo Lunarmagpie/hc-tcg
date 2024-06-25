@@ -76,7 +76,7 @@ export const hermit = {
 
 export type Attachable = CardProps & {
 	attachable: null
-	description: FormattedTextNode
+	description: string
 }
 
 export const attachable = {
@@ -93,7 +93,7 @@ export const attachable = {
 
 export type SingleUse = CardProps & {
 	singleUse: null
-	description: FormattedTextNode
+	description: string
 }
 
 export const singleUse = {
