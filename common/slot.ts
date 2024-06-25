@@ -1,4 +1,3 @@
-import {HERMIT_CARDS} from './cards'
 import {GameModel} from './models/game-model'
 import {SlotInfo} from './types/cards'
 import {TurnAction} from './types/game-state'
