@@ -1,5 +1,5 @@
 import {CARDS} from '../cards'
-import Card, {Effect, HermitSlot, Item, SingleUse} from '../cards/base/card'
+import Card, {Effect, Hermit, HermitSlot, Item, SingleUse} from '../cards/base/card'
 import {AttackModel} from '../models/attack-model'
 import {BattleLogModel} from '../models/battle-log-model'
 import {SlotCondition} from '../slot'
@@ -10,6 +10,8 @@ import {GameHook, WaterfallHook} from './hooks'
 import {ModalRequest, PickInfo, PickRequest} from './server-requests'
 
 export type PlayerId = string
+
+type HermitL = Hermit(Card)
 
 export type RowStateWithHermit = {
 	hermitCard: Card<HermitSlot>

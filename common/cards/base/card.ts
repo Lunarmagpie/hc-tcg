@@ -23,7 +23,6 @@ export type CanAttachError =
 export type CanAttachResult = Array<CanAttachError>
 
 export type CardProps = {
-	type: CardTypeT
 	id: string
 	expansion: ExpansionT
 	numericId: number
@@ -33,11 +32,24 @@ export type CardProps = {
 	/** The battle log attached to this card */
 	/** Set to string when the card should generate a log when played or applied, and null otherwise */
 	log?: (values: PlayCardLog) => string
+	attachCondition?: SlotCondition
 }
 
 export type Item = CardProps & {
-	type: 'item'
+	item: null
 	hermitType: HermitTypeT
+}
+
+export const item = {
+	item: null,
+	attachCondition: slot.every(
+		slot.player,
+		slot.itemSlot,
+		slot.empty,
+		slot.rowHasHermit,
+		slot.actionAvailable('PLAY_ITEM_CARD'),
+		slot.not(slot.frozen)
+	),
 }
 
 export type HasHealth = CardProps & {
@@ -45,20 +57,52 @@ export type HasHealth = CardProps & {
 }
 
 export type Hermit = HasHealth & {
-	type: 'hermit'
+	hermit: null
 	hermitType: HermitTypeT
 	primary: HermitAttackInfo
 	secondary: HermitAttackInfo
 }
 
-export type Effect = CardProps & {
-	type: 'effect'
+export const hermit = {
+	hermit: null,
+	attachCondition: slot.every(
+		slot.hermitSlot,
+		slot.player,
+		slot.empty,
+		slot.actionAvailable('PLAY_HERMIT_CARD'),
+		slot.not(slot.frozen)
+	),
+}
+
+export type Attachable = CardProps & {
+	attachable: null
 	description: FormattedTextNode
 }
 
+export const attachable = {
+	attachable: null,
+	attachCondition: slot.every(
+		slot.player,
+		slot.effectSlot,
+		slot.empty,
+		slot.rowHasHermit,
+		slot.actionAvailable('PLAY_EFFECT_CARD'),
+		slot.not(slot.frozen)
+	),
+}
+
 export type SingleUse = CardProps & {
-	type: 'single_use'
+	singleUse: null
 	description: FormattedTextNode
+}
+
+export const singleUse = {
+	singleUse: null,
+	attachCondition: slot.every(
+		slot.singleUseSlot,
+		slot.playerHasActiveHermit,
+		slot.actionAvailable('PLAY_SINGLE_USE_CARD')
+	),
 }
 
 abstract class Card<Props extends CardProps = CardProps> {
@@ -155,15 +199,11 @@ abstract class Card<Props extends CardProps = CardProps> {
 		return 'primary' in this.props && 'secondary' in this.props
 	}
 
-	public isEffectCard(): this is Card<CardProps & Effect> {
+	public isEffectCard(): this is Card<CardProps & AttachableEffect> {
 		return this.props.type === 'effect'
 	}
 
-	public isSingleUseCard(): this is Card<CardProps & SingleUse> {
-		return this.props.type === 'single_use'
-	}
-
-	public canAttack(this: Card<SingleUse>): boolean {
+	public canAttack(this: Card<AttachableEffect>): boolean {
 		// default is no
 		return false
 	}

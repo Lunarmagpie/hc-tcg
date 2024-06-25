@@ -1,37 +1,32 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import {discardCard} from '../../../utils/movement'
-import EffectCard from '../../base/effect-card'
 import {applySingleUse, removeStatusEffect} from '../../../utils/board'
 import {slot} from '../../../slot'
+import Card, {Attachable, SingleUse, attachable, singleUse} from '../../base/card'
+import {formatText} from '../../../utils/formatting'
 
-class WaterBucketEffectCard extends EffectCard {
-	constructor() {
-		super({
-			id: 'water_bucket',
-			numericId: 105,
-			name: 'Water Bucket',
-			rarity: 'common',
-			description:
-				'Remove burn and String from one of your Hermits.\nIf attached, prevents the Hermit this card is attached to from being burned.',
-			log: (values) => {
-				if (values.pos.slotType === 'single_use')
-					return `${values.defaultLog} on $p${values.pick.name}$`
-				return `$p{You|${values.player}}$ attached $e${this.name}$ to $p${values.pos.hermitCard}$`
-			},
-		})
+class WaterBucket extends Card {
+	props: Attachable & SingleUse = {
+		...attachable,
+		...singleUse,
+		id: 'water_bucket',
+		expansion: 'default',
+		numericId: 105,
+		name: 'Water Bucket',
+		rarity: 'common',
+		description: formatText(
+			'Remove burn and String from one of your Hermits.\nIf attached, prevents the Hermit this card is attached to from being burned.'
+		),
+		attachCondition: slot.some(attachable.attachCondition, singleUse.attachCondition),
+		log: (values) => {
+			if (values.pos.slotType === 'single_use')
+				return `${values.defaultLog} on $p${values.pick.name}$`
+			return `$p{You|${values.player}}$ attached $e${this.props.name}$ to $p${values.pos.hermitCard}$`
+		},
 	}
 
-	override _attachCondition = slot.some(
-		slot.every(
-			slot.singleUseSlot,
-			slot.playerHasActiveHermit,
-			slot.actionAvailable('PLAY_SINGLE_USE_CARD')
-		),
-		super.attachCondition
-	)
-
-	override onAttach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onAttach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer, row} = pos
 		if (pos.type === 'single_use') {
 			game.addPickRequest({
@@ -94,10 +89,10 @@ class WaterBucketEffectCard extends EffectCard {
 		}
 	}
 
-	override onDetach(game: GameModel, instance: string, pos: CardPosModel) {
+	override onDetach(game: GameModel, pos: CardPosModel) {
 		const {player, opponentPlayer} = pos
-		opponentPlayer.hooks.afterApply.remove(instance)
-		player.hooks.onDefence.remove(instance)
+		opponentPlayer.hooks.afterApply.remove(this)
+		player.hooks.onDefence.remove(this)
 	}
 
 	override showSingleUseTooltip(): boolean {
@@ -105,4 +100,4 @@ class WaterBucketEffectCard extends EffectCard {
 	}
 }
 
-export default WaterBucketEffectCard
+export default WaterBucket

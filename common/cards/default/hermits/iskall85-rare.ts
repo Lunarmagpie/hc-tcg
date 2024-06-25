@@ -1,12 +1,12 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
-import Card, {Hermit} from '../../base/card'
+import Card, {Hermit, hermit} from '../../base/card'
 
-class Iskall85RareHermitCard extends Card<Hermit> {
+class Iskall85Rare extends Card {
 	props: Hermit = {
+		...hermit,
 		id: 'iskall85_rare',
 		expansion: 'default',
-		type: 'hermit',
 		numericId: 48,
 		name: 'Iskall',
 		rarity: 'rare',
@@ -38,7 +38,7 @@ class Iskall85RareHermitCard extends Card<Hermit> {
 					? 2
 					: 1
 
-			attack.multiplyDamage(this.props.id, isBuilder)
+			attack.multiplyDamage(this, isBuilder)
 		})
 	}
 
@@ -48,4 +48,4 @@ class Iskall85RareHermitCard extends Card<Hermit> {
 	}
 }
 
-export default Iskall85RareHermitCard
+export default Iskall85Rare

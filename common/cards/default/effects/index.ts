@@ -8,7 +8,7 @@ import TotemEffectCard from './totem'
 import BedEffectCard from './bed'
 import Thorns from './thorns'
 import LoyaltyEffectCard from './loyalty'
-import WaterBucketEffectCard from './water-bucket'
+import WaterBucket from './water-bucket'
 import MilkBucketEffectCard from './milk-bucket'
 import EffectCard from '../../base/effect-card'
 
@@ -23,7 +23,7 @@ const effectCardClasses: Array<EffectCard> = [
 	new TotemEffectCard(),
 	new Thorns(),
 	new LoyaltyEffectCard(),
-	new WaterBucketEffectCard(),
+	new WaterBucket(),
 	new MilkBucketEffectCard(),
 ]
 

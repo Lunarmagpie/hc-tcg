@@ -1,3 +1,4 @@
+import Card from '../cards/base/card'
 import {PlayerState, RowState, RowStateWithHermit} from './game-state'
 
 export type CardRarityT = 'common' | 'rare' | 'ultra_rare'
@@ -21,7 +22,7 @@ export type HermitTypeT =
 
 export type EnergyT = HermitTypeT | 'any'
 
-export type CardTypeT = 'item' | 'single_use' | 'effect' | 'hermit' | 'health'
+export type CardTypeT = 'item' | 'attachable' | 'single_use' | 'hermit' | 'health'
 export type BoardSlotTypeT = 'item' | 'effect' | 'hermit' | 'health'
 export type SlotTypeT = BoardSlotTypeT | 'single_use' | 'hand'
 
@@ -54,7 +55,7 @@ export type SlotInfo = {
 	index: number | null
 	rowIndex: number | null
 	row: RowState | null
-	card: CardT | null
+	card: Card | null
 }
 
 export type PlayCardLog = {
