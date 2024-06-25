@@ -40,11 +40,11 @@ export type Item = CardProps & {
 	hermitType: HermitTypeT
 }
 
-export type HermitSlot = CardProps & {
+export type HasHealth = CardProps & {
 	health: number
 }
 
-export type Hermit = HermitSlot & {
+export type Hermit = HasHealth & {
 	type: 'hermit'
 	hermitType: HermitTypeT
 	primary: HermitAttackInfo
@@ -150,7 +150,7 @@ abstract class Card<Props extends CardProps = CardProps> {
 		return attack
 	}
 
-	public hasAttacks(this: Card<HermitSlot>): this is Card<Props & Hermit> {
+	public hasAttacks(this: Card<HasHealth>): this is Card<Props & Hermit> {
 		return 'primary' in this.props && 'secondary' in this.props
 	}
 
