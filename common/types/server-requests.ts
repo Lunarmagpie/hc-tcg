@@ -1,3 +1,4 @@
+import Card from '../cards/base/card'
 import {SlotCondition} from '../slot'
 import {CardRarityT, CardTypeT, ExpansionT, SlotInfo, SlotTypeT} from './cards'
 import {ActionResult, ModalData} from './game-state'
@@ -22,10 +23,10 @@ export type PickInfo = {
 }
 
 export type PickRequest = {
+	/** The card that called the pick request */
+	creator: Card
 	/** The id of the player to request the pick from */
 	playerId: string
-	/** The id of the card that called the pick request */
-	id: string
 	/** The message to display to the player */
 	message: string
 	/** A function that returns if the card can be attached to a specific slot */
