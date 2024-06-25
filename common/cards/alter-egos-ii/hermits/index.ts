@@ -12,7 +12,7 @@ import PrincessGemCommonHermitCard from '../../alter-egos-ii/hermits/princessgem
 import ShadEECommonHermitCard from './shadee-common'
 import SpookyStressCommonHermitCard from '../../alter-egos-ii/hermits/spookystress-common'
 import SteampunkTangoCommonHermitCard from '../../alter-egos-ii/hermits/steampunktango-common'
-import WormManCommonHermitCard from '../../alter-egos-ii/hermits/wormman-common'
+import WormManCommon from '../../alter-egos-ii/hermits/wormman-common'
 
 const hermitCardClasses: Array<HermitCard> = [
 	new ArchitectFalseCommonHermitCard(),
@@ -28,7 +28,7 @@ const hermitCardClasses: Array<HermitCard> = [
 	new ShadEECommonHermitCard(),
 	new SpookyStressCommonHermitCard(),
 	new SteampunkTangoCommonHermitCard(),
-	new WormManCommonHermitCard(),
+	new WormManCommon(),
 ]
 
 export default hermitCardClasses

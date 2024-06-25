@@ -17,7 +17,7 @@ import InvisibilityPotionSingleUseCard from './invisibility-potion'
 import FishingRodSingleUseCard from './fishing-rod'
 import EmeraldSingleUseCard from './emerald'
 import FlintAndSteelSingleUseCard from './flint-and-steel'
-import ComposterSingleUseCard from './composter'
+import Composter from './composter'
 import LeadSingleUseCard from './lead'
 import SpyglassSingleUseCard from './spyglass'
 import ChestSingleUseCard from './chest'
@@ -47,7 +47,7 @@ const singleUseCardClasses: Array<SingleUseCard> = [
 	new NetheriteSwordSingleUseCard(),
 	new InvisibilityPotionSingleUseCard(),
 	new ClockSingleUseCard(),
-	new ComposterSingleUseCard(),
+	new Composter(),
 	new FlintAndSteelSingleUseCard(),
 	new LeadSingleUseCard(),
 	new ChestSingleUseCard(),

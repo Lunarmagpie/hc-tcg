@@ -6,7 +6,6 @@ import {
 	TurnActions,
 	PlayerState,
 	Message,
-	CardT,
 } from '../types/game-state'
 import {getGameState} from '../utils/state-gen'
 import {ModalRequest, PickInfo, PickRequest, PickedSlotType} from '../types/server-requests'
@@ -15,6 +14,7 @@ import {SlotCondition} from '../slot'
 import {SlotInfo, SlotTypeT} from '../types/cards'
 import {getCardPos} from './card-pos-model'
 import {CARDS} from '../cards'
+import Card from '../cards/base/card'
 
 export class GameModel {
 	private internalCreatedTime: number
@@ -239,10 +239,13 @@ export class GameModel {
 	/** Update the cards that the players are able to select */
 	public updateCardsCanBePlacedIn() {
 		const getCardsCanBePlacedIn = (player: PlayerState) => {
-			return player.hand.reduce((cards, card) => {
-				cards.push([card, this.getPickableSlots(CARDS[card.cardId].attachCondition)])
-				return cards
-			}, [] as Array<[CardT, Array<PickInfo>]>)
+			return player.hand.reduce(
+				(cards, card) => {
+					cards.push([card, this.getPickableSlots(card.attachCondition)])
+					return cards
+				},
+				[] as Array<[Card, Array<PickInfo>]>
+			)
 		}
 
 		this.currentPlayer.cardsCanBePlacedIn = getCardsCanBePlacedIn(this.currentPlayer)
@@ -304,7 +307,7 @@ export class GameModel {
 				const appendAttachCondition = (
 					type: PickedSlotType,
 					index: number,
-					cardInstance: CardT | null
+					cardInstance: Card | null
 				) => {
 					const slotInfo = {
 						player,
@@ -398,8 +401,7 @@ export class GameModel {
 				const cardPos = getCardPos(this, slot.card.cardInstance)
 				if (!cardPos) return
 
-				const cardInfo = CARDS[slot.card.cardId]
-				cardInfo.onAttach(this, slot.card.cardInstance, cardPos)
+				slot.card.onAttach(this, slot.card.cardInstance, cardPos)
 
 				cardPos.player.hooks.onAttach.call(slot.card.cardInstance)
 			})

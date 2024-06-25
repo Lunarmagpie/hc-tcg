@@ -1,4 +1,5 @@
-import {CARDS, HERMIT_CARDS} from '../cards'
+import {CARDS} from '../cards'
+import Card, {Effect, HermitSlot, Item, SingleUse} from '../cards/base/card'
 import {AttackModel} from '../models/attack-model'
 import {BattleLogModel} from '../models/battle-log-model'
 import {SlotCondition} from '../slot'
@@ -10,15 +11,10 @@ import {ModalRequest, PickInfo, PickRequest} from './server-requests'
 
 export type PlayerId = string
 
-export type CardT = {
-	cardId: string
-	cardInstance: string
-}
-
 export type RowStateWithHermit = {
-	hermitCard: CardT
-	effectCard: CardT | null
-	itemCards: Array<CardT | null>
+	hermitCard: Card<HermitSlot>
+	effectCard: Card<Effect> | null
+	itemCards: Array<Card<Item> | null>
 	health: number
 }
 
@@ -39,7 +35,6 @@ export function healHermit(row: RowState | null, amount: number) {
 	else {
 		// This is a hack so armor stand can be healed
 		// This will be fixed once cards are reworked to use a composition based system
-		const cardInfo = CARDS[row.hermitCard.cardId]
 		if (cardInfo.id === 'armor_stand') {
 			maxHealth = 50
 		} else {
@@ -85,22 +80,22 @@ export type PlayerState = {
 	id: PlayerId
 	playerName: string
 	minecraftName: string
-	playerDeck: Array<CardT>
+	playerDeck: Array<Card>
 	censoredPlayerName: string
 	coinFlips: Array<CurrentCoinFlipT>
 	custom: Record<string, any>
-	hand: Array<CardT>
+	hand: Array<Card>
 	lives: number
-	pile: Array<CardT>
-	discarded: Array<CardT>
+	pile: Array<Card>
+	discarded: Array<Card>
 	hasPlacedHermit: boolean
 
 	pickableSlots: Array<PickInfo> | null
-	cardsCanBePlacedIn: Array<[CardT, Array<PickInfo>]>
+	cardsCanBePlacedIn: Array<[Card, Array<PickInfo>]>
 
 	board: {
 		activeRow: number | null
-		singleUseCard: CardT | null
+		singleUseCard: Card<SingleUse> | null
 		singleUseCardUsed: boolean
 		rows: Array<RowState>
 	}
@@ -113,9 +108,9 @@ export type PlayerState = {
 		blockedActions: WaterfallHook<(blockedActions: TurnActions) => TurnActions>
 
 		/** Hook called when a card is attached */
-		onAttach: GameHook<(instance: string) => void>
+		onAttach: GameHook<(instance: Card) => void>
 		/** Hook called when a card is detached */
-		onDetach: GameHook<(instance: string) => void>
+		onDetach: GameHook<(instance: Card) => void>
 
 		/** Hook called before a single use card is applied */
 		beforeApply: GameHook<() => void>
@@ -129,9 +124,7 @@ export type PlayerState = {
 		 *
 		 * This is the place to add pick/modal requests if they need to be resolved before the attack loop.
 		 */
-		getAttackRequests: GameHook<
-			(activeInstance: string, hermitAttackType: HermitAttackType) => void
-		>
+		getAttackRequests: GameHook<(activeInstance: Card, hermitAttackType: HermitAttackType) => void>
 
 		/** Hook that returns attacks to execute */
 		getAttack: GameHook<() => AttackModel | null>
@@ -164,10 +157,10 @@ export type PlayerState = {
 		 */
 		onTurnStart: GameHook<() => void>
 		/** Hook called at the end of the turn */
-		onTurnEnd: GameHook<(drawCards: Array<CardT | null>) => void>
+		onTurnEnd: GameHook<(drawCards: Array<Card | null>) => void>
 
 		/** Hook called when the player flips a coin */
-		onCoinFlip: GameHook<(card: CardT, coinFlips: Array<CoinFlipT>) => Array<CoinFlipT>>
+		onCoinFlip: GameHook<(card: Card, coinFlips: Array<CoinFlipT>) => Array<CoinFlipT>>
 
 		// @TODO eventually to simplify a lot more code this could potentially be called whenever anything changes the row, using a helper.
 		/** Hook called before the active row is changed. Returns whether or not the change can be completed. */
@@ -299,7 +292,7 @@ export type LocalPlayerState = {
 	lives: number
 	board: {
 		activeRow: number | null
-		singleUseCard: CardT | null
+		singleUseCard: Card | null
 		singleUseCardUsed: boolean
 		rows: Array<RowState>
 	}
@@ -311,9 +304,9 @@ export type LocalGameState = {
 	statusEffects: Array<StatusEffectT>
 
 	// personal data
-	hand: Array<CardT>
+	hand: Array<Card>
 	pileCount: number
-	discarded: Array<CardT>
+	discarded: Array<Card>
 
 	// ids
 	playerId: PlayerId
@@ -324,7 +317,7 @@ export type LocalGameState = {
 		result: ActionResult
 	} | null
 
-	currentCardsCanBePlacedIn: Array<[CardT, Array<PickInfo>]> | null
+	currentCardsCanBePlacedIn: Array<[Card, Array<PickInfo>]> | null
 	currentPickableSlots: Array<PickInfo> | null
 	currentPickMessage: string | null
 	currentModalData: ModalData | null
@@ -349,7 +342,7 @@ export type LocalGameRoot = {
 	localGameState: LocalGameState | null
 	time: number
 
-	selectedCard: CardT | null
+	selectedCard: Card | null
 	openedModal: {
 		id: string
 		info: null

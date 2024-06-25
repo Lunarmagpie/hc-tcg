@@ -35,7 +35,6 @@ export type AttackLog = {
 }
 
 export type AttackDefs = {
-	id?: string
 	attacker?: RowPos | null
 	target?: RowPos | null
 	type: AttackType

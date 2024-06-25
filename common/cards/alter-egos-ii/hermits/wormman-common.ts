@@ -1,12 +1,13 @@
-import HermitCard from '../../base/hermit-card'
+import Card, { Hermit } from '../../base/card'
 
-class WormManCommonHermitCard extends HermitCard {
-	constructor() {
-		super({
+class WormManCommon extends Card<Hermit> {
+	props: Hermit = {
 			id: 'wormman_common',
+			expansion: 'alter_egos_ii',
 			numericId: 240,
 			name: 'Worm Man',
 			rarity: 'common',
+			type: 'hermit',
 			hermitType: 'terraform',
 			health: 290,
 			primary: {
@@ -21,12 +22,7 @@ class WormManCommonHermitCard extends HermitCard {
 				damage: 90,
 				power: null,
 			},
-		})
-	}
-
-	override getExpansion() {
-		return 'alter_egos_ii'
-	}
+		}
 
 	override getPalette() {
 		return 'alter_egos'
@@ -37,4 +33,4 @@ class WormManCommonHermitCard extends HermitCard {
 	}
 }
 
-export default WormManCommonHermitCard
+export default WormManCommon

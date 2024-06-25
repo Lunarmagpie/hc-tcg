@@ -1,4 +1,3 @@
-import {CARDS, HERMIT_CARDS} from 'common/cards'
 import {GameModel} from 'common/models/game-model'
 import {equalCard} from 'common/utils/cards'
 import {PlayCardActionData} from 'common/types/action-data'
@@ -23,7 +22,6 @@ function* playCardSaga(
 
 	const {playerId, rowIndex: pickedIndex, type, index} = pickInfo
 
-	const cardInfo = CARDS[card.cardId]
 	// opponentPlayerId is relative to where the card is being placed
 	const opponentPlayerId = playerId === currentPlayer.id ? game.opponentPlayerId : currentPlayer.id
 
@@ -47,7 +45,7 @@ function* playCardSaga(
 	const opponentPlayer = game.state.players[opponentPlayerId]
 
 	// Do we meet requirements to place the card
-	const canAttach = callSlotConditionWithPickInfo(cardInfo.attachCondition, game, pickInfo)
+	const canAttach = callSlotConditionWithPickInfo(card.attachCondition, game, pickInfo)
 
 	// It's the wrong kind of slot or does not satisfy the condition
 	if (!canAttach) return 'FAILURE_INVALID_SLOT'
@@ -56,41 +54,22 @@ function* playCardSaga(
 	// And set the action result to be sent to the client
 
 	// Single use slot
-	if (type === 'single_use') {
+	if (card.isSingleUseCard()) {
 		player.board.singleUseCard = card
-	} else {
-		// All other positions requires us to have selected a valid row
-		if (!row || rowIndex === null) return 'FAILURE_CANNOT_COMPLETE'
+	}
+	if (card.isHermitCard() && row) {
+		player.hasPlacedHermit = true
+		row.hermitCard = card
 
-		switch (type) {
-			case 'hermit': {
-				player.hasPlacedHermit = true
-				row.hermitCard = card
-
-				// If the card is not a hermit card it will have to set the row health itself
-				const hermitCardInfo = HERMIT_CARDS[cardInfo.id]
-				if (hermitCardInfo) {
-					row.health = HERMIT_CARDS[cardInfo.id].health
-				}
-
-				if (player.board.activeRow === null) {
-					game.changeActiveRow(player, rowIndex)
-				}
-
-				break
-			}
-			case 'item': {
-				if (index === null) break
-				row.itemCards[index] = card
-				break
-			}
-			case 'effect': {
-				row.effectCard = card
-				break
-			}
-			default:
-				throw new Error('Unknown slot type when trying to play a card: ' + pickInfo.type)
+		if (player.board.activeRow === null) {
+			game.changeActiveRow(player, rowIndex)
 		}
+	} else if (card.isItemCard() && row && index) {
+		row.itemCards[index] = card
+	} else if (card.isEffectCard() && row) {
+		row.effectCard = card
+	} else {
+		throw new Error('Unknown slot type when trying to play a card: ' + pickInfo.type)
 	}
 
 	const slotInfo: SlotInfo = {
@@ -102,7 +81,7 @@ function* playCardSaga(
 		index,
 		card,
 	}
-	const pos = new CardPosModel(game, slotInfo, card.cardInstance)
+	const pos = new CardPosModel(game, slotInfo, card.instance)
 
 	// Remove the card from the hand
 	if (!DEBUG_CONFIG.unlimitedCards) {
@@ -111,13 +90,13 @@ function* playCardSaga(
 
 	// Add entry to battle log, unless it is played in a single use slot
 	if (pickInfo.type !== 'single_use') {
-		game.battleLog.addPlayCardEntry(cardInfo, pos, currentPlayer.coinFlips, undefined)
+		game.battleLog.addPlayCardEntry(card, pos, currentPlayer.coinFlips, undefined)
 	}
 
-	cardInfo.onAttach(game, card.cardInstance, pos)
+	card.onAttach(game, pos)
 
 	// Call onAttach hook
-	currentPlayer.hooks.onAttach.call(card.cardInstance)
+	currentPlayer.hooks.onAttach.call(card)
 
 	return 'SUCCESS'
 }

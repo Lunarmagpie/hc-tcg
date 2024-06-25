@@ -1,12 +1,13 @@
+import Card from '../cards/base/card'
 import {slot} from '../slot'
 import {SlotInfo} from '../types/cards'
 import {GameModel} from './game-model'
 
-export function getCardPos(game: GameModel, instance: string) {
-	const basicPos = game.findSlot(slot.hasInstance(instance))
+export function getCardPos(game: GameModel, card: Card) {
+	const basicPos = game.findSlot(slot.hasInstance(card.instance))
 
 	if (basicPos) {
-		return new CardPosModel(game, basicPos, instance)
+		return new CardPosModel(game, basicPos, card.instance)
 	}
 
 	return null

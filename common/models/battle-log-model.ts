@@ -1,9 +1,8 @@
-import {CARDS, HERMIT_CARDS, SINGLE_USE_CARDS} from '../cards'
+import {CARDS} from '../cards'
 import {
 	CurrentCoinFlipT,
 	PlayerState,
 	RowStateWithHermit,
-	CardT,
 	BattleLogT,
 } from '../types/game-state'
 import {broadcast} from '../../server/src/utils/comm'

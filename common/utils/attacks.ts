@@ -1,5 +1,4 @@
 import {STRENGTHS} from '../const/strengths'
-import {HERMIT_CARDS} from '../cards'
 import {AttackModel} from '../models/attack-model'
 import {WEAKNESS_DAMAGE} from '../const/damage'
 import {CardPosModel, getCardPos} from '../models/card-pos-model'

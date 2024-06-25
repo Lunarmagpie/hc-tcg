@@ -1,5 +1,3 @@
-import {call} from 'typed-redux-saga'
-import {HERMIT_CARDS} from 'common/cards'
 import {AttackModel} from 'common/models/attack-model'
 import {GameModel} from 'common/models/game-model'
 import {DEBUG_CONFIG} from 'common/config'
@@ -21,14 +19,11 @@ function getAttack(
 	if (!attackPos.row || !attackPos.row.hermitCard) return []
 
 	// hermit attacks
-	const hermitCard = HERMIT_CARDS[attackPos.row.hermitCard.cardId]
+	const hermitCard = attackPos.row.hermitCard
 
-	const nextAttack = hermitCard.getAttack(
-		game,
-		attackPos.row.hermitCard.cardInstance,
-		attackPos,
-		hermitAttackType
-	)
+	if (!hermitCard.isHermitCard()) return []
+
+	const nextAttack = hermitCard.getAttack(game, attackPos, hermitAttackType)
 
 	if (nextAttack) attacks.push(nextAttack)
 
@@ -58,7 +53,7 @@ function* attackSaga(
 
 	const hermitAttackType = attackActionToAttack[turnAction.type]
 	const {currentPlayer, opponentPlayer, state} = game
-	const activeInstance = getActiveRow(currentPlayer)?.hermitCard?.cardInstance
+	const activeInstance = getActiveRow(currentPlayer)?.hermitCard
 	if (!activeInstance) return 'FAILURE_CANNOT_COMPLETE'
 
 	if (checkForRequests) {
@@ -81,7 +76,7 @@ function* attackSaga(
 
 	const attackRow = playerBoard.rows[attackIndex]
 	if (!attackRow.hermitCard) return 'FAILURE_CANNOT_COMPLETE'
-	const attackPos = getCardPos(game, attackRow.hermitCard.cardInstance)
+	const attackPos = getCardPos(game, attackRow.hermitCard)
 	if (!attackPos) return 'FAILURE_UNKNOWN_ERROR'
 
 	// Defender
