@@ -129,7 +129,7 @@ export namespace slot {
 	/* Return true if the card is in a player's hand */
 	export const hand: SlotCondition = (game, pos) => {
 		return [game.currentPlayer, game.opponentPlayer].some((player) => {
-			return player.hand.some((card) => card.cardInstance === pos.card?.cardInstance)
+			return player.hand.some((card) => card.instance === pos.card?.instance)
 		})
 	}
 
@@ -156,7 +156,7 @@ export namespace slot {
 	/** Return true if the spot contains the specified card instance. */
 	export const hasInstance = (cardInstance: string): SlotCondition => {
 		return (game, pos) => {
-			return pos.card !== null && pos.card.cardInstance === cardInstance
+			return pos.card !== null && pos.card.instance === cardInstance
 		}
 	}
 
@@ -164,7 +164,7 @@ export namespace slot {
 	export const hasId = (...cardIds: Array<string>): SlotCondition => {
 		return (game, pos) => {
 			return cardIds.some((cardId) => {
-				return pos.card !== null && pos.card.cardId === cardId
+				return pos.card !== null && pos.card.props.id === cardId
 			})
 		}
 	}
@@ -174,7 +174,7 @@ export namespace slot {
 		return (game, pos) => {
 			return game.state.statusEffects.some(
 				(effect) =>
-					effect.targetInstance == pos.card?.cardInstance && effect.statusEffectId == statusEffect
+					effect.target.instance == pos.card?.instance && effect.statusEffectId == statusEffect
 			)
 		}
 	}
