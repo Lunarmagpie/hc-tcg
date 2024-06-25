@@ -1,11 +1,11 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
-import Card, {Item} from '../../base/card'
+import Card, {Item, item} from '../../base/card'
 
 class BuilderCommonItem extends Card<Item> {
 	props: Item = {
+		...item,
 		id: 'item_builder_common',
-		type: 'item',
 		expansion: 'default',
 		numericId: 51,
 		name: 'Builder',

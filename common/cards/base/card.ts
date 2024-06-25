@@ -112,16 +112,14 @@ abstract class Card<Props extends CardProps = CardProps> {
 
 	constructor() {
 		this.instance = Math.random().toString()
-		this._attachCondition = slot.nothing
 		this.log = []
 	}
 
 	/**
 	 * A combinator expression that returns if the card can be attached to a specified slot.
 	 */
-	protected _attachCondition: SlotCondition
 	public get attachCondition(): SlotCondition {
-		return this._attachCondition
+		return this.props.attachCondition || slot.nothing
 	}
 
 	/**
@@ -139,7 +137,7 @@ abstract class Card<Props extends CardProps = CardProps> {
 	}
 
 	public isItemCard(): this is Card<CardProps & Item> {
-		return this.props.type === 'item'
+		return 'item' in this.props
 	}
 
 	public getEnergy(this: Card<Item>, game: GameModel, pos: CardPosModel): Array<HermitTypeT> {
@@ -147,7 +145,7 @@ abstract class Card<Props extends CardProps = CardProps> {
 	}
 
 	public isHermitCard(): this is Card<CardProps & Hermit> {
-		return this.props.type === 'hermit'
+		return 'hermit' in this.props
 	}
 
 	public getAttack(
@@ -199,11 +197,15 @@ abstract class Card<Props extends CardProps = CardProps> {
 		return 'primary' in this.props && 'secondary' in this.props
 	}
 
-	public isEffectCard(): this is Card<CardProps & AttachableEffect> {
-		return this.props.type === 'effect'
+	public isAttachableCard(): this is Card<CardProps & Attachable> {
+		return 'attachable' in this.props
 	}
 
-	public canAttack(this: Card<AttachableEffect>): boolean {
+	public isSingleUseCard(): this is Card<CardProps & Attachable> {
+		return 'singleUse' in this.props
+	}
+
+	public canAttack(this: Card<Attachable>): boolean {
 		// default is no
 		return false
 	}
