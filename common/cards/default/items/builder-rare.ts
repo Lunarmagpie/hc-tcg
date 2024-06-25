@@ -2,7 +2,7 @@ import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
 import Card, {Item, item} from '../../base/card'
 
-class BuilderRareItem extends Card<Item> {
+class BuilderRareItem extends Card {
 	props: Item = {
 		...item,
 		id: 'item_builder_common',

@@ -21,7 +21,7 @@ import BuilderRareItem from './builder-rare'
 // import ItemCard from '../../base/item-card'
 import Card, { Item } from '../../base/card'
 
-const itemCardClasses: Array<typeof Card<Item>> = [
+const itemCardClasses: Array<typeof Card<any>> = [
 	BuilderCommonItem,
 	BuilderRareItem,
 	// BalancedCommonItemCard,
