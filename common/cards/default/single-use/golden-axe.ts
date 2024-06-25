@@ -5,7 +5,6 @@ import {slot} from '../../../slot'
 import {applySingleUse, getActiveRowPos} from '../../../utils/board'
 import {formatText} from '../../../utils/formatting'
 import Card, {SingleUse} from '../../base/card'
-import SingleUseCard from '../../base/single-use-card'
 
 class GoldenAxe extends Card<SingleUse> {
 	props: SingleUse = {

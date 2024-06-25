@@ -55,7 +55,7 @@ export type StatusEffectT = {
 	/** The statusEffect's instance. */
 	statusEffectInstance: string
 	/** The target card's instance. */
-	targetInstance: string
+	target: Card
 	/** The duration of the effect. If undefined, the effect is infinite. */
 	duration?: number
 	/** Whether the statusEffect is a damage effect or not. */

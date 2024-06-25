@@ -9,6 +9,7 @@ import {
 	PlayerState,
 	RowStateWithHermit,
 } from '../types/game-state'
+import Card from '../cards/base/card'
 
 export function getActiveRow(player: PlayerState): RowStateWithHermit | null {
 	if (player.board.activeRow === null) return null
@@ -34,10 +35,10 @@ export function applySingleUse(game: GameModel, slotInfo?: SlotInfo): GenericAct
 
 	const suCard = currentPlayer.board.singleUseCard
 	if (!suCard) return 'FAILURE_NOT_APPLICABLE'
-	const pos = getCardPos(game, suCard.cardInstance)
+	const pos = getCardPos(game, suCard)
 	if (!pos) return 'FAILURE_UNKNOWN_ERROR'
 
-	const cardInstance = currentPlayer.board.singleUseCard?.cardInstance
+	const cardInstance = currentPlayer.board.singleUseCard
 	if (!cardInstance) return 'FAILURE_NOT_APPLICABLE'
 
 	currentPlayer.hooks.beforeApply.call()
@@ -50,7 +51,7 @@ export function applySingleUse(game: GameModel, slotInfo?: SlotInfo): GenericAct
 	game.addCompletedActions('PLAY_SINGLE_USE_CARD')
 
 	// Create the logs
-	game.battleLog.addPlayCardEntry(CARDS[suCard.cardId], pos, currentPlayer.coinFlips, slotInfo)
+	game.battleLog.addPlayCardEntry(suCard, pos, currentPlayer.coinFlips, slotInfo)
 
 	currentPlayer.hooks.afterApply.call()
 
@@ -64,11 +65,11 @@ export function applySingleUse(game: GameModel, slotInfo?: SlotInfo): GenericAct
 export function applyStatusEffect(
 	game: GameModel,
 	statusEffectId: string,
-	targetInstance: string | undefined
+	target: Card | undefined,
 ): GenericActionResult {
-	if (!targetInstance) return 'FAILURE_INVALID_DATA'
+	if (!target) return 'FAILURE_INVALID_DATA'
 
-	const pos = getCardPos(game, targetInstance)
+	const pos = getCardPos(game, target)
 
 	if (!pos) return 'FAILURE_INVALID_DATA'
 
@@ -78,7 +79,7 @@ export function applyStatusEffect(
 	const statusEffectInfo: StatusEffectT = {
 		statusEffectId: statusEffectId,
 		statusEffectInstance: statusEffectInstance,
-		targetInstance: targetInstance,
+		target: target,
 		damageEffect: statusEffect.damageEffect,
 	}
 
