@@ -1,16 +1,18 @@
 import path from 'path'
 import {defineConfig} from 'vite'
 import react from '@vitejs/plugin-react'
-import CONFIG from '../common/config/server-config.json'
 import {getAppVersion} from '../version'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
 
 export default defineConfig({
 	plugins: [react()],
 	define: {
 		__ENV__: JSON.stringify(process.env.NODE_ENV),
-		__PORT__: JSON.stringify(CONFIG.port),
-		__LIMITS__: JSON.stringify(CONFIG.limits),
-		__LOGO_SUBTEXT__: JSON.stringify(CONFIG.logoSubText),
+		__PORT__: JSON.stringify(process.env.port),
+		__LIMITS__: JSON.stringify(process.env.limits),
+		__LOGO_SUBTEXT__: JSON.stringify(process.env.logoSubText),
 		__APP_VERSION__: `'${getAppVersion()}'`,
 	},
 	resolve: {
@@ -34,6 +36,6 @@ export default defineConfig({
 		minify: 'terser',
 	},
 	server: {
-		port: CONFIG.clientDevPort || 3002,
+		port: process.env.clientDevPort || 3002,
 	},
 })

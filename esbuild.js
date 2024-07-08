@@ -1,6 +1,7 @@
-import {build} from 'esbuild'
-import {copy} from 'esbuild-plugin-copy'
-import {getAppVersion} from './version.js'
+import { build } from 'esbuild'
+import { copy } from 'esbuild-plugin-copy'
+import { getAppVersion } from './version.js'
+import { readFileSync } from 'fs'
 
 let ctx = await build({
 	entryPoints: ['./server/src'],
@@ -14,8 +15,8 @@ let ctx = await build({
 		copy({
 			assets: [
 				// This is kinda hardcoded for apiKeys and adminKeys but it works
-				{from: './server/src/*.json', to: '.'},
-				{from: './server/src/plugins/*.json', to: '.'},
+				{ from: './server/src/*.json', to: '.' },
+				{ from: './server/src/plugins/*.json', to: '.' },
 			],
 		}),
 	],
