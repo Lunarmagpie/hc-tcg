@@ -2,9 +2,9 @@ import {createRequire} from 'module'
 const require = createRequire(import.meta.url)
 import {CardT, GameLog, PlayerState} from 'common/types/game-state'
 import {Database} from 'firebase-admin/lib/database/database'
-import {CONFIG} from 'common/config'
 import {ServiceAccount} from 'firebase-admin/app'
 import {RootModel} from 'common/models/root-model'
+import CONFIG from 'common/config/server-config.json'
 
 export class FirebaseLogs {
 	public id: string = 'firebase_logs'

@@ -1,6 +1,6 @@
 import {CARDS} from 'common/cards'
 import {STRENGTHS} from 'common/const/strengths'
-import {CONFIG, DEBUG_CONFIG, EXPANSIONS} from 'common/config'
+import {GAME_CONFIG, DEBUG_CONFIG, EXPANSIONS} from 'common/config'
 import {
 	TurnActions,
 	CardT,
@@ -44,7 +44,7 @@ const isEffect: (cardInfo: Card) => cardInfo is EffectCard = (cardInfo): cardInf
 	['effect', 'single_use'].includes(cardInfo.type)
 
 export function getStarterPack() {
-	const limits = CONFIG.limits
+	const limits = GAME_CONFIG.limits
 
 	// only allow some starting types
 	const startingTypes = ['balanced', 'builder', 'farm', 'miner', 'redstone']

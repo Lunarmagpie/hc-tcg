@@ -8,7 +8,7 @@ import applyEffectSaga from './turn-actions/apply-effect'
 import removeEffectSaga from './turn-actions/remove-effect'
 import chatSaga from './background/chat'
 import connectionStatusSaga from './background/connection-status'
-import {CONFIG, DEBUG_CONFIG} from 'common/config'
+import {GAME_CONFIG, DEBUG_CONFIG} from 'common/config'
 import pickRequestSaga from './turn-actions/pick-request'
 import modalRequestSaga from './turn-actions/modal-request'
 import {TurnActions, CardT, PlayerState, ActionResult, TurnAction} from 'common/types/game-state'
@@ -27,7 +27,7 @@ import {PickInfo} from 'common/types/server-requests'
 /////////////////////////////////////////
 
 export const getTimerForSeconds = (seconds: number): number => {
-	const maxTime = CONFIG.limits.maxTurnTime * 1000
+	const maxTime = GAME_CONFIG.limits.maxTurnTime * 1000
 	return Date.now() - maxTime + seconds * 1000
 }
 
@@ -421,13 +421,13 @@ function* turnActionsSaga(game: GameModel) {
 
 			// Timer calculation
 			game.state.timer.turnStartTime = game.state.timer.turnStartTime || Date.now()
-			let maxTime = CONFIG.limits.maxTurnTime * 1000
+			let maxTime = GAME_CONFIG.limits.maxTurnTime * 1000
 			let remainingTime = game.state.timer.turnStartTime + maxTime - Date.now()
 
 			if (availableActions.includes('WAIT_FOR_OPPONENT_ACTION')) {
 				game.state.timer.opponentActionStartTime =
 					game.state.timer.opponentActionStartTime || Date.now()
-				maxTime = CONFIG.limits.extraActionTime * 1000
+				maxTime = GAME_CONFIG.limits.extraActionTime * 1000
 				remainingTime = game.state.timer.opponentActionStartTime + maxTime - Date.now()
 			}
 
@@ -486,7 +486,7 @@ function* turnActionsSaga(game: GameModel) {
 
 					// Reset timer to max time
 					game.state.timer.turnStartTime = Date.now()
-					game.state.timer.turnRemaining = CONFIG.limits.maxTurnTime
+					game.state.timer.turnRemaining = GAME_CONFIG.limits.maxTurnTime
 
 					// Execute attack now if there's a current attack
 					if (!game.hasActiveRequests() && !!currentAttack) {
@@ -536,7 +536,7 @@ function* turnSaga(game: GameModel) {
 	game.state.turn.currentAttack = null
 
 	game.state.timer.turnStartTime = Date.now()
-	game.state.timer.turnRemaining = CONFIG.limits.maxTurnTime
+	game.state.timer.turnRemaining = GAME_CONFIG.limits.maxTurnTime
 
 	// Call turn start hooks
 

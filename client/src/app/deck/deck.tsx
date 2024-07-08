@@ -18,7 +18,7 @@ import {CopyIcon, DeleteIcon, EditIcon, ErrorIcon, ExportIcon} from 'components/
 import {ToastT} from 'common/types/app'
 import {getCardCost, getDeckCost} from 'common/utils/ranks'
 import {ImportModal, ExportModal} from 'components/import-export'
-import {CONFIG} from '../../../../common/config'
+import {GAME_CONFIG} from '../../../../common/config'
 import {
 	convertLegacyDecks,
 	deleteDeck,
@@ -352,13 +352,13 @@ const Deck = ({setMenuSection}: Props) => {
 									<div className={css.dynamicSpace}></div>
 
 									<p className={classNames(css.cardCount)}>
-										{loadedDeck.cards.length}/{CONFIG.limits.maxCards}{' '}
+										{loadedDeck.cards.length}/{GAME_CONFIG.limits.maxCards}{' '}
 										<span className={css.hideOnMobile}>cards</span>
 									</p>
 									<div className={css.cardCount}>
 										<p className={css.tokens}>
 											{getDeckCost(loadedDeck.cards.map((card) => card.cardId))}/
-											{CONFIG.limits.maxDeckCost} <span className={css.hideOnMobile}>tokens</span>
+											{GAME_CONFIG.limits.maxDeckCost} <span className={css.hideOnMobile}>tokens</span>
 										</p>
 									</div>
 								</div>

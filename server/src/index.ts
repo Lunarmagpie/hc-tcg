@@ -3,7 +3,7 @@ import path from 'path'
 import {fileURLToPath} from 'url'
 import {createServer} from 'http'
 import cors from 'cors'
-import {CONFIG} from 'common/config'
+import CONFIG from 'common/config/server-config.json'
 import startSocketIO from './sockets'
 import {registerApis} from './api'
 

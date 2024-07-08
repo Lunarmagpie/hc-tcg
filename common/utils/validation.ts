@@ -1,11 +1,11 @@
-import {CONFIG, DEBUG_CONFIG, EXPANSIONS} from '../config'
+import {GAME_CONFIG, DEBUG_CONFIG, EXPANSIONS} from '../config'
 import {CARDS} from '../cards'
 import {getDeckCost} from './ranks'
 
 export function validateDeck(deckCards: Array<string>) {
 	if (DEBUG_CONFIG.disableDeckValidation) return
 
-	const limits = CONFIG.limits
+	const limits = GAME_CONFIG.limits
 	deckCards = deckCards.filter((cardId) => CARDS[cardId])
 
 	// order validation by simplest problem first, so that a player can easily identify why their deck isn't valid

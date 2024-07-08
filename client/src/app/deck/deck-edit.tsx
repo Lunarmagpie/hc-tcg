@@ -16,7 +16,7 @@ import Button from 'components/button'
 import errorIcon from 'components/svgs/errorIcon'
 import Dropdown from 'components/dropdown'
 import AlertModal from 'components/alert-modal'
-import {CONFIG, RANKS, EXPANSIONS} from '../../../../common/config'
+import {GAME_CONFIG, RANKS, EXPANSIONS} from '../../../../common/config'
 import {deleteDeck, getSavedDeckNames} from 'logic/saved-decks/saved-decks'
 import {getCardExpansion} from 'common/utils/cards'
 import {getCardRank, getDeckCost} from 'common/utils/ranks'
@@ -395,12 +395,12 @@ function EditDeck({back, title, saveDeck, deck}: Props) {
 							<div className={css.dynamicSpace} />
 							<div className={css.deckDetails}>
 								<p className={classNames(css.cardCount, css.dark)}>
-									{loadedDeck.cards.length}/{CONFIG.limits.maxCards}
+									{loadedDeck.cards.length}/{GAME_CONFIG.limits.maxCards}
 									<span className={css.hideOnMobile}>cards</span>
 								</p>
 								<div className={classNames(css.cardCount, css.dark, css.tokens)}>
 									{getDeckCost(loadedDeck.cards.map((card) => card.cardId))}/
-									{CONFIG.limits.maxDeckCost} <span className={css.hideOnMobile}>tokens</span>
+									{GAME_CONFIG.limits.maxDeckCost} <span className={css.hideOnMobile}>tokens</span>
 								</div>
 							</div>
 						</>

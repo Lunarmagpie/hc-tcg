@@ -1,7 +1,7 @@
 import {takeEvery, delay} from 'typed-redux-saga'
 import {broadcast} from '../../utils/comm'
 import {getOpponentId} from '../../utils'
-import {CONFIG} from 'common/config'
+import {GAME_CONFIG} from 'common/config'
 import {getLocalGameState} from '../../utils/state-gen'
 import {GameModel} from 'common/models/game-model'
 import {AnyAction} from 'redux'
@@ -16,7 +16,7 @@ function* sendGameStateOnReconnect(game: GameModel, action: AnyAction) {
 	yield* delay(500)
 
 	if (game.state.timer.turnStartTime) {
-		const maxTime = CONFIG.limits.maxTurnTime * 1000
+		const maxTime = GAME_CONFIG.limits.maxTurnTime * 1000
 		const remainingTime = game.state.timer.turnStartTime + maxTime - Date.now()
 		const graceTime = 1000
 		game.state.timer.turnRemaining = Math.floor((remainingTime + graceTime) / 1000)

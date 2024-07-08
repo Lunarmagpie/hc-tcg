@@ -1,5 +1,5 @@
 import {Server} from 'socket.io'
-import {CONFIG} from 'common/config'
+import CONFIG from 'common/config/server-config.json'
 import store from './be-store'
 import version from './version'
 
