@@ -60,7 +60,6 @@ export const item = {
 		slot.empty,
 		slot.rowHasHermit,
 		slot.actionAvailable('PLAY_ITEM_CARD'),
-		slot.not(slot.frozen)
 	),
 	log: (values: PlayCardLog) =>
 		`$p{You|${values.player}}$ placed $p${values.pos.name}$ on row #${values.pos.rowIndex}`,
@@ -101,7 +100,6 @@ export const hermit = {
 		slot.player,
 		slot.empty,
 		slot.actionAvailable('PLAY_HERMIT_CARD'),
-		slot.not(slot.frozen)
 	),
 	log: (values: PlayCardLog) =>
 		`$p{You|${values.player}}$ placed $p${values.pos.name}$ on row #${values.pos.rowIndex}`,
@@ -126,8 +124,7 @@ export const attach = {
 		slot.attachSlot,
 		slot.empty,
 		slot.rowHasHermit,
-		slot.actionAvailable('PLAY_EFFECT_CARD'),
-		slot.not(slot.frozen)
+		slot.actionAvailable('PLAY_ATTACH_CARD'),
 	),
 	log: (values: PlayCardLog) =>
 		`$p{You|${values.player}}$ placed $p${values.pos.name}$ on row #${values.pos.rowIndex}`,

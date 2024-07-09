@@ -55,7 +55,7 @@ class TangoTekRareHermitCard extends Card {
 			)
 
 			// Check if we are blocked from changing by anything other than the game
-			const canChange = !game.isActionBlocked('CHANGE_ACTIVE_HERMIT', ['game'])
+			const canChange = !game.isActionBlocked({name: 'CHANGE_ACTIVE_HERMIT'})
 
 			// If opponent has hermit they can switch to, add a pick request for them to switch
 			if (game.someSlotFulfills(opponentInactiveRowsPickCondition)) {

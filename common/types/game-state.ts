@@ -18,7 +18,7 @@ import {SlotCondition} from '../slot'
 import StatusEffect, {StatusEffectProps, Counter, isCounter} from '../status-effects/status-effect'
 import {FormattedTextNode} from '../utils/formatting'
 import {HermitAttackType} from './attack'
-import {EnergyT} from './cards'
+import {EnergyT, SlotInfo} from './cards'
 import {GameHook, WaterfallHook} from './hooks'
 import {
 	LocalCardInstance,
@@ -184,7 +184,7 @@ export type PlayerState = {
 		availableEnergy: WaterfallHook<(availableEnergy: Array<EnergyT>) => Array<EnergyT>>
 
 		/** Hook that modifies and returns blockedActions */
-		blockedActions: WaterfallHook<(blockedActions: TurnActions) => TurnActions>
+		blockedActions: GameHook<() => Array<{name: TurnAction['name']; slot?: SlotCondition}>>
 
 		/** Hook called when a card is attached */
 		onAttach: GameHook<(instance: CardInstance) => void>
@@ -282,19 +282,14 @@ export type {ModalData} from './server-requests'
 export type TurnState = {
 	turnNumber: number
 	currentPlayerId: string
-	availableActions: TurnActions
-	opponentAvailableActions: TurnActions
-	completedActions: TurnActions
-	/** Map of source id of the block, to the actual blocked action */
-	blockedActions: Record<string, TurnActions>
-
+	blockedActions: Array<[TurnAction['name'], SlotCondition?]>
 	currentAttack: HermitAttackType | null
 }
 
 export type LocalTurnState = {
 	turnNumber: number
 	currentPlayerId: string
-	availableActions: TurnActions
+	availableActions: Array<TurnAction["name"]>
 }
 
 export type GameState = {
@@ -319,24 +314,27 @@ export type GameState = {
 }
 
 export type PlayCardAction =
-	| 'PLAY_HERMIT_CARD'
-	| 'PLAY_ITEM_CARD'
-	| 'PLAY_SINGLE_USE_CARD'
-	| 'PLAY_EFFECT_CARD'
+	| {name: 'PLAY_HERMIT_CARD'; slot: SlotInfo}
+	| {name: 'PLAY_ITEM_CARD'; slot: SlotInfo}
+	| {name: 'PLAY_SINGLE_USE_CARD'; slot: SlotInfo}
+	| {name: 'PLAY_ATTACH_CARD'; slot: SlotInfo}
 
-export type AttackAction = 'SINGLE_USE_ATTACK' | 'PRIMARY_ATTACK' | 'SECONDARY_ATTACK'
+export type AttackAction =
+	| {name: 'SINGLE_USE_ATTACK'; slot: SlotInfo}
+	| {name: 'PRIMARY_ATTACK'; slot: SlotInfo}
+	| {name: 'SECONDARY_ATTACK'; slot: SlotInfo}
 
 export type TurnAction =
 	| PlayCardAction
 	| AttackAction
-	| 'END_TURN'
-	| 'APPLY_EFFECT'
-	| 'REMOVE_EFFECT'
-	| 'CHANGE_ACTIVE_HERMIT'
-	| 'PICK_REQUEST'
-	| 'MODAL_REQUEST'
-	| 'WAIT_FOR_TURN'
-	| 'WAIT_FOR_OPPONENT_ACTION'
+	| {name: 'END_TURN'}
+	| {name: 'APPLY_EFFECT'}
+	| {name: 'REMOVE_EFFECT'}
+	| {name: 'CHANGE_ACTIVE_HERMIT'}
+	| {name: 'PICK_REQUEST'}
+	| {name: 'MODAL_REQUEST'}
+	| {name: 'WAIT_FOR_TURN'}
+	| {name: 'WAIT_FOR_OPPONENT_ACTION'}
 
 export type GameRules = {
 	disableTimer: boolean

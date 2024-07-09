@@ -3,10 +3,11 @@ import {
 	TurnAction,
 	GameState,
 	ActionResult,
-	TurnActions,
 	PlayerState,
 	Message,
 	CardInstance,
+	PlayCardAction,
+	AttackAction,
 } from '../types/game-state'
 import {getGameState} from '../utils/state-gen'
 import {
@@ -110,87 +111,70 @@ export class GameModel {
 		return this.internalCode
 	}
 
-	// Functions
+	public getAllActions() {
+		/* Get all the actions that are aviablable in a turn */
+		let allActions: Array<TurnAction> = []
 
-	/** Set actions as completed so they cannot be done again this turn */
-	public addCompletedActions(...actions: TurnActions) {
-		for (let i = 0; i < actions.length; i++) {
-			const action = actions[i]
-			if (!this.state.turn.completedActions.includes(action)) {
-				this.state.turn.completedActions.push(action)
-			}
-		}
-	}
-	/** Remove action from the completed list so they can be done again this turn */
-	public removeCompletedActions(...actions: TurnActions) {
-		for (let i = 0; i < actions.length; i++) {
-			this.state.turn.completedActions = this.state.turn.completedActions.filter(
-				(action) => !actions.includes(action)
-			)
-		}
+		this.filterSlots(slot.hermitSlot).forEach((slot) => {
+			allActions.push({name: 'PLAY_HERMIT_CARD', slot})
+		})
+		this.filterSlots(slot.itemSlot).forEach((slot) => {
+			allActions.push({name: 'PLAY_ITEM_CARD', slot})
+		})
+		this.filterSlots(slot.singleUseSlot).forEach((slot) => {
+			allActions.push({name: 'PLAY_SINGLE_USE_CARD', slot})
+		})
+		this.filterSlots(slot.attachSlot).forEach((slot) => {
+			allActions.push({name: 'PLAY_ATTACH_CARD', slot})
+		})
+
+		this.filterSlots(slot.hermitSlot).forEach((slot) => {
+			allActions.push({name: 'PRIMARY_ATTACK', slot})
+			allActions.push({name: 'SECONDARY_ATTACK', slot})
+		})
+
+		this.filterSlots(slot.singleUseSlot, slot.not(slot.empty)).forEach((slot) => {
+			allActions.push({name: 'SINGLE_USE_ATTACK', slot})
+		})
+
+		allActions.push(
+			{name: 'END_TURN'},
+			{name: 'APPLY_EFFECT'},
+			{name: 'REMOVE_EFFECT'},
+			{name: 'CHANGE_ACTIVE_HERMIT'},
+			{name: 'PICK_REQUEST'},
+			{name: 'MODAL_REQUEST'},
+			{name: 'WAIT_FOR_TURN'},
+			{name: 'WAIT_FOR_OPPONENT_ACTION'}
+		)
+
+		return allActions
 	}
 
 	/** Set actions as blocked so they cannot be done this turn */
-	public addBlockedActions(sourceId: string, ...actions: TurnActions) {
-		const key = sourceId
-		const turnState = this.state.turn
-		if (!turnState.blockedActions[key]) {
-			turnState.blockedActions[key] = []
-		}
-
-		for (let i = 0; i < actions.length; i++) {
-			const action = actions[i]
-			if (!turnState.blockedActions[key].includes(action)) {
-				turnState.blockedActions[key].push(action)
-			}
-		}
-	}
-	/** Remove action from the completed list so they can be done again this turn */
-	public removeBlockedActions(sourceId: string, ...actions: TurnActions) {
-		const key = sourceId
-		const turnState = this.state.turn
-		if (!turnState.blockedActions[key]) return
-
-		for (let i = 0; i < actions.length; i++) {
-			turnState.blockedActions[key] = turnState.blockedActions[key].filter(
-				(action) => !actions.includes(action)
-			)
-		}
-
-		if (turnState.blockedActions[key].length <= 0) {
-			delete turnState.blockedActions[key]
-		}
+	public addBlockedAction(action: TurnAction['name'], forSlot: SlotCondition = slot.anything) {
+		this.state.turn.blockedActions.push([action, forSlot])
 	}
 
 	/** Returns true if the current blocked actions list includes the given action */
-	public isActionBlocked(action: TurnAction, excludeIds?: Array<string>) {
-		const turnState = this.state.turn
-		const allBlockedActions: TurnActions = []
-		Object.keys(turnState.blockedActions).forEach((sourceId) => {
-			if (excludeIds?.includes(sourceId)) return
-
-			const actions = turnState.blockedActions[sourceId]
-			allBlockedActions.push(...actions)
-		})
-		return allBlockedActions.includes(action)
+	public isActionBlocked(action: TurnAction) {
+		for (const [blockedActionName, blockedActionSlot] of this.state.turn.blockedActions) {
+			if (action.name == blockedActionName) {
+				if ('slot' in action && blockedActionSlot !== undefined) {
+					let slotAction = action as PlayCardAction | AttackAction
+					if (blockedActionSlot(this, slotAction.slot)) return true
+				} else {
+					return true
+				}
+			}
+		}
+		return false
 	}
 
-	/** Get all actions blocked with the source id. */
-	public getBlockedActions(sourceId: string) {
-		const key = sourceId || ''
-		const turnState = this.state.turn
-		const blockedActions = turnState.blockedActions[key]
-		if (!blockedActions) return []
-
-		return blockedActions
-	}
-	public getAllBlockedActions() {
-		const turnState = this.state.turn
-		const allBlockedActions: TurnActions = []
-		Object.values(turnState.blockedActions).forEach((actions) => {
-			allBlockedActions.push(...actions)
+	public getAvailableActions() {
+		return this.getAllActions().filter((action) => {
+			return !this.isActionBlocked(action)
 		})
-		return allBlockedActions
 	}
 
 	public setLastActionResult(action: TurnAction, result: ActionResult) {
@@ -247,10 +231,13 @@ export class GameModel {
 	/** Update the cards that the players are able to select */
 	public updateCardsCanBePlacedIn() {
 		const getCardsCanBePlacedIn = (player: PlayerState) => {
-			return player.hand.reduce((cards, card) => {
-				cards.push([card, this.getPickableSlots(card.card.props.attachCondition)])
-				return cards
-			}, [] as Array<[CardInstance, Array<PickInfo>]>)
+			return player.hand.reduce(
+				(cards, card) => {
+					cards.push([card, this.getPickableSlots(card.card.props.attachCondition)])
+					return cards
+				},
+				[] as Array<[CardInstance, Array<PickInfo>]>
+			)
 		}
 
 		this.currentPlayer.cardsCanBePlacedIn = getCardsCanBePlacedIn(this.currentPlayer)
@@ -426,7 +413,7 @@ export class GameModel {
 		})
 	}
 
-	public someSlotFulfills(predicate: SlotCondition) {
-		return this.filterSlots(predicate).length !== 0
+	public someSlotFulfills(...predicates: Array<SlotCondition>) {
+		return this.filterSlots(slot.every(...predicates)).length !== 0
 	}
 }

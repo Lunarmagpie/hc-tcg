@@ -205,8 +205,7 @@ export function getPlayerState(player: PlayerModel): PlayerState {
 
 		hooks: {
 			availableEnergy: new WaterfallHook<(availableEnergy: Array<EnergyT>) => Array<EnergyT>>(),
-			blockedActions: new WaterfallHook<(blockedActions: TurnActions) => TurnActions>(),
-
+			blockedActions: new GameHook(),
 			onAttach: new GameHook<(instance: CardInstance) => void>(),
 			onDetach: new GameHook<(instance: CardInstance) => void>(),
 			beforeApply: new GameHook<() => void>(),
@@ -312,9 +311,7 @@ export function getLocalGameState(game: GameModel, player: PlayerModel): LocalGa
 		turn: {
 			turnNumber: turnState.turnNumber,
 			currentPlayerId: turnState.currentPlayerId,
-			availableActions: isCurrentPlayer
-				? turnState.availableActions
-				: turnState.opponentAvailableActions,
+			availableActions: game.getAvailableActions().map((action) => action.name)
 		},
 		order: game.state.order,
 		statusEffects: game.state.statusEffects.map((effect) => effect.toLocalStatusEffectInstance()),

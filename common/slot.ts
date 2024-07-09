@@ -1,6 +1,6 @@
 import {GameModel} from './models/game-model'
 import {SlotInfo} from './types/cards'
-import {CardInstance, TurnAction} from './types/game-state'
+import {CardInstance, PlayCardAction, TurnAction} from './types/game-state'
 import {LocalCardInstance} from './types/server-requests'
 
 export type SlotCondition = (game: GameModel, pos: SlotInfo) => boolean
@@ -181,15 +181,15 @@ export namespace slot {
 		return playerResult || opponentResult
 	}
 
-	export const actionAvailable = (action: TurnAction): SlotCondition => {
-		return (game, pos) => game.state.turn.availableActions.includes(action)
+	export const actionAvailable = (actionName: PlayCardAction['name']): SlotCondition => {
+		return (game, pos) => !game.isActionBlocked({name: actionName, slot: pos})
 	}
 
 	/** Return true if a slot on the board exists that fullfils the condition given by the predicate */
 	export const someSlotFulfills =
-		(predicate: SlotCondition): SlotCondition =>
+		(...predicates: Array<SlotCondition>): SlotCondition =>
 		(game, pos) => {
-			return game.someSlotFulfills(predicate)
+			return game.someSlotFulfills(...predicates)
 		}
 
 	/* *Returns true if an adjacent row to a given slot fulfills the condition given by the predicate. */

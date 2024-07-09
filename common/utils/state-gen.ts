@@ -10,10 +10,7 @@ export function getGameState(game: GameModel): GameState {
 		turn: {
 			turnNumber: 0,
 			currentPlayerId: playerIds[0],
-			availableActions: [],
-			opponentAvailableActions: [],
-			completedActions: [],
-			blockedActions: {},
+			blockedActions: [],
 			currentAttack: null,
 		},
 		order: playerIds,

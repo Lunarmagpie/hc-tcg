@@ -24,7 +24,6 @@ class BerryBushEffectCard extends Card {
 			slot.empty,
 			slot.playerHasActiveHermit,
 			slot.opponentHasActiveHermit,
-			slot.not(slot.frozen)
 		),
 	}
 

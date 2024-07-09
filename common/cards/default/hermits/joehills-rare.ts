@@ -1,5 +1,6 @@
 import {CardPosModel} from '../../../models/card-pos-model'
 import {GameModel} from '../../../models/game-model'
+import { slot } from '../../../slot'
 import {CardInstance} from '../../../types/game-state'
 import {applyStatusEffect, getActiveRow} from '../../../utils/board'
 import {flipCoin} from '../../../utils/coinFlips'
@@ -65,18 +66,14 @@ class JoeHillsRareHermitCard extends Card {
 
 			// Block all actions of opponent for one turn
 			opponentPlayer.hooks.onTurnStart.add(instance, () => {
-				game.addBlockedActions(
-					this.props.id,
-					'APPLY_EFFECT',
-					'REMOVE_EFFECT',
-					'SINGLE_USE_ATTACK',
-					'PRIMARY_ATTACK',
-					'SECONDARY_ATTACK',
-					'PLAY_HERMIT_CARD',
-					'PLAY_ITEM_CARD',
-					'PLAY_SINGLE_USE_CARD',
-					'PLAY_EFFECT_CARD'
-				)
+				game.addBlockedAction('APPLY_EFFECT')
+				game.addBlockedAction('REMOVE_EFFECT')
+				game.addBlockedAction('PRIMARY_ATTACK')
+				game.addBlockedAction('SECONDARY_ATTACK')
+				game.addBlockedAction('PLAY_HERMIT_CARD')
+				game.addBlockedAction('PLAY_ITEM_CARD')
+				game.addBlockedAction('PLAY_SINGLE_USE_CARD')
+				game.addBlockedAction('PLAY_HERMIT_CARD')
 				opponentPlayer.hooks.onTurnStart.remove(instance)
 			})
 		})
@@ -86,7 +83,7 @@ class JoeHillsRareHermitCard extends Card {
 			const sameActive = game.activeRow?.hermitCard === skipped
 			if (skipped !== null && sameActive) {
 				// We skipped last turn and we are still the active hermit, block secondary attacks
-				game.addBlockedActions(this.props.id, 'SECONDARY_ATTACK')
+				game.addBlockedAction('SECONDARY_ATTACK', slot.hasInstance(instance))
 			}
 
 			skipped = null

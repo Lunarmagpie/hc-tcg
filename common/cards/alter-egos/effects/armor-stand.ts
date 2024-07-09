@@ -27,9 +27,8 @@ class ArmorStandEffectCard extends Card {
 	}
 
 	override onAttach(game: GameModel, instance: CardInstance, pos: CardPosModel) {
-		const {player} = pos
-		player.hooks.freezeSlots.add(instance, () => {
-			return slot.every(slot.player, slot.rowIndex(pos.rowIndex))
+		pos.player.hooks.blockedActions.add(instance, () => {
+			return [{name: 'PLAY_ITEM_CARD', slot: slot.every(slot.player, slot.rowIndex(pos.rowIndex))}]
 		})
 	}
 
@@ -39,9 +38,6 @@ class ArmorStandEffectCard extends Card {
 		game.battleLog.addEntry(player.id, `$pArmor Stand$ was knocked out`)
 
 		player.hooks.blockedActions.remove(instance)
-		player.hooks.afterAttack.remove(instance)
-		opponentPlayer.hooks.afterAttack.remove(instance)
-		player.hooks.freezeSlots.remove(instance)
 	}
 }
 
