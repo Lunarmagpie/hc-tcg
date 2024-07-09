@@ -12,6 +12,7 @@ function* playCardSaga(
 	turnAction: PlayCardActionData
 ): Generator<any, ActionResult> {
 	// Make sure data sent from client is correct
+	console.log("play card saga")
 	const pickInfo = turnAction?.payload?.pickInfo
 	const localCard = turnAction?.payload?.card
 	if (!pickInfo || !localCard || !pickInfo.playerId || !pickInfo) {
@@ -38,7 +39,7 @@ function* playCardSaga(
 	}
 
 	// Can't attach to hand or health slot
-	if (type === 'health' || type === 'hand') {
+	if (type === 'hand') {
 		return 'FAILURE_INVALID_SLOT'
 	}
 
@@ -91,7 +92,7 @@ function* playCardSaga(
 			}
 			case 'item': {
 				if (index === null) break
-				if (card.props.category === 'item') game.addCompletedActions('PLAY_ITEM_CARD')
+				if (card.props.category === 'item') game.blockAction('PLAY_ITEM_CARD')
 				row.itemCards[index] = card
 				break
 			}

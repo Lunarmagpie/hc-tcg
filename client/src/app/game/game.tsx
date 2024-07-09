@@ -25,6 +25,8 @@ import {
 	getEndGameOverlay,
 	getAvailableActions,
 	getPickRequestPickableSlots,
+	getCardsCanBePlacedIn,
+    getIsPickRequest,
 } from 'logic/game/game-selectors'
 import {setOpenedModal, setSelectedCard, slotPicked} from 'logic/game/game-actions'
 import {DEBUG_CONFIG} from 'common/config'
@@ -64,7 +66,9 @@ function Game() {
 	const openedModal = useSelector(getOpenedModal)
 	const playerState = useSelector(getPlayerState)
 	const endGameOverlay = useSelector(getEndGameOverlay)
+	const isPickRequest =useSelector(getIsPickRequest)
 	const pickRequestPickableSlots = useSelector(getPickRequestPickableSlots)
+	const cardsCanBePlacedIn = useSelector(getCardsCanBePlacedIn)
 	// const settings = useSelector(getSettings)
 	const dispatch = useDispatch()
 	const handRef = useRef<HTMLDivElement>(null)
@@ -89,7 +93,7 @@ function Game() {
 	}
 
 	const selectCard = (card: LocalCardInstance) => {
-		if (availableActions.includes('PICK_REQUEST')) {
+		if (isPickRequest) {
 			const index = gameState.hand.findIndex((c) => equalCard(c, card))
 			if (index === -1) return
 
@@ -117,7 +121,7 @@ function Game() {
 		}
 	}
 
-	if (availableActions.includes('PICK_REQUEST')) {
+	if (isPickRequest) {
 		dispatch(setSelectedCard(null))
 	}
 
@@ -220,6 +224,19 @@ function Game() {
 	if (pickableCards != undefined) {
 		for (let card of filteredCards) {
 			if (!pickableCards.includes(card.instance)) unpickableCards.push(card)
+		}
+	}
+
+	// @todo See if this is actually good
+	if (cardsCanBePlacedIn !== undefined && cardsCanBePlacedIn !== null) {
+		for (const card1 of filteredCards) {
+			for (let [card2, slots] of cardsCanBePlacedIn) {
+				if (card1.instance == card2.instance) {
+					if (slots.length === 0) {
+						unpickableCards.push(card1)
+					}
+				}
+			}
 		}
 	}
 

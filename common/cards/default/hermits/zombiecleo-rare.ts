@@ -150,12 +150,11 @@ class ZombieCleoRareHermitCard extends Card {
 			})
 		})
 
-		player.hooks.blockedActions.add(instance, (blockedActions) => {
+		player.hooks.blockedActions.add(instance, () => {
 			if (!game.someSlotFulfills(this.pickCondition)) {
-				blockedActions.push('SECONDARY_ATTACK')
+				return [['SECONDARY_ATTACK', slot.hasInstance(instance)]]
 			}
-
-			return blockedActions
+			return []
 		})
 	}
 

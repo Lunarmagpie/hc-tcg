@@ -88,6 +88,14 @@ export const getCurrentPickMessage = (state: RootState) => {
 	return getGameState(state)?.currentPickMessage || null
 }
 
+// Return true if we are currently in a pick request for the current player
+export const getIsPickRequest = (state: RootState) => {
+	return (
+		getGameState(state)?.currentPickMessage !== null &&
+		getGameState(state)?.playerId !== getOpponentId(state)
+	)
+}
+
 export const getEndGameOverlay = (state: RootState) => {
 	return getGame(state).endGameOverlay
 }

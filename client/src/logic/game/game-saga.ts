@@ -76,9 +76,6 @@ function* gameStateSaga(action: AnyAction): SagaIterator {
 	// Actually update the local state
 	yield put(localGameState(gameState))
 
-	if (gameState.turn.availableActions.includes('WAIT_FOR_TURN')) return
-	if (gameState.turn.availableActions.includes('WAIT_FOR_OPPONENT_ACTION')) return
-
 	const logic = yield all([
 		fork(actionModalsSaga),
 		fork(slotSaga),
@@ -145,7 +142,6 @@ function* gameSaga(initialGameState?: LocalGameState): SagaIterator {
 				yield putResolve(
 					localGameState({
 						...newGameState,
-						availableActions: [],
 					})
 				)
 			}

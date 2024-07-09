@@ -184,7 +184,7 @@ export type PlayerState = {
 		availableEnergy: WaterfallHook<(availableEnergy: Array<EnergyT>) => Array<EnergyT>>
 
 		/** Hook that modifies and returns blockedActions */
-		blockedActions: GameHook<() => Array<{name: TurnAction['name']; slot?: SlotCondition}>>
+		blockedActions: GameHook<() => Array<[TurnAction['name'], SlotCondition]>>
 
 		/** Hook called when a card is attached */
 		onAttach: GameHook<(instance: CardInstance) => void>
@@ -282,14 +282,15 @@ export type {ModalData} from './server-requests'
 export type TurnState = {
 	turnNumber: number
 	currentPlayerId: string
-	blockedActions: Array<[TurnAction['name'], SlotCondition?]>
+	actions: Array<{action: TurnAction; uses: number}>
+	opponentActions: Array<{action: TurnAction; uses: number}>
 	currentAttack: HermitAttackType | null
 }
 
 export type LocalTurnState = {
 	turnNumber: number
 	currentPlayerId: string
-	availableActions: Array<TurnAction["name"]>
+	availableActions: Array<TurnAction['name']>
 }
 
 export type GameState = {
@@ -318,6 +319,7 @@ export type PlayCardAction =
 	| {name: 'PLAY_ITEM_CARD'; slot: SlotInfo}
 	| {name: 'PLAY_SINGLE_USE_CARD'; slot: SlotInfo}
 	| {name: 'PLAY_ATTACH_CARD'; slot: SlotInfo}
+	| {name: 'PICK_SLOT'; slot: SlotInfo}
 
 export type AttackAction =
 	| {name: 'SINGLE_USE_ATTACK'; slot: SlotInfo}

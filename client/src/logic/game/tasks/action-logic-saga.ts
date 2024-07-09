@@ -22,7 +22,7 @@ function* actionLogicSaga(gameState: LocalGameState): SagaIterator {
 		const id = gameState.currentModalData?.modalId
 		yield put(setOpenedModal(id))
 	} else if (
-		lastActionResult?.action === 'PLAY_SINGLE_USE_CARD' &&
+		lastActionResult?.action.name === 'PLAY_SINGLE_USE_CARD' &&
 		lastActionResult?.result === 'SUCCESS' &&
 		!pState.board.singleUseCardUsed &&
 		pState.board.singleUseCard

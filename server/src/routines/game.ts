@@ -143,7 +143,7 @@ function* turnActionSaga(game: GameModel, turnAction: any) {
 
 	let endTurn = false
 
-	let result: ActionResult = 'FAILURE_UNKNOWN_ERROR'
+	let result: ActionResult
 	switch (actionType) {
 		case 'PLAY_HERMIT_CARD':
 		case 'PLAY_ITEM_CARD':
@@ -224,7 +224,7 @@ function* turnActionsSaga(game: GameModel) {
 			const availableEnergy = getAvailableEnergy(game)
 
 			// Get blocked actions from hooks
-			game.state.turn.blockedActions.push(...currentPlayer.hooks.blockedActions.call())
+			// game.state.turn.blockedActions.push(...currentPlayer.hooks.blockedActions.call())
 
 			// End of available actions code
 			game.updateCardsCanBePlacedIn()
@@ -234,12 +234,12 @@ function* turnActionsSaga(game: GameModel) {
 			let maxTime = CONFIG.limits.maxTurnTime * 1000
 			let remainingTime = game.state.timer.turnStartTime + maxTime - Date.now()
 
-			if (game.isActionBlocked({name: 'WAIT_FOR_OPPONENT_ACTION'})) {
-				game.state.timer.opponentActionStartTime =
-					game.state.timer.opponentActionStartTime || Date.now()
-				maxTime = CONFIG.limits.extraActionTime * 1000
-				remainingTime = game.state.timer.opponentActionStartTime + maxTime - Date.now()
-			}
+			// if (game.isActionBlocked({name: 'WAIT_FOR_OPPONENT_ACTION'})) {
+			// 	game.state.timer.opponentActionStartTime =
+			// 		game.state.timer.opponentActionStartTime || Date.now()
+			// 	maxTime = CONFIG.limits.extraActionTime * 1000
+			// 	remainingTime = game.state.timer.opponentActionStartTime + maxTime - Date.now()
+			// }
 
 			const graceTime = 1000
 			game.state.timer.turnRemaining = Math.floor((remainingTime + graceTime) / 1000)
@@ -339,7 +339,9 @@ function* turnSaga(game: GameModel) {
 	const {currentPlayerId, currentPlayer} = game
 
 	// Reset turn state
-	game.state.turn.blockedActions = []
+	game.state.turn.actions = game.getAllActions().map((action) => {
+		return {action: action, uses: 1}
+	})
 	game.state.turn.currentPlayerId = currentPlayerId
 	game.state.turn.currentAttack = null
 

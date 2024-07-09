@@ -160,7 +160,7 @@ class RendogRareHermitCard extends Card {
 
 		player.hooks.blockedActions.add(instance, () => {
 			if (!game.someSlotFulfills(this.pickCondition)) {
-				return [{name: 'SECONDARY_ATTACK', slot: slot.hasInstance(instance)}]
+				return [['SECONDARY_ATTACK', slot.hasInstance(instance)]]
 			}
 			return []
 		})

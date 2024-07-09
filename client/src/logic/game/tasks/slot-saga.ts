@@ -1,20 +1,19 @@
 import {select} from 'typed-redux-saga'
 import {put, takeLeading, call, take, putResolve} from 'redux-saga/effects'
 import {SagaIterator} from 'redux-saga'
-import {CardInstance} from 'common/types/game-state'
 import {
 	ChangeActiveHermitActionData,
 	PickCardActionData,
 	PlayCardActionData,
 	slotToPlayCardAction,
 } from 'common/types/action-data'
-import {CARDS} from 'common/cards'
 import {getPlayerId} from 'logic/session/session-selectors'
 import {
 	getAvailableActions,
 	getSelectedCard,
 	getPlayerState,
 	getCurrentPickMessage,
+	getIsPickRequest,
 } from 'logic/game/game-selectors'
 import {setSelectedCard, setOpenedModal, removeEffect, slotPicked} from 'logic/game/game-actions'
 import {getSettings} from 'logic/local-settings/local-settings-selectors'
@@ -47,17 +46,19 @@ function* pickWithSelectedSaga(
 	yield putResolve(setSelectedCard(null))
 
 	// If the hand is clicked don't send data
-	if (pickInfo.type !== 'hand') {
-		const actionType = slotToPlayCardAction[selectedCard.props.category]
-		if (!actionType) return
-
-		const actionData: PlayCardActionData = {
-			type: actionType,
-			payload: {pickInfo, card: selectedCard},
-		}
-
-		yield put(actionData)
+	if (pickInfo.type === 'hand') {
+		return
 	}
+
+	const actionType = slotToPlayCardAction[selectedCard.props.category]
+	if (!actionType) return
+
+	const actionData: PlayCardActionData = {
+		type: actionType,
+		payload: {pickInfo, card: selectedCard},
+	}
+
+	yield put(actionData)
 }
 
 function* pickWithoutSelectedSaga(action: SlotPickedAction): SagaIterator {
@@ -95,9 +96,8 @@ function* pickWithoutSelectedSaga(action: SlotPickedAction): SagaIterator {
 }
 
 function* slotPickedSaga(action: SlotPickedAction): SagaIterator {
-	const availableActions = yield* select(getAvailableActions)
 	const selectedCard = yield* select(getSelectedCard)
-	if (availableActions.includes('WAIT_FOR_TURN')) return
+	const isPickRequst = yield* select(getIsPickRequest)
 
 	if (action.payload.pickInfo.type === 'single_use') {
 		const playerState = yield* select(getPlayerState)
@@ -107,7 +107,7 @@ function* slotPickedSaga(action: SlotPickedAction): SagaIterator {
 		}
 	}
 
-	if (availableActions.includes('PICK_REQUEST')) {
+	if (isPickRequst) {
 		// Run a seperate saga for the pick request
 		yield call(pickForPickRequestSaga, action)
 		return

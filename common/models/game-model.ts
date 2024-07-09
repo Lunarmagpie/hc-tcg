@@ -133,6 +133,10 @@ export class GameModel {
 			allActions.push({name: 'SECONDARY_ATTACK', slot})
 		})
 
+		this.filterSlots().forEach((slot) => {
+			allActions.push({name: 'PICK_SLOT', slot})
+		})
+
 		this.filterSlots(slot.singleUseSlot, slot.not(slot.empty)).forEach((slot) => {
 			allActions.push({name: 'SINGLE_USE_ATTACK', slot})
 		})
@@ -152,29 +156,34 @@ export class GameModel {
 	}
 
 	/** Set actions as blocked so they cannot be done this turn */
-	public addBlockedAction(action: TurnAction['name'], forSlot: SlotCondition = slot.anything) {
-		this.state.turn.blockedActions.push([action, forSlot])
-	}
-
-	/** Returns true if the current blocked actions list includes the given action */
-	public isActionBlocked(action: TurnAction) {
-		for (const [blockedActionName, blockedActionSlot] of this.state.turn.blockedActions) {
-			if (action.name == blockedActionName) {
-				if ('slot' in action && blockedActionSlot !== undefined) {
-					let slotAction = action as PlayCardAction | AttackAction
-					if (blockedActionSlot(this, slotAction.slot)) return true
+	public blockAction(actionName: TurnAction['name'], forSlot: SlotCondition = slot.anything) {
+		for (const action of this.state.turn.actions) {
+			if (action.action.name === actionName) {
+				if ('slot' in action.action) {
+					let slotAction = action.action as AttackAction | PlayCardAction
+					if (forSlot(this, slotAction.slot)) action.uses = Math.max(action.uses--, 0)
 				} else {
-					return true
+					action.uses = Math.max(action.uses--, 0)
 				}
 			}
 		}
-		return false
+	}
+	public isActionBlocked(action: TurnAction) {
+		return true
+	}
+	
+	public getAvailableActions() {
+		return this.state.turn.actions
+			.filter((action) => action.uses >= 1)
+			.map((action) => action.action)
 	}
 
-	public getAvailableActions() {
-		return this.getAllActions().filter((action) => {
-			return !this.isActionBlocked(action)
-		})
+	public addActionUsage(action1: TurnAction['name'], amount: number) {
+		for (const action2 of this.state.turn.actions) {
+			if (action1 === action2.action.name) {
+				action2.uses++
+			}
+		}
 	}
 
 	public setLastActionResult(action: TurnAction, result: ActionResult) {

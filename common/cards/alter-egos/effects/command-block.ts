@@ -35,8 +35,8 @@ class CommandBlockEffectCard extends Card {
 			return availableEnergy.map(() => 'any')
 		})
 
-		player.hooks.freezeSlots.add(instance, () => {
-			return slot.every(slot.player, slot.rowIndex(pos.rowIndex), slot.attachSlot)
+		player.hooks.blockedActions.add(instance, () => {
+			return [['PICK_SLOT', slot.every(slot.player, slot.rowIndex(pos.rowIndex), slot.attachSlot)]]
 		})
 	}
 
