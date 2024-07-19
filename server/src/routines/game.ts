@@ -184,7 +184,7 @@ function blockUnavailableActions(game: GameModel, availableEnergy: Array<EnergyT
 }
 
 function playerAction(actionType: string, playerId: PlayerId) {
-	return (action: any) => action.type === actionType && action.playerId === playerId
+	return (action: any) => action.type.type === actionType && action.playerId === playerId
 }
 
 // return false in case one player is dead

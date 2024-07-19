@@ -5,7 +5,6 @@ import {
 	ChangeActiveHermitActionData,
 	PickSlotActionData,
 	PlayCardActionData,
-	slotToPlayCardAction,
 } from 'common/types/action-data'
 import {
 	getAvailableActions,
