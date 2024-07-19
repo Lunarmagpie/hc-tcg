@@ -8,10 +8,11 @@ import type {
 	LocalModalData,
 	PickRequest,
 } from './server-requests'
-import type {CardComponent} from '../components'
+import type {CardComponent, SlotComponent} from '../components'
 import type {PlayerId} from '../models/player-model'
 import type {CardEntity, PlayerEntity, RowEntity, SlotEntity} from '../entities'
 import {ModalRequest} from './modal-requests'
+import {ComponentQuery} from '../components/query'
 
 type NewType = SlotEntity
 
@@ -77,7 +78,7 @@ export type TurnState = {
 	opponentAvailableActions: TurnActions
 	completedActions: TurnActions
 	/** Map of source id of the block, to the actual blocked action */
-	blockedActions: Record<string, TurnActions>
+	blockedActions: Array<TurnAction>
 
 	currentAttack: HermitAttackType | null
 }
@@ -108,25 +109,38 @@ export type GameState = {
 	}
 }
 
-export type PlayCardAction =
-	| 'PLAY_HERMIT_CARD'
-	| 'PLAY_ITEM_CARD'
-	| 'PLAY_SINGLE_USE_CARD'
-	| 'PLAY_EFFECT_CARD'
+export type AttackAction =
+	| {type: 'SINGLE_USE_ATTACK'; card: CardEntity}
+	| {type: 'PRIMARY_ATTACK'; card: CardEntity}
+	| {type: 'SECONDARY_ATTACK'; card: CardEntity}
 
-export type AttackAction = 'SINGLE_USE_ATTACK' | 'PRIMARY_ATTACK' | 'SECONDARY_ATTACK'
+export type AttackActionQuery =
+	| {type: 'SINGLE_USE_ATTACK'; card: ComponentQuery<CardComponent>}
+	| {type: 'PRIMARY_ATTACK'; card: ComponentQuery<CardComponent>}
+	| {type: 'SECONDARY_ATTACK'; card: ComponentQuery<CardComponent>}
 
-export type TurnAction =
-	| PlayCardAction
-	| AttackAction
-	| 'END_TURN'
-	| 'APPLY_EFFECT'
-	| 'REMOVE_EFFECT'
-	| 'CHANGE_ACTIVE_HERMIT'
-	| 'PICK_REQUEST'
-	| 'MODAL_REQUEST'
-	| 'WAIT_FOR_TURN'
-	| 'WAIT_FOR_OPPONENT_ACTION'
+export type SlotAction =
+	| {type: 'PICK_SLOT'; slot: SlotEntity}
+	| {type: 'PLAY_CARD'; slot: SlotEntity}
+
+export type SlotActionQuery =
+	| {type: 'PICK_SLOT'; slot: ComponentQuery<SlotComponent>}
+	| {type: 'PLAY_CARD'; slot: ComponentQuery<SlotComponent>}
+
+export type ActionsWithoutData =
+	| {type: 'END_TURN'}
+	| {type: 'APPLY_EFFECT'}
+	| {type: 'REMOVE_EFFECT'}
+	| {type: 'CHANGE_ACTIVE_HERMIT'}
+	| {type: 'WAIT_FOR_TURN'}
+	| {type: 'WAIT_FOR_OPPONENT_ACTION'}
+
+export type TurnAction = AttackAction | SlotAction | ActionsWithoutData
+
+export type TurnActionQuery = AttackActionQuery | SlotActionQuery | ActionsWithoutData
+
+export type AttackActionType = AttackAction['type']
+export type TurnActionType = TurnAction['type']
 
 export type GameRules = {
 	disableTimer: boolean

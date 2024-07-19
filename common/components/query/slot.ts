@@ -104,23 +104,18 @@ export const has = (...cards: Array<CardClass>): ComponentQuery<SlotComponent> =
 	}
 }
 
-/**
- * Returns if a slot is marked as frozen through the `freezeSlots` hook
- * A frozen slot is a slot that can not have card placed in it or removed from it.
- * NOTE: When freezing a slot, do not use the `slot.currentPlayer` combinator.
- * Use slot.player(player.entity) instead.
- */
-export const frozen: ComponentQuery<SlotComponent> = (game, pos) => {
-	const playerResult = game.currentPlayer.hooks.freezeSlots
-		.call()
-		.some((result) => result(game, pos))
+export const canPlay: ComponentQuery<SlotComponent> = query.every(
+	(game, pos) =>
+		game.state.turn.availableActions.every(
+			(action) => action.type !== 'PLAY_CARD' || action.slot !== pos.entity
+		),
+	empty
+)
 
-	const opponentResult = game.opponentPlayer.hooks.freezeSlots
-		.call()
-		.some((result) => result(game, pos))
-
-	return playerResult || opponentResult
-}
+export const canPick: ComponentQuery<SlotComponent> = (game, pos) =>
+	game.state.turn.availableActions.every(
+		(action) => action.type !== 'PICK_SLOT' || action.slot !== pos.entity
+	)
 
 export function hasStatusEffect(
 	statusEffect: new () => StatusEffect

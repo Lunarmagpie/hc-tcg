@@ -29,12 +29,17 @@ class ArmorStand extends Card {
 
 	override onAttach(_game: GameModel, component: CardComponent, observer: ObserverComponent) {
 		const {player} = component
-		observer.subscribe(player.hooks.freezeSlots, () => {
-			if (!component.slot?.onBoard()) return query.nothing
-			return query.every(
-				query.slot.player(component.player.entity),
-				query.slot.rowIs(component.slot.row?.entity)
-			)
+		observer.subscribe(player.hooks.blockedActions, () => {
+			if (!component.slot.inRow()) return []
+			return [
+				{
+					type: 'PLAY_CARD',
+					slot: query.every(
+						query.slot.player(component.player.entity),
+						query.slot.rowIs(component.slot.row?.entity)
+					),
+				},
+			]
 		})
 	}
 }

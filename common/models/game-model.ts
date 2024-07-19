@@ -1,5 +1,5 @@
 import {PlayerId, PlayerModel} from './player-model'
-import {TurnAction, GameState, ActionResult, TurnActions, Message} from '../types/game-state'
+import {TurnAction, GameState, ActionResult, TurnActions, Message, TurnActionQuery} from '../types/game-state'
 import {getGameState, setupComponents} from '../utils/state-gen'
 import {PickRequest} from '../types/server-requests'
 import {BattleLogModel} from './battle-log-model'
@@ -127,19 +127,8 @@ export class GameModel {
 	}
 
 	/** Set actions as blocked so they cannot be done this turn */
-	public addBlockedActions(sourceId: string, ...actions: TurnActions) {
-		const key = sourceId
-		const turnState = this.state.turn
-		if (!turnState.blockedActions[key]) {
-			turnState.blockedActions[key] = []
-		}
+	public blockAction(action: TurnActionQuery) {
 
-		for (let i = 0; i < actions.length; i++) {
-			const action = actions[i]
-			if (!turnState.blockedActions[key].includes(action)) {
-				turnState.blockedActions[key].push(action)
-			}
-		}
 	}
 	/** Remove action from the completed list so they can be done again this turn */
 	public removeBlockedActions(sourceId: string, ...actions: TurnActions) {

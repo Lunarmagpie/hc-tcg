@@ -30,7 +30,8 @@ function* playCardSaga(
 	const player = pickedSlot.player
 
 	// Do we meet requirements to place the card
-	const canAttach = card?.card.props.attachCondition(game, pickedSlot) || false
+	const canAttach =
+		query.every(query.slot.canPlay, card?.card.props.attachCondition)(game, pickedSlot) || false
 
 	// It's the wrong kind of slot or does not satisfy the condition
 	if (!canAttach) return 'FAILURE_INVALID_SLOT'
@@ -64,7 +65,11 @@ function* playCardSaga(
 				break
 			}
 			case 'item': {
-				if (card.props.category === 'item') game.addCompletedActions('PLAY_ITEM_CARD')
+				if (card.props.category === 'item')
+					game.blockAction({
+						type: 'PLAY_CARD',
+						slot: query.every(query.slot.currentPlayer, query.slot.item),
+					})
 				card.attach(pickedSlot)
 				break
 			}

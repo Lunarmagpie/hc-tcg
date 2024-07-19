@@ -1,22 +1,21 @@
 import {SlotEntity} from '../entities'
 import {HermitAttackType} from './attack'
 import {CardCategoryT} from './cards'
-import {AttackAction, PlayCardAction} from './game-state'
+import {AttackAction, AttackActionType, PlayCardAction, PlayCardActionType} from './game-state'
 import {LocalCardInstance} from './server-requests'
 
-export const slotToPlayCardAction: Record<CardCategoryT, PlayCardAction | null> = {
+export const slotToPlayCardAction: Record<CardCategoryT, PlayCardActionType> = {
 	hermit: 'PLAY_HERMIT_CARD',
 	item: 'PLAY_ITEM_CARD',
 	attach: 'PLAY_EFFECT_CARD',
 	single_use: 'PLAY_SINGLE_USE_CARD',
-	health: null,
 }
-export const attackToAttackAction: Record<HermitAttackType, AttackAction> = {
+export const attackToAttackAction: Record<HermitAttackType, AttackActionType> = {
 	'single-use': 'SINGLE_USE_ATTACK',
 	primary: 'PRIMARY_ATTACK',
 	secondary: 'SECONDARY_ATTACK',
 }
-export const attackActionToAttack: Record<AttackAction, HermitAttackType> = {
+export const attackActionToAttack: Record<AttackActionType, HermitAttackType> = {
 	SINGLE_USE_ATTACK: 'single-use',
 	PRIMARY_ATTACK: 'primary',
 	SECONDARY_ATTACK: 'secondary',

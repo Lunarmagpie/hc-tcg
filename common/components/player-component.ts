@@ -1,6 +1,6 @@
 import type {GameModel} from '../models/game-model'
 import type {PlayerId, PlayerModel} from '../models/player-model'
-import type {CoinFlipResult, CurrentCoinFlip, TurnActions} from '../types/game-state'
+import type {CoinFlipResult, CurrentCoinFlip, TurnActionQuery} from '../types/game-state'
 import type {EnergyT} from '../types/cards'
 import type {AttackModel} from '../models/attack-model'
 import type {HermitAttackType} from '../types/attack'
@@ -39,7 +39,7 @@ export class PlayerComponent {
 		availableEnergy: WaterfallHook<(availableEnergy: Array<EnergyT>) => Array<EnergyT>>
 
 		/** Hook that modifies and returns blockedActions */
-		blockedActions: WaterfallHook<(blockedActions: TurnActions) => TurnActions>
+		blockedActions: GameHook<() => Array<TurnActionQuery>>
 
 		/** Hook called when a card is attached */
 		onAttach: GameHook<(instance: CardComponent) => void>
@@ -139,7 +139,7 @@ export class PlayerComponent {
 
 		this.hooks = {
 			availableEnergy: new WaterfallHook(),
-			blockedActions: new WaterfallHook(),
+			blockedActions: new GameHook(),
 			onAttach: new GameHook(),
 			onDetach: new GameHook(),
 			beforeApply: new GameHook(),
@@ -287,10 +287,12 @@ export class PlayerComponent {
 			.filter(CardComponent, query.card.slot(query.slot.hand, query.slot.player(this.entity)))
 			.map(
 				(card) =>
-					[card, this.game.getPickableSlots(card.card.props.attachCondition)] as [
-						CardComponent,
-						Array<SlotEntity>
-					]
+					[
+						card,
+						this.game.getPickableSlots(
+							query.every(card.card.props.attachCondition, query.slot.canPlay)
+						),
+					] as [CardComponent, Array<SlotEntity>]
 			)
 	}
 }
