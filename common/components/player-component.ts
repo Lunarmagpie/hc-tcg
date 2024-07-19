@@ -284,7 +284,11 @@ export class PlayerComponent {
 	/** Get an array of [card, slot the card can be placed in] for each card in the player's hand. */
 	public getCardsCanBePlacedIn() {
 		return this.game.components
-			.filter(CardComponent, query.card.slot(query.slot.hand, query.slot.player(this.entity)))
+			.filter(
+				CardComponent,
+				query.card.canPlay,
+				query.card.slot(query.slot.hand, query.slot.player(this.entity))
+			)
 			.map(
 				(card) =>
 					[

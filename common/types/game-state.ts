@@ -74,9 +74,7 @@ export type {LocalModalData as ModalData} from './server-requests'
 
 export type TurnState = {
 	turnNumber: number
-	availableActions: TurnActions
-	opponentAvailableActions: TurnActions
-	completedActions: TurnActions
+	availableActions: Array<TurnAction>
 	/** Map of source id of the block, to the actual blocked action */
 	blockedActions: Array<TurnAction>
 
@@ -87,7 +85,7 @@ export type LocalTurnState = {
 	turnNumber: number
 	currentPlayerId: PlayerId
 	currentPlayerEntity: PlayerEntity
-	availableActions: TurnActions
+	availableActions: Array<TurnAction>
 }
 
 export type GameState = {
@@ -109,38 +107,53 @@ export type GameState = {
 	}
 }
 
-export type AttackAction =
+export type CardAction =
 	| {type: 'SINGLE_USE_ATTACK'; card: CardEntity}
 	| {type: 'PRIMARY_ATTACK'; card: CardEntity}
 	| {type: 'SECONDARY_ATTACK'; card: CardEntity}
+	| {type: 'PLAY_CARD'; card: CardEntity}
 
-export type AttackActionQuery =
+export type CardActionQuery =
 	| {type: 'SINGLE_USE_ATTACK'; card: ComponentQuery<CardComponent>}
 	| {type: 'PRIMARY_ATTACK'; card: ComponentQuery<CardComponent>}
 	| {type: 'SECONDARY_ATTACK'; card: ComponentQuery<CardComponent>}
+	| {type: 'PLAY_CARD'; card: ComponentQuery<CardComponent>}
 
 export type SlotAction =
 	| {type: 'PICK_SLOT'; slot: SlotEntity}
-	| {type: 'PLAY_CARD'; slot: SlotEntity}
+	| {type: 'PLAY_CARD_IN_SLOT'; slot: SlotEntity}
 
 export type SlotActionQuery =
 	| {type: 'PICK_SLOT'; slot: ComponentQuery<SlotComponent>}
-	| {type: 'PLAY_CARD'; slot: ComponentQuery<SlotComponent>}
+	| {type: 'PLAY_CARD_IN_SLOT'; slot: ComponentQuery<SlotComponent>}
 
 export type ActionsWithoutData =
 	| {type: 'END_TURN'}
 	| {type: 'APPLY_EFFECT'}
 	| {type: 'REMOVE_EFFECT'}
 	| {type: 'CHANGE_ACTIVE_HERMIT'}
+	| {type: 'PICK_REQUEST'}
+	| {type: 'MODAL_REQUEST'}
 	| {type: 'WAIT_FOR_TURN'}
 	| {type: 'WAIT_FOR_OPPONENT_ACTION'}
 
-export type TurnAction = AttackAction | SlotAction | ActionsWithoutData
+export type TurnAction = CardAction | SlotAction | ActionsWithoutData
 
-export type TurnActionQuery = AttackActionQuery | SlotActionQuery | ActionsWithoutData
+export type TurnActionQuery = CardActionQuery | SlotActionQuery | ActionsWithoutData
 
-export type AttackActionType = AttackAction['type']
+export type AttackActionType = CardAction['type']
 export type TurnActionType = TurnAction['type']
+
+export function isAttackAction(
+	action: TurnAction | TurnActionQuery
+): action is CardAction | CardActionQuery {
+	return ['PRIMARY_ATTACK', 'SECONDARY_ATTACK', 'SINGLE_USE_ATTACK'].includes(action.type)
+}
+export function isSlotAction(
+	action: TurnAction | TurnActionQuery
+): action is SlotAction | SlotActionQuery {
+	return ['PLAY_CARD', 'PICK_SLOT'].includes(action.type)
+}
 
 export type GameRules = {
 	disableTimer: boolean

@@ -9,6 +9,7 @@ function* playCardSaga(
 	turnAction: PlayCardActionData
 ): Generator<any, ActionResult> {
 	// Make sure data sent from client is correct
+	console.log("play card saga")
 	const slotEntity = turnAction?.payload?.slot
 	const localCard = turnAction?.payload?.card
 	if (!slotEntity || !localCard) {
@@ -32,6 +33,8 @@ function* playCardSaga(
 	// Do we meet requirements to place the card
 	const canAttach =
 		query.every(query.slot.canPlay, card?.card.props.attachCondition)(game, pickedSlot) || false
+
+	console.log('attachable')
 
 	// It's the wrong kind of slot or does not satisfy the condition
 	if (!canAttach) return 'FAILURE_INVALID_SLOT'
@@ -68,7 +71,7 @@ function* playCardSaga(
 				if (card.props.category === 'item')
 					game.blockAction({
 						type: 'PLAY_CARD',
-						slot: query.every(query.slot.currentPlayer, query.slot.item),
+						card: query.every(query.card.currentPlayer, query.card.isItem),
 					})
 				card.attach(pickedSlot)
 				break

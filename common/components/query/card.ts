@@ -79,6 +79,11 @@ export const active: ComponentQuery<CardComponent> = slot(slotCombinators.active
 
 export const onBoard: ComponentQuery<CardComponent> = (_game, card) => card.slot.onBoard()
 
+export const canPlay: ComponentQuery<CardComponent> = (game, card) =>
+	game.state.turn.blockedActions.every(
+		(action) => action.type !== 'PLAY_CARD' || action.card !== card.entity
+	)
+
 /** Return true if this card is not on the active row */
 export const afk: ComponentQuery<CardComponent> = query.not(slot(slotCombinators.active))
 

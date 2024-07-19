@@ -33,7 +33,7 @@ class ArmorStand extends Card {
 			if (!component.slot.inRow()) return []
 			return [
 				{
-					type: 'PLAY_CARD',
+					type: 'PLAY_CARD_IN_SLOT',
 					slot: query.every(
 						query.slot.player(component.player.entity),
 						query.slot.rowIs(component.slot.row?.entity)

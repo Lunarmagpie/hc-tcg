@@ -61,7 +61,7 @@ function getAvailableEnergy(game: GameModel) {
  * To be available, an action must be in `state.turn.availableActions`, and not in `state.turn.blockedActions` or
  * `state.turn.completedActions`.
  */
-function getAvailableActions(game: GameModel, availableEnergy: Array<EnergyT>): TurnActions {
+function blockUnavailableActions(game: GameModel, availableEnergy: Array<EnergyT>) {
 	const {turn: turnState, pickRequests, modalRequests} = game.state
 	const {currentPlayer} = game
 	const {activeRowEntity: activeRowId, singleUseCardUsed: suUsed} = currentPlayer
@@ -73,39 +73,11 @@ function getAvailableActions(game: GameModel, availableEnergy: Array<EnergyT>): 
 		query.card.attached
 	) as CardComponent<SingleUse> | null
 
-	// Custom modals
-	if (modalRequests.length > 0) {
-		const request = modalRequests[0]
-		if (request.playerId === currentPlayer.id) {
-			return ['MODAL_REQUEST']
-		} else {
-			// Activate opponent action timer
-			if (game.state.timer.opponentActionStartTime === null) {
-				game.state.timer.turnStartTime = Date.now()
-				game.state.timer.opponentActionStartTime = Date.now()
-			}
-			return ['WAIT_FOR_OPPONENT_ACTION']
-		}
-	}
+	game.blockAction({type: 'MODAL_REQUEST'})
+	game.blockAction({type: 'PICK_REQUEST'})
+	game.blockAction({type: 'WAIT_FOR_TURN'})
 
-	// Pick requests
-	if (pickRequests.length > 0) {
-		const request = pickRequests[0]
-		if (request.playerId === currentPlayer.id) {
-			let pickActions: TurnActions = ['PICK_REQUEST']
-			if (su && !suUsed) {
-				pickActions.push('REMOVE_EFFECT')
-			}
-			return pickActions
-		} else {
-			// Activate opponent action timer
-			if (game.state.timer.opponentActionStartTime === null) {
-				game.state.timer.turnStartTime = Date.now()
-				game.state.timer.opponentActionStartTime = Date.now()
-			}
-			return ['WAIT_FOR_OPPONENT_ACTION']
-		}
-	}
+	return
 
 	// There is no action currently active for the opponent, clear the time
 	game.state.timer.opponentActionStartTime = null
@@ -296,27 +268,18 @@ function* sendGameState(game: GameModel) {
 }
 
 function* turnActionSaga(game: GameModel, turnAction: any) {
-	const {currentPlayer} = game
-	const actionType = turnAction.type as TurnAction
+	const actionData = turnAction.type as TurnAction
 
-	const availableActions =
-		turnAction.playerId === currentPlayer.id
-			? game.state.turn.availableActions
-			: game.state.turn.opponentAvailableActions
-
-	if (!availableActions.includes(actionType)) {
-		game.setLastActionResult(actionType, 'FAILURE_ACTION_NOT_AVAILABLE')
+	if (game.isActionBlocked(actionData)) {
+		game.setLastActionResult(actionData, 'FAILURE_ACTION_NOT_AVAILABLE')
 		return
 	}
 
 	let endTurn = false
 
 	let result: ActionResult = 'FAILURE_UNKNOWN_ERROR'
-	switch (actionType) {
-		case 'PLAY_HERMIT_CARD':
-		case 'PLAY_ITEM_CARD':
-		case 'PLAY_EFFECT_CARD':
-		case 'PLAY_SINGLE_USE_CARD':
+	switch (actionData.type) {
+		case 'PLAY_CARD':
 			result = yield* call(playCardSaga, game, turnAction)
 			break
 		case 'SINGLE_USE_ATTACK':
@@ -349,12 +312,12 @@ function* turnActionSaga(game: GameModel, turnAction: any) {
 			break
 		default:
 			// Unknown action type, ignore it completely
-			game.setLastActionResult(actionType, 'FAILURE_ACTION_NOT_AVAILABLE')
+			game.setLastActionResult(actionData, 'FAILURE_ACTION_NOT_AVAILABLE')
 			return
 	}
 
 	// Set action result to be sent back to client
-	game.setLastActionResult(actionType, result)
+	game.setLastActionResult(actionData, result)
 
 	const deadPlayerIds = yield* call(checkHermitHealth, game)
 	if (deadPlayerIds.length) endTurn = true
@@ -393,61 +356,29 @@ function* turnActionsSaga(game: GameModel) {
 		while (true) {
 			if (DEBUG_CONFIG.showHooksState.enabled) printHooksState(game)
 
+			game.state.turn.availableActions = game.getAllActions()
+			game.state.turn.blockedActions = []
+			
 			// Available actions code
-			const availableEnergy = getAvailableEnergy(game)
-			let blockedActions: Array<TurnAction> = []
-			let availableActions = getAvailableActions(game, availableEnergy)
+			blockUnavailableActions(game, getAvailableEnergy(game))
 
 			// Get blocked actions from hooks
 			// @TODO this should also not really be a hook anymore
 			// @TODO not only that but the blocked actions implementation needs improving, another card needs to be unable to remove another's block
-			currentPlayer.hooks.blockedActions.call(blockedActions)
+			currentPlayer.hooks.blockedActions.call().map((action) => game.blockAction(action))
 
-			blockedActions.push(...DEBUG_CONFIG.blockedActions)
-
-			// Block SINGLE_USE_ATTACK if PRIMARY_ATTACK or SECONDARY_ATTACK aren't blocked
-			if (
-				(availableActions.includes('PRIMARY_ATTACK') ||
-					availableActions.includes('SECONDARY_ATTACK')) &&
-				(!blockedActions.includes('PRIMARY_ATTACK') || !blockedActions.includes('SECONDARY_ATTACK'))
-			) {
-				blockedActions.push('SINGLE_USE_ATTACK')
-			}
-
-			// Remove blocked actions from the availableActions
-			availableActions = availableActions.filter((action) => !blockedActions.includes(action))
-
-			availableActions.push(...DEBUG_CONFIG.availableActions)
-
-			// Set final actions in state
-			let opponentAction: TurnAction = 'WAIT_FOR_TURN'
-			if (game.state.pickRequests[0]?.playerId === opponentPlayer.id) {
-				opponentAction = 'PICK_REQUEST'
-			} else if (game.state.modalRequests[0]?.playerId === opponentPlayer.id) {
-				opponentAction = 'MODAL_REQUEST'
-			}
-			game.state.turn.opponentAvailableActions = [opponentAction]
-			game.state.turn.availableActions = availableActions
-
-			if (
-				DEBUG_CONFIG.autoEndTurn &&
-				availableActions.includes('END_TURN') &&
-				availableActions.length === 1
-			) {
-				break
-			}
+			// if (
+			// 	DEBUG_CONFIG.autoEndTurn &&
+			// 	availableActions.some((action) => action.type === 'END_TURN') &&
+			// 	availableActions.length === 1
+			// ) {
+			// 	break
+			// }
 
 			// Timer calculation
 			game.state.timer.turnStartTime = game.state.timer.turnStartTime || Date.now()
 			let maxTime = CONFIG.limits.maxTurnTime * 1000
 			let remainingTime = game.state.timer.turnStartTime + maxTime - Date.now()
-
-			if (availableActions.includes('WAIT_FOR_OPPONENT_ACTION')) {
-				game.state.timer.opponentActionStartTime =
-					game.state.timer.opponentActionStartTime || Date.now()
-				maxTime = CONFIG.limits.extraActionTime * 1000
-				remainingTime = game.state.timer.opponentActionStartTime + maxTime - Date.now()
-			}
 
 			const graceTime = 1000
 			game.state.timer.turnRemaining = Math.floor((remainingTime + graceTime) / 1000)
@@ -551,9 +482,8 @@ function* turnSaga(game: GameModel) {
 	const {currentPlayer} = game
 
 	// Reset turn state
-	game.state.turn.availableActions = []
-	game.state.turn.completedActions = []
-	game.state.turn.blockedActions = {}
+	game.state.turn.availableActions = game.getAllActions()
+	game.state.turn.blockedActions = []
 	game.state.turn.currentAttack = null
 
 	game.state.timer.turnStartTime = Date.now()

@@ -1,9 +1,18 @@
 import {PlayerId, PlayerModel} from './player-model'
-import {TurnAction, GameState, ActionResult, TurnActions, Message, TurnActionQuery} from '../types/game-state'
+import {
+	TurnAction,
+	GameState,
+	ActionResult,
+	Message,
+	TurnActionQuery,
+	isAttackAction,
+	isSlotAction,
+} from '../types/game-state'
 import {getGameState, setupComponents} from '../utils/state-gen'
 import {PickRequest} from '../types/server-requests'
 import {BattleLogModel} from './battle-log-model'
-import {ComponentQuery, card} from '../components/query'
+import {ComponentQuery} from '../components/query'
+import * as query from '../components/query'
 import {CardComponent, PlayerComponent, RowComponent, SlotComponent} from '../components'
 import {AttackDefs} from '../types/attack'
 import {AttackModel} from './attack-model'
@@ -106,78 +115,94 @@ export class GameModel {
 	}
 
 	// Functions
+	public getAllActions(): Array<TurnAction> {
+		let attackActions: Array<TurnAction> = this.components
+			.filter(CardComponent, query.card.onBoard)
+			.flatMap((card) => {
+				return [
+					{type: 'PRIMARY_ATTACK', card: card.entity},
+					{type: 'SECONDARY_ATTACK', card: card.entity},
+				]
+			})
+		let slotActions: Array<TurnAction> = this.components.filter(SlotComponent).flatMap((slot) => {
+			return [
+				{type: 'PLAY_CARD_IN_SLOT', slot: slot.entity},
+				{type: 'PICK_SLOT', slot: slot.entity},
+			]
+		})
 
-	/** Set actions as completed so they cannot be done again this turn */
-	public addCompletedActions(...actions: TurnActions) {
-		for (let i = 0; i < actions.length; i++) {
-			const action = actions[i]
-			if (!this.state.turn.completedActions.includes(action)) {
-				this.state.turn.completedActions.push(action)
-			}
-		}
-	}
-
-	/** Remove action from the completed list so they can be done again this turn */
-	public removeCompletedActions(...actions: TurnActions) {
-		for (let i = 0; i < actions.length; i++) {
-			this.state.turn.completedActions = this.state.turn.completedActions.filter(
-				(action) => !actions.includes(action)
-			)
-		}
+		return [
+			...attackActions,
+			...slotActions,
+			{type: 'END_TURN'},
+			{type: 'APPLY_EFFECT'},
+			{type: 'REMOVE_EFFECT'},
+			{type: 'CHANGE_ACTIVE_HERMIT'},
+			{type: 'PICK_REQUEST'},
+			{type: 'MODAL_REQUEST'},
+			{type: 'WAIT_FOR_TURN'},
+			{type: 'WAIT_FOR_OPPONENT_ACTION'},
+		]
 	}
 
 	/** Set actions as blocked so they cannot be done this turn */
-	public blockAction(action: TurnActionQuery) {
-
+	public blockAction(toBlock: TurnActionQuery) {
+		this.state.turn.blockedActions.push(
+			...this.state.turn.availableActions.filter((action) => {
+				if (isAttackAction(action) && isAttackAction(toBlock)) {
+					let card = this.components.get(action.card)
+					if (card) {
+						return toBlock.card(this, card)
+					}
+					return false
+				}
+				if (isSlotAction(action) && isSlotAction(toBlock)) {
+					let slot = this.components.get(action.slot)
+					if (slot) {
+						return toBlock.slot(this, slot)
+					}
+					return false
+				}
+				return action.type === toBlock.type
+			})
+		)
 	}
+
 	/** Remove action from the completed list so they can be done again this turn */
-	public removeBlockedActions(sourceId: string, ...actions: TurnActions) {
-		const key = sourceId
-		const turnState = this.state.turn
-		if (!turnState.blockedActions[key]) return
-
-		for (let i = 0; i < actions.length; i++) {
-			turnState.blockedActions[key] = turnState.blockedActions[key].filter(
-				(action) => !actions.includes(action)
-			)
-		}
-
-		if (turnState.blockedActions[key].length <= 0) {
-			delete turnState.blockedActions[key]
-		}
+	public unblockAction(toUnblock: TurnActionQuery) {
+		this.state.turn.blockedActions = this.state.turn.blockedActions.filter((action) => {
+			if (isAttackAction(action) && isAttackAction(toUnblock)) {
+				let card = this.components.get(action.card)
+				if (card) {
+					return !toUnblock.card(this, card)
+				}
+				return true
+			}
+			if (isSlotAction(action) && isSlotAction(toUnblock)) {
+				let slot = this.components.get(action.slot)
+				if (slot) {
+					return !toUnblock.slot(this, slot)
+				}
+				return true
+			}
+			return action.type !== toUnblock.type
+		})
 	}
 
 	/** Returns true if the current blocked actions list includes the given action */
-	public isActionBlocked(action: TurnAction, excludeIds?: Array<string>) {
-		const turnState = this.state.turn
-		const allBlockedActions: TurnActions = []
-		Object.keys(turnState.blockedActions).forEach((sourceId) => {
-			if (excludeIds?.includes(sourceId)) return
-
-			const actions = turnState.blockedActions[sourceId]
-			allBlockedActions.push(...actions)
+	public isActionBlocked(action: TurnAction) {
+		return this.state.turn.blockedActions.some((blockedAction) => {
+			if (action.type !== blockedAction.type) return false
+			if (isAttackAction(action) && isAttackAction(blockedAction)) {
+				return action.card === blockedAction.card
+			}
+			if (isSlotAction(action) && isSlotAction(blockedAction)) {
+				return action.slot === blockedAction.slot
+			}
+			return true
 		})
-		return allBlockedActions.includes(action)
 	}
-
-	/** Get all actions blocked with the source id. */
-	public getBlockedActions(sourceId: string) {
-		const key = sourceId || ''
-		const turnState = this.state.turn
-		const blockedActions = turnState.blockedActions[key]
-		if (!blockedActions) return []
-
-		return blockedActions
-	}
-	public getAllBlockedActions() {
-		const turnState = this.state.turn
-		const allBlockedActions: TurnActions = []
-		Object.values(turnState.blockedActions).forEach((actions) => {
-			allBlockedActions.push(...actions)
-		})
-		return allBlockedActions
-	}
-
+	
 	public setLastActionResult(action: TurnAction, result: ActionResult) {
 		this.state.lastActionResult = {action, result}
 	}
@@ -248,8 +273,8 @@ export class GameModel {
 	public swapSlots(slotA: SlotComponent | null, slotB: SlotComponent | null): void {
 		if (!slotA || !slotB) return
 
-		const slotACards = this.components.filter(CardComponent, card.slotEntity(slotA.entity))
-		const slotBCards = this.components.filter(CardComponent, card.slotEntity(slotB.entity))
+		const slotACards = this.components.filter(CardComponent, query.card.slotEntity(slotA.entity))
+		const slotBCards = this.components.filter(CardComponent, query.card.slotEntity(slotB.entity))
 
 		slotACards.forEach((card) => {
 			card.slotEntity = slotB.entity

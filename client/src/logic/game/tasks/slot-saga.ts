@@ -45,11 +45,8 @@ function* pickWithSelectedSaga(
 
 	// If the hand is clicked don't send data
 	if (pickInfo.slotType !== 'hand') {
-		const actionType = slotToPlayCardAction[selectedCard.props.category]
-		if (!actionType) return
-
 		const actionData: PlayCardActionData = {
-			type: actionType,
+			type: {type: 'PLAY_CARD_IN_SLOT', slot: pickInfo.slotEntity},
 			payload: {slot: pickInfo.slotEntity, card: selectedCard},
 		}
 
@@ -92,7 +89,7 @@ function* pickWithoutSelectedSaga(action: SlotPickedAction): SagaIterator {
 function* slotPickedSaga(action: SlotPickedAction): SagaIterator {
 	const availableActions = yield* select(getAvailableActions)
 	const selectedCard = yield* select(getSelectedCard)
-	if (availableActions.includes('WAIT_FOR_TURN')) return
+	if (availableActions.some((action) => action.type == 'WAIT_FOR_TURN')) return
 
 	if (action.payload.slotInfo.slotType === 'single_use') {
 		const playerState = yield* select(getPlayerState)
@@ -102,7 +99,7 @@ function* slotPickedSaga(action: SlotPickedAction): SagaIterator {
 		}
 	}
 
-	if (availableActions.includes('PICK_REQUEST')) {
+	if (availableActions.some((action) => action.type === 'PICK_REQUEST')) {
 		// Run a seperate saga for the pick request
 		yield call(pickForPickRequestSaga, action)
 		return

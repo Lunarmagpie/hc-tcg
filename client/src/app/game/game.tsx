@@ -88,7 +88,7 @@ function Game() {
 	}
 
 	const selectCard = (card: LocalCardInstance) => {
-		if (availableActions.includes('PICK_REQUEST')) {
+		if (availableActions.some((action) => action.type === 'PICK_REQUEST')) {
 			const index = gameState.hand.findIndex((c) => equalCard(c, card))
 			if (index === -1) return
 			if (card.slot === null) return
@@ -112,7 +112,7 @@ function Game() {
 		}
 	}
 
-	if (availableActions.includes('PICK_REQUEST')) {
+	if (availableActions.some((action) => action.type === 'PICK_REQUEST')) {
 		dispatch(setSelectedCard(null))
 	}
 

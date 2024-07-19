@@ -106,14 +106,14 @@ export const has = (...cards: Array<CardClass>): ComponentQuery<SlotComponent> =
 
 export const canPlay: ComponentQuery<SlotComponent> = query.every(
 	(game, pos) =>
-		game.state.turn.availableActions.every(
-			(action) => action.type !== 'PLAY_CARD' || action.slot !== pos.entity
+		game.state.turn.blockedActions.every(
+			(action) => action.type !== 'PLAY_CARD_IN_SLOT' || action.slot !== pos.entity
 		),
 	empty
 )
 
 export const canPick: ComponentQuery<SlotComponent> = (game, pos) =>
-	game.state.turn.availableActions.every(
+	game.state.turn.blockedActions.every(
 		(action) => action.type !== 'PICK_SLOT' || action.slot !== pos.entity
 	)
 
