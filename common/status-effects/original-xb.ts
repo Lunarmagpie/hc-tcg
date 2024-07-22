@@ -16,8 +16,9 @@ class OriginalXbEffect extends PlayerStatusEffect {
 		player: PlayerComponent,
 		observer: ObserverComponent
 	): void {
-		observer.oneShot(player.hooks.onTurnEnd, () => {
-			player.draw(1)
+		observer.oneShot(player.hooks.onTurnEnd, (drawCards) => {
+			const extraCard = player.draw(1)
+			drawCards.push(extraCard.length ? extraCard[0] : null)
 			effect.remove()
 		})
 	}

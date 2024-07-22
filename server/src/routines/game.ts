@@ -577,19 +577,8 @@ function* turnSaga(game: GameModel) {
 	if (result === 'GAME_END') return 'GAME_END'
 
 	// Draw a card from deck when turn ends
-	let drawCards = currentPlayer.draw(1)
-
-	// The decked out loss condition is triggered when you cannot draw a card.
-	if (
-		drawCards.length === 0 &&
-		!DEBUG_CONFIG.disableDeckOut &&
-		!DEBUG_CONFIG.startWithAllCards &&
-		!DEBUG_CONFIG.unlimitedCards
-	) {
-		game.endInfo.reason = 'cards'
-		game.endInfo.deadPlayerIds = [currentPlayer.id]
-		return 'GAME_END'
-	}
+	let drawCards: Array<CardComponent | null> = currentPlayer.draw(1)
+	if (drawCards.length === 0) drawCards = [null]
 
 	// Call turn end hooks
 	currentPlayer.hooks.onTurnEnd.call(drawCards)
@@ -624,6 +613,18 @@ function* turnSaga(game: GameModel) {
 		} else {
 			singleUseCard.attach(game.components.new(DiscardSlotComponent, currentPlayer.entity))
 		}
+	}
+
+	// The decked out loss condition is triggered when you failed to draw a card.
+	if (
+		drawCards.includes(null) &&
+		!DEBUG_CONFIG.disableDeckOut &&
+		!DEBUG_CONFIG.startWithAllCards &&
+		!DEBUG_CONFIG.unlimitedCards
+	) {
+		game.endInfo.reason = 'cards'
+		game.endInfo.deadPlayerIds = [currentPlayer.id]
+		return 'GAME_END'
 	}
 
 	game.battleLog.addTurnEndEntry()
