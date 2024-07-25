@@ -274,7 +274,7 @@ function* checkHermitHealth(game: GameModel) {
 			CardComponent,
 			query.card.player(playerState.entity),
 			query.card.attached,
-			query.card.isHermit
+			query.card.slot(query.slot.hermit)
 		)
 		if (isDead || noHermitsLeft) {
 			deadPlayers.push(playerState)
