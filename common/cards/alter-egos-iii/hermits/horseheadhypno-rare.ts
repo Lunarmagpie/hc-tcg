@@ -4,7 +4,6 @@ import Card from '../../base/card'
 import {hermit} from '../../base/defaults'
 import {Hermit} from '../../base/types'
 import * as query from '../../../components/query'
-import Clock from '../../default/single-use/clock'
 
 class HorseHeadHypnoRare extends Card {
 	props: Hermit = {
@@ -73,7 +72,7 @@ class HorseHeadHypnoRare extends Card {
 					if (!modalResult.cards) return 'FAILURE_INVALID_DATA'
 					if (modalResult.cards.length !== 1) return 'FAILURE_CANNOT_COMPLETE'
 
-					let card = game.components.get(modalResult.cards[0].entity)
+					let card = game.components.get(CardComponent, modalResult.cards[0].entity)
 					card?.draw()
 
 					return 'SUCCESS'

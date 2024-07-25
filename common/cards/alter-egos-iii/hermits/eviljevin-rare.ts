@@ -79,7 +79,7 @@ class EvilJevinRare extends Card {
 					if (!modalResult.cards) return 'FAILURE_INVALID_DATA'
 					if (modalResult.cards.length !== 1) return 'FAILURE_CANNOT_COMPLETE'
 
-					let card = game.components.get(modalResult.cards[0].entity)
+					let card = game.components.get(CardComponent, modalResult.cards[0].entity)
 					card?.draw()
 
 					return 'SUCCESS'

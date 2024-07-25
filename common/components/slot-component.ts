@@ -2,6 +2,7 @@ import type {PlayerEntity, RowEntity, SlotEntity} from '../entities'
 import type {GameModel} from '../models/game-model'
 import type {SlotTypeT} from '../types/cards'
 import {CardComponent} from './card-component'
+import {PlayerComponent} from './player-component'
 import {card, slot} from './query'
 import {RowComponent} from './row-component'
 
@@ -63,14 +64,14 @@ export class SlotComponent {
 	/* Return the player who owns the slot. For single use slots this is the current player. */
 	get player() {
 		if (this.defs.type === 'single_use')
-			return this.game.components.getOrError(this.game.currentPlayerEntity)
-		return this.game.components.getOrError(this.defs.player)
+			return this.game.components.getOrError(PlayerComponent, this.game.currentPlayerEntity)
+		return this.game.components.getOrError(PlayerComponent, this.defs.player)
 	}
 
 	get opponentPlayer() {
 		if (this.defs.type === 'single_use')
-			return this.game.components.getOrError(this.game.opponentPlayerEntity)
-		return this.game.components.get(this.game.otherPlayerEntity(this.defs.player))
+			return this.game.components.getOrError(PlayerComponent, this.game.opponentPlayerEntity)
+		return this.game.components.get(PlayerComponent, this.game.otherPlayerEntity(this.defs.player))
 	}
 
 	public getCard() {
@@ -104,7 +105,7 @@ export class BoardSlotComponent extends SlotComponent {
 
 	get row() {
 		if (!this.rowEntity) return null
-		return this.game.components.get(this.rowEntity)
+		return this.game.components.get(RowComponent, this.rowEntity)
 	}
 }
 

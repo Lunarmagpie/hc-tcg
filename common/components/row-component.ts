@@ -22,7 +22,7 @@ export class RowComponent {
 	}
 
 	get player(): PlayerComponent {
-		return this.game.components.getOrError(this.playerId)
+		return this.game.components.getOrError(PlayerComponent, this.playerId)
 	}
 
 	public getHermitSlot() {

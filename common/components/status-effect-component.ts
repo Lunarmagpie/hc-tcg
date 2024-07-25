@@ -10,7 +10,7 @@ import('../status-effects').then((mod) => (STATUS_EFFECTS = mod.STATUS_EFFECTS))
 
 export class StatusEffectComponent<
 	TargetT extends CardComponent | PlayerComponent = CardComponent | PlayerComponent,
-	Props extends StatusEffectProps = StatusEffectProps
+	Props extends StatusEffectProps = StatusEffectProps,
 > {
 	readonly game: GameModel
 	readonly entity: StatusEffectEntity
@@ -39,14 +39,17 @@ export class StatusEffectComponent<
 	}
 
 	public get target(): TargetT {
-		return this.game.components.get(this.targetEntity) as any
+		return (
+			this.game.components.get(PlayerComponent, this.targetEntity) ||
+			this.game.components.get(CardComponent, this.targetEntity)
+		) as any
 	}
 
 	/** Apply a status effect to a specific player or card */
 	public apply(targetEntity: Entity<TargetT> | null | undefined) {
 		if (!targetEntity) return
 
-		let target = this.game.components.get(targetEntity)
+		let target = this.target
 		if (!target) return
 
 		if (!this.props.applyCondition(this.game, target)) return
@@ -63,7 +66,7 @@ export class StatusEffectComponent<
 	}
 
 	public remove() {
-		let observer = this.game.components.get(this.observerEntity)
+		let observer = this.game.components.get(ObserverComponent, this.observerEntity)
 		if (!this.target || !observer) return
 		observer.unsubscribeFromEverything()
 		this.statusEffect.onRemoval(this.game, this as any, this.target as any, observer)

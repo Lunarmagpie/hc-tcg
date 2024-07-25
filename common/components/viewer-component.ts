@@ -1,6 +1,7 @@
 import {PlayerEntity, ViewerEntity} from '../entities'
 import {GameModel} from '../models/game-model'
 import {PlayerModel} from '../models/player-model'
+import {PlayerComponent} from './player-component'
 
 type ViewerDefs = {
 	playerOnLeft: PlayerEntity
@@ -28,7 +29,7 @@ export class ViewerComponent {
 	}
 
 	get playerOnLeft() {
-		return this.game.components.getOrError(this.playerOnLeftEntity)
+		return this.game.components.getOrError(PlayerComponent, this.playerOnLeftEntity)
 	}
 
 	get playerOnRight() {

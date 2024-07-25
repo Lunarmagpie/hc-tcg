@@ -89,18 +89,21 @@ export class CardComponent<Props extends CardProps = CardProps> {
 	}
 
 	/** The slot that this card is in */
-	public get slot(): SlotComponent {
-		return this.game.components.getOrError(this.slotEntity)
+	public get slot() {
+		return this.game.components.getOrError(SlotComponent, this.slotEntity)
 	}
 
 	/** Get the player who owns the slot this card is in. */
-	public get player(): PlayerComponent {
-		return this.game.components.getOrError(this.slot?.player.entity)
+	public get player() {
+		return this.game.components.getOrError(PlayerComponent, this.slot?.player.entity)
 	}
 
 	/** Get the player who does not own the slot this card is in. */
-	public get opponentPlayer(): PlayerComponent {
-		return this.game.components.getOrError(this.game.otherPlayerEntity(this.slot?.player.entity))
+	public get opponentPlayer() {
+		return this.game.components.getOrError(
+			PlayerComponent,
+			this.game.otherPlayerEntity(this.slot?.player.entity)
+		)
 	}
 
 	public isItem(): this is CardComponent<Item> {
@@ -134,7 +137,7 @@ export class CardComponent<Props extends CardProps = CardProps> {
 		if (this.slot.onBoard() && changingBoards) {
 			if (!this.observerEntity)
 				throw new Error('All cards attached to the board should have an observer')
-			let observer = this.game.components.get(this.observerEntity)
+			let observer = this.game.components.get(ObserverComponent, this.observerEntity)
 			if (!observer) throw new Error('Observer expected to be in ECS')
 			observer.unsubscribeFromEverything()
 			this.card.onDetach(this.game, this, observer)

@@ -5,7 +5,7 @@ import {GameModel} from './game-model'
 import {formatText} from '../utils/formatting'
 import {DEBUG_CONFIG} from '../config'
 import {StatusEffectLog} from '../status-effects/status-effect'
-import {CardComponent, PlayerComponent, RowComponent, SlotComponent} from '../components'
+import {CardComponent, PlayerComponent, RowComponent, SlotComponent, StatusEffectComponent} from '../components'
 import {card, slot} from '../components/query'
 import {CardEntity, PlayerEntity, RowEntity, StatusEffectEntity} from '../entities'
 
@@ -48,7 +48,7 @@ export class BattleLogModel {
 		const entry = coinFlips.reduce((r: string | null, coinFlip) => {
 			const description = this.generateCoinFlipDescription(coinFlip)
 
-			let coinFlipCard = this.game.components.get(coinFlip.card)
+			let coinFlipCard = this.game.components.get(CardComponent, coinFlip.card)
 
 			if (!coinFlip) return r
 			if (coinFlip.opponentFlip) return r
@@ -66,7 +66,7 @@ export class BattleLogModel {
 			const firstEntry = this.logMessageQueue.shift()
 			if (!firstEntry) return
 
-			let playerEntity = this.game.components.get(firstEntry.player)?.entity
+			let playerEntity = this.game.components.get(PlayerComponent, firstEntry.player)?.entity
 			if (!playerEntity) continue
 
 			this.game.chat.push({
@@ -228,7 +228,7 @@ export class BattleLogModel {
 			this.logMessageQueue.push({
 				player: player.entity,
 				description: `$o${
-					this.game.components.get(coinFlip.card)?.props.name
+					this.game.components.get(CardComponent, coinFlip.card)?.props.name
 				}$ ${this.generateCoinFlipDescription(coinFlip)} on their coinflip`,
 			})
 		})
@@ -247,9 +247,9 @@ export class BattleLogModel {
 		oldHermitEntity: CardEntity | null,
 		newHermitEntity: CardEntity | null
 	) {
-		let newRow = this.game.components.get(newRowEntity)
-		let oldHermit = this.game.components.get(oldHermitEntity)
-		let newHermit = this.game.components.get(newHermitEntity)
+		let newRow = this.game.components.get(RowComponent, newRowEntity)
+		let oldHermit = this.game.components.get(CardComponent, oldHermitEntity)
+		let newHermit = this.game.components.get(CardComponent, newHermitEntity)
 
 		if (!newRow || !oldHermit || !newHermit) return
 
@@ -274,7 +274,7 @@ export class BattleLogModel {
 		const hermitCard = this.game.components.find(CardComponent, card.isHermit, card.rowEntity(row))
 		if (!hermitCard) return
 		const cardName = hermitCard.props.name
-		let player = this.game.components.get(playerEntity)
+		let player = this.game.components.get(PlayerComponent, playerEntity)
 
 		const livesRemaining = player?.lives === 3 ? 'two lives' : 'one life'
 
@@ -300,7 +300,7 @@ export class BattleLogModel {
 		statusEffect: StatusEffectEntity,
 		log: (values: StatusEffectLog) => string
 	) {
-		const effect = this.game.components.get(statusEffect)
+		const effect = this.game.components.get(StatusEffectComponent, statusEffect)
 		if (!effect) return
 		const pos = effect.target
 		if (!pos) return

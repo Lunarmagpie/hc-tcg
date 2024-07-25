@@ -23,7 +23,7 @@ export const hasHermit: ComponentQuery<RowComponent> = (game, row) =>
 
 export function hasCard(cardEntity: CardEntity): ComponentQuery<RowComponent> {
 	return (game, row) => {
-		let card = game.components.get(cardEntity)
+		let card = game.components.get(CardComponent, cardEntity)
 		if (!card?.slot?.onBoard()) return false
 		return card.slot.rowEntity === row.entity
 	}

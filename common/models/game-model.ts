@@ -99,11 +99,11 @@ export class GameModel {
 	}
 
 	public get currentPlayer(): PlayerComponent {
-		return this.components.getOrError(this.currentPlayerEntity)
+		return this.components.getOrError(PlayerComponent, this.currentPlayerEntity)
 	}
 
 	public get opponentPlayer(): PlayerComponent {
-		return this.components.getOrError(this.opponentPlayerEntity)
+		return this.components.getOrError(PlayerComponent, this.opponentPlayerEntity)
 	}
 
 	public get viewers(): Array<ViewerComponent> {

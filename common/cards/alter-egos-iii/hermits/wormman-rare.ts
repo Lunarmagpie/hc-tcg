@@ -74,12 +74,12 @@ class WormManRare extends Card {
 		const {player} = component
 
 		this.observers.get(component).forEach((observerEntity) => {
-			const observer = game.components.get(observerEntity)
+			const observer = game.components.get(ObserverComponent, observerEntity)
 			if (!observer) return
 			observer.unsubscribe(player.hooks.onActiveRowChange)
 
-			const attachedCard = game.components.get(observer.wrappingEntity)
-			if (!attachedCard || !(attachedCard instanceof CardComponent)) return
+			const attachedCard = game.components.get(CardComponent, observer.wrappingEntity)
+			if (!attachedCard) return
 			attachedCard.turnedOver = false
 		})
 	}

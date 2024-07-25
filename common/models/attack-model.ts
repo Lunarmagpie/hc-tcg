@@ -95,12 +95,12 @@ export class AttackModel {
 	 */
 	get player(): PlayerComponent {
 		if (this.playerEntity) {
-			return this.game.components.getOrError(this.playerEntity)
+			return this.game.components.getOrError(PlayerComponent, this.playerEntity)
 		} else if (this.attackerEntity === 'debug') {
 			return this.game.currentPlayer
 		} else {
-			let card = this.game.components.get(this.attackerEntity) as CardComponent
-			return card.player
+			let card = this.game.components.get(CardComponent, this.attackerEntity)
+			return card?.player as any
 		}
 	}
 
@@ -140,12 +140,12 @@ export class AttackModel {
 	/** Returns the current attacker for this attack */
 	get attacker(): CardComponent | StatusEffectComponent | null {
 		if (this.attackerEntity === 'debug') return null
-		return this.game.components.get(this.attackerEntity)
+		return this.game.components.get(CardComponent, this.attackerEntity) || this.game.components.get(StatusEffectComponent, this.attackerEntity)
 	}
 
 	/** Returns the current target for this attack */
 	get target(): RowComponent | null {
-		return this.game.components.get(this.targetEntity)
+		return this.game.components.get(RowComponent, this.targetEntity)
 	}
 
 	// Setters / modifier methods

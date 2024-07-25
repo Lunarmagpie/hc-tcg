@@ -18,6 +18,7 @@ import {
 } from 'common/types/server-requests'
 import {
 	CardComponent,
+	ObserverComponent,
 	PlayerComponent,
 	RowComponent,
 	SlotComponent,
@@ -180,12 +181,14 @@ function getLocalModalDataPayload(game: GameModel, modal: ModalData): LocalModal
 	if (modal.modalId == 'selectCards') {
 		return {
 			...modal.payload,
-			cards: modal.payload.cards.map((entity) => getLocalCard(game.components.get(entity)!)),
+			cards: modal.payload.cards.map((entity) =>
+				getLocalCard(game.components.get(CardComponent, entity)!)
+			),
 		}
 	} else if (modal.modalId === 'copyAttack') {
-		let hermitCard = game.components.get(modal.payload.hermitCard)!
+		let hermitCard = game.components.get(CardComponent, modal.payload.hermitCard)!
 		let blockedActions = hermitCard.player.hooks.blockedActions.callSome([[]], (observerEntity) => {
-			let observer = game.components.get(observerEntity)
+			let observer = game.components.get(ObserverComponent, observerEntity)
 			return observer?.wrappingEntity === hermitCard.entity
 		})
 
@@ -209,7 +212,7 @@ function getLocalModalData(game: GameModel, modal: ModalData): LocalModalData {
 function getLocalCoinFlip(game: GameModel, coinFlip: CurrentCoinFlip): LocalCurrentCoinFlip {
 	return {
 		...coinFlip,
-		card: getLocalCard(game.components.get(coinFlip.card)!),
+		card: getLocalCard(game.components.get(CardComponent, coinFlip.card)!),
 	}
 }
 
@@ -313,7 +316,9 @@ export function getLocalGameState(game: GameModel, viewer: ViewerComponent): Loc
 		// Once there are no modal requests, send pick requests
 		currentPickMessage = currentPickRequest.message
 		// Add the card name before the request
-		const pickRequestCreator = game.components.get(currentPickRequest.id)
+		const pickRequestCreator =
+			game.components.get(CardComponent, currentPickRequest.id) ||
+			game.components.get(StatusEffectComponent, currentPickRequest.id)
 		if (pickRequestCreator) {
 			currentPickMessage = `${pickRequestCreator.props.name}: ${currentPickMessage}`
 		}

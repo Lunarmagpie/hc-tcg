@@ -6,42 +6,51 @@ export type Component = {
 	entity: Entity<any>
 }
 
+type ComponentClass<T> = new (...args: Array<any>) => T
+
 /** A map of entities to component objects. Components in the component
  * table can be queried. See the filter and find methods for more information.
  *
- * Fruther Work - We can likely optimize queries by giving each component their
- * own table. Additionally we can reduce queries by finding a faster way to do
+ * Fruther Work - We can reduce queries by finding a faster way to do
  * relations for slots and the card that is in them.
  */
 export default class ComponentTable {
 	game: GameModel
-	data: Record<Entity<any>, Component>
+	tableOfTables: Record<string, Record<Entity<any>, Component>>
 
 	constructor(game: GameModel) {
 		this.game = game
-		this.data = {} as Record<Entity<any>, Component>
+		this.tableOfTables = {} as Record<Entity<any>, Component>
+	}
+
+	private getTable<T>(type: ComponentClass<T>): Record<Entity<T>, T> {
+		if (type.name in this.tableOfTables) {
+			// @ts-ignore
+			return this.tableOfTables[type.name]
+		}
+		this.tableOfTables[type.name] = {}
+		// @ts-ignore
+		return this.tableOfTables[type.name]
 	}
 
 	/** Get a specific entity by the ID */
-	public get<T>(id: Entity<T> | null): T | null {
+	public get<T, U>(type: Array<ComponentClass<T>>, id: Entity<U> | null): T | null {
 		if (!id) return null
-		// @ts-ignore
-		return this.data[id] || null
+		return this.getTable(type)[id] || null
 	}
 
 	/** Get a specific entity by the ID. If the entity does not exist, raise an error */
-	public getOrError<T>(id: Entity<T>): T {
-		if (!id || !(id in this.data))
+	public getOrError<T>(type: ComponentClass<T>, id: Entity<T>): T {
+		if (!id || !(id in this.getTable(type)))
 			throw new Error(`Could not find component with ID \`${id}\ in ECS`)
-		// @ts-ignore
-		return this.data[id]
+		return this.getTable(type)[id]
 	}
 
 	/** Remove an entity from the ECS. Before removing a component from the ECS, first consider if you can
 	 * mark the element as invalid instead.
 	 */
-	public delete(id: Entity<any>) {
-		delete this.data[id]
+	public delete<T>(type: ComponentClass<T>, id: Entity<T>) {
+		delete this.getTable(type)[id]
 	}
 
 	/** Add a entity linked to a component and return the ID of the value */
@@ -50,7 +59,7 @@ export default class ComponentTable {
 		...args: Args
 	): T {
 		const value = new newValue(this.game, newEntity<T['entity']>(newValue.name), ...args)
-		this.data[value.entity] = value
+		this.getTable(newValue)[value.entity] = value
 		return value
 	}
 
@@ -62,16 +71,16 @@ export default class ComponentTable {
 	 * ```
 	 */
 	public filter<T extends Component>(
-		type: new (...args: Array<any>) => T,
+		type: ComponentClass<T>,
 		...predicates: Array<ComponentQuery<T>>
 	): Array<T> {
-		return Object.values(this.data)
+		return Object.values(this.getTable(type))
 			.filter((x) => x instanceof type)
 			.filter((value) => predicates.every((predicate) => predicate(this.game, value as T))) as any
 	}
 
 	public filterEntities<T extends Component>(
-		type: new (...args: Array<any>) => T,
+		type: ComponentClass<T>,
 		...predicates: Array<ComponentQuery<T>>
 	): Array<T['entity']> {
 		return this.filter(type, ...predicates)?.map((x) => x.entity)
@@ -89,7 +98,7 @@ export default class ComponentTable {
 	}
 
 	public findEntity<T extends Component>(
-		type: new (...args: Array<any>) => T,
+		type: ComponentClass<T>,
 		...predicates: Array<ComponentQuery<T>>
 	): T['entity'] | null {
 		return this.find(type, ...predicates)?.entity || null
@@ -97,7 +106,7 @@ export default class ComponentTable {
 
 	/** Check if a component exists and return true if that is the case. */
 	public exists<T extends Component>(
-		type: new (...args: Array<any>) => T,
+		type: ComponentClass<T>,
 		...predicates: Array<ComponentQuery<T>>
 	): boolean {
 		return this.find(type, ...predicates) !== null

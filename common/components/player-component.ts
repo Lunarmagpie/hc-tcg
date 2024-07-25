@@ -155,7 +155,7 @@ export class PlayerComponent {
 	}
 
 	get activeRow() {
-		return this.game.components.get(this.activeRowEntity)
+		return this.game.components.get(RowComponent, this.activeRowEntity)
 	}
 
 	get opponentPlayer() {
@@ -224,7 +224,7 @@ export class PlayerComponent {
 
 	/** Change the active row. Return true if the active row was succesfully changed. */
 	public changeActiveRow(newRow: RowComponent | null): boolean {
-		const currentActiveRow = this.game.components.get(this.activeRowEntity)
+		const currentActiveRow = this.game.components.get(RowComponent, this.activeRowEntity)
 
 		if (!newRow) return false
 

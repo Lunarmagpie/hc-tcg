@@ -25,8 +25,11 @@ function runBeforeAttackHooks(game: GameModel, attacks: Array<AttackModel>) {
 
 		// Call before attack hooks
 		player.hooks.beforeAttack.callSome([attack], (observer) => {
-			let entity = game.components.get(game.components.get(observer)?.wrappingEntity || null)
-			if (entity instanceof CardComponent) return !shouldIgnoreCard(attack, game, entity)
+			let entity = game.components.get(
+				CardComponent,
+				game.components.get(ObserverComponent, observer)?.wrappingEntity || null
+			)
+			if (entity) return !shouldIgnoreCard(attack, game, entity)
 			return true
 		})
 	}
@@ -46,8 +49,11 @@ function runBeforeDefenceHooks(game: GameModel, attacks: Array<AttackModel>) {
 
 		// Call before defence hooks
 		player.hooks.beforeDefence.callSome([attack], (observer) => {
-			let entity = game.components.get(game.components.get(observer)?.wrappingEntity || null)
-			if (entity instanceof CardComponent) return !shouldIgnoreCard(attack, game, entity)
+			let entity = game.components.get(
+				CardComponent,
+				game.components.get(ObserverComponent, observer)?.wrappingEntity || null
+			)
+			if (entity) return !shouldIgnoreCard(attack, game, entity)
 			return true
 		})
 	}
@@ -66,8 +72,11 @@ function runOnAttackHooks(game: GameModel, attacks: Array<AttackModel>) {
 
 		// Call on attack hooks
 		player.hooks.onAttack.callSome([attack], (observer) => {
-			let entity = game.components.get(game.components.get(observer)?.wrappingEntity || null)
-			if (entity instanceof CardComponent) return !shouldIgnoreCard(attack, game, entity)
+			let entity = game.components.get(
+				CardComponent,
+				game.components.get(ObserverComponent, observer)?.wrappingEntity || null
+			)
+			if (entity) return !shouldIgnoreCard(attack, game, entity)
 			return true
 		})
 	}
@@ -86,8 +95,11 @@ function runOnDefenceHooks(game: GameModel, attacks: Array<AttackModel>) {
 
 		// Call on defence hooks
 		player.hooks.onDefence.callSome([attack], (observer) => {
-			let entity = game.components.get(game.components.get(observer)?.wrappingEntity || null)
-			if (entity instanceof CardComponent) return !shouldIgnoreCard(attack, game, entity)
+			let entity = game.components.get(
+				CardComponent,
+				game.components.get(ObserverComponent, observer)?.wrappingEntity || null
+			)
+			if (entity) return !shouldIgnoreCard(attack, game, entity)
 			return true
 		})
 	}
@@ -103,8 +115,11 @@ function runAfterAttackHooks(game: GameModel, attacks: Array<AttackModel>) {
 
 		// Call after attack hooks
 		player.hooks.afterAttack.callSome([attack], (observer) => {
-			let entity = game.components.get(game.components.get(observer)?.wrappingEntity || null)
-			if (entity instanceof CardComponent) return !shouldIgnoreCard(attack, game, entity)
+			let entity = game.components.get(
+				CardComponent,
+				game.components.get(ObserverComponent, observer)?.wrappingEntity || null
+			)
+			if (entity) return !shouldIgnoreCard(attack, game, entity)
 			return true
 		})
 	}
@@ -120,8 +135,11 @@ function runAfterDefenceHooks(game: GameModel, attacks: Array<AttackModel>) {
 
 		// Call after attack hooks
 		player.hooks.afterDefence.callSome([attack], (observer) => {
-			let entity = game.components.get(game.components.get(observer)?.wrappingEntity || null)
-			if (entity instanceof CardComponent) return !shouldIgnoreCard(attack, game, entity)
+			let entity = game.components.get(
+				CardComponent,
+				game.components.get(ObserverComponent, observer)?.wrappingEntity || null
+			)
+			if (entity) return !shouldIgnoreCard(attack, game, entity)
 			return true
 		})
 	}
