@@ -7,6 +7,7 @@ import EffectCardModule, {EffectCardProps} from './effect-card-svg'
 import ItemCardModule, {ItemCardProps} from './item-card-svg'
 import {CardProps} from 'common/cards/base/types'
 import {WithoutFunctions} from 'common/types/server-requests'
+import {useEffect, useMemo, useRef, useState} from 'react'
 
 interface CardReactProps
 	extends React.DetailedHTMLProps<
@@ -21,6 +22,26 @@ interface CardReactProps
 	onClick?: () => void
 }
 
+/** https://bobbyhadz.com/blog/react-check-if-element-in-viewport */
+function useIsInViewport(ref) {
+	const [isIntersecting, setIsIntersecting] = useState(false)
+
+	const observer = useMemo(
+		() => new IntersectionObserver(([entry]) => setIsIntersecting(entry.isIntersecting)),
+		[]
+	)
+
+	useEffect(() => {
+		observer.observe(ref.current)
+
+		return () => {
+			observer.disconnect()
+		}
+	}, [ref, observer])
+
+	return isIntersecting
+}
+
 const Card = (props: CardReactProps) => {
 	const {category} = props.card
 	const {onClick, selected, picked, unpickable, ...otherProps} = props
@@ -31,22 +52,33 @@ const Card = (props: CardReactProps) => {
 		card = <EffectCardModule {...(otherProps as EffectCardProps)} />
 	else throw new Error('Unsupported card category: ' + category)
 
+	let ref = useRef(null)
+	let inViewport = useIsInViewport(ref)
+
+	let inside = <div className={css.placeholder}> </div>
+
+	if (inViewport) {
+		inside = card
+	}
+
 	return (
-		<Tooltip
-			tooltip={<CardInstanceTooltip card={props.card} />}
-			showAboveModal={props.tooltipAboveModal}
-		>
-			<button
-				className={cn(props.className, css.card, {
-					[css.selected]: selected,
-					[css.picked]: picked,
-					[css.unpickable]: unpickable,
-				})}
-				onClick={unpickable ? () => {} : onClick}
+		<div ref={ref}>
+			<Tooltip
+				tooltip={<CardInstanceTooltip card={props.card} />}
+				showAboveModal={props.tooltipAboveModal}
 			>
-				{card}
-			</button>
-		</Tooltip>
+				<button
+					className={cn(props.className, css.card, {
+						[css.selected]: selected,
+						[css.picked]: picked,
+						[css.unpickable]: unpickable,
+					})}
+					onClick={unpickable ? () => {} : onClick}
+				>
+					{inside}
+				</button>
+			</Tooltip>
+		</div>
 	)
 }
 
