@@ -209,7 +209,7 @@ const defaultGameSettings = {
  */
 export function testGame(
 	options: {
-		saga: any
+		saga: (game: GameModel) => any
 		playerOneDeck: Array<Card>
 		playerTwoDeck: Array<Card>
 	},
