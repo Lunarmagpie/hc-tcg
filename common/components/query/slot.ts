@@ -1,6 +1,7 @@
 import {ComponentQuery} from '.'
 import query from '.'
 import {
+	BoardSlotComponent,
 	CardComponent,
 	RowComponent,
 	SlotComponent,
@@ -77,6 +78,11 @@ export const deck: ComponentQuery<SlotComponent> = (_game, pos) => {
 /* Return true if the slot is in a player's hand */
 export const discardPile: ComponentQuery<SlotComponent> = (_game, pos) => {
 	return pos.type === 'discardPile'
+}
+
+/* Return true if the slot is hidden. */
+export const hidden: ComponentQuery<SlotComponent> = (_game, pos) => {
+	return pos instanceof BoardSlotComponent && pos.hidden
 }
 
 export function row(

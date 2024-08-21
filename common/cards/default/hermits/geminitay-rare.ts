@@ -1,4 +1,8 @@
-import {CardComponent, ObserverComponent} from '../../../components'
+import {
+	BoardSlotComponent,
+	CardComponent,
+	ObserverComponent,
+} from '../../../components'
 import query from '../../../components/query'
 import {GameModel} from '../../../models/game-model'
 import {hermit} from '../../base/defaults'
@@ -35,15 +39,31 @@ const GeminiTayRare: Hermit = {
 	) {
 		const {player} = component
 
+		let oldSingleUse: CardComponent | null = null
+
 		observer.subscribe(player.hooks.onAttack, (attack) => {
 			if (!attack.isAttacker(component.entity) || attack.type !== 'secondary')
 				return
 
 			observer.subscribe(player.hooks.afterAttack, (_attack) => {
 				// Discard the single-use card.
-				game.components
-					.find(CardComponent, query.card.slot(query.slot.singleUse))
-					?.discard()
+				oldSingleUse = game.components.find(
+					CardComponent,
+					query.card.slot(query.slot.singleUse),
+				)
+
+				if (!oldSingleUse) return
+
+				// The old single use card is still attached to the board but can not be interacted with.
+				oldSingleUse.attach(
+					game.components.new(
+						BoardSlotComponent,
+						{type: 'single_use'},
+						null,
+						null,
+						true,
+					),
+				)
 
 				// We are hooking into afterAttack, so we just remove the blocks on actions
 				// The beauty of this is that there is no need to replicate any of the existing logic anymore
@@ -53,6 +73,10 @@ const GeminiTayRare: Hermit = {
 
 				observer.unsubscribe(player.hooks.afterAttack)
 			})
+		})
+
+		observer.subscribe(player.hooks.onTurnEnd, () => {
+			oldSingleUse?.discard()
 		})
 	},
 }

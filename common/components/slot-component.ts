@@ -1,3 +1,4 @@
+import assert from 'assert'
 import type {PlayerEntity, RowEntity, SlotEntity} from '../entities'
 import type {GameModel} from '../models/game-model'
 import type {SlotTypeT} from '../types/cards'
@@ -86,6 +87,8 @@ export class SlotComponent {
 export class BoardSlotComponent extends SlotComponent {
 	readonly index: number | null
 	readonly rowEntity: RowEntity | null
+	/** This slot should not be visible to the players. This is only used for single use slots. */
+	readonly hidden: boolean
 
 	constructor(
 		game: GameModel,
@@ -93,10 +96,16 @@ export class BoardSlotComponent extends SlotComponent {
 		defs: BoardSlotDefs,
 		index: number | null,
 		row: RowEntity | null,
+		hidden: boolean = false,
 	) {
 		super(game, entity, defs)
 		this.index = index
 		this.rowEntity = row
+		assert(
+			!hidden || defs.type === 'single_use',
+			'Only single are allowed to be hidden.',
+		)
+		this.hidden = hidden
 	}
 
 	override onBoard(): this is BoardSlotComponent {

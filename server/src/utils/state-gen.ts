@@ -281,6 +281,7 @@ function getLocalPlayerState(
 	let singleUseSlot = game.components.find(
 		SlotComponent,
 		query.slot.singleUse,
+		query.not(query.slot.hidden),
 	)?.entity
 	let singleUseCard = game.components.find(
 		CardComponent,
