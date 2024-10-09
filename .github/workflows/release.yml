@@ -49,7 +49,7 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
       - run: |
-            curl -X POST https://discord.com/api/v10/channels/${{ secrets.DISCORD_CHANNEL }}/messages -D "{\"content\": \"${{ github.event.release.body }}\"}" -H "Authorization: Bot ${{ secrets.BOT_KEY }}" -H "Content-Type: application/json" || true
+            curl -X POST https://discord.com/api/v10/channels/${{ secrets.DISCORD_CHANNEL }}/messages --json "{\"content\": \"${{ github.event.release.body }}\"}" -H "Content-Type: application/json" -H "Authorization: Bot ${{ secrets.BOT_KEY }}" || true
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy --remote-only
         env:
