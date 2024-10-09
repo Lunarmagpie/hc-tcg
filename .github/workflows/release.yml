@@ -46,7 +46,8 @@ jobs:
     runs-on: ubuntu-latest
     # needs: [push_to_registry]
     steps:
-      - uses: actions/checkout@v2
+      - name: Check out the repo
+        uses: actions/checkout@v3
 			- run: |
     		curl -X POST https://discord.com/api/v10/channels/${{ secrets.DISCORD_CHANNEL }}/messages --json "{\"content\": \"${{ github.event.release.body }}\"}" -H "Authorization: Bot ${{ secrets.BOT_KEY }}" || true
       - uses: superfly/flyctl-actions/setup-flyctl@master
